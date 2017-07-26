@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - Bootstrap Admin Theme</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link href="../vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
+
+    <!-- DataTables Responsive CSS -->
+    <link href="../vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+      <!-- Navigation -->
+      <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                      <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                  </button>
+          <a class="navbar-brand" href="index.html">스티치 기업용 관리자 페이지</a>
+        </div>
+        <!-- /.navbar-header -->
+
+        <div class="navbar-default sidebar" role="navigation">
+          <div class="sidebar-nav navbar-collapse">
+            <ul class="nav" id="side-menu">
+              <li>
+                <a href="dashboard.html">대쉬보드</a>
+              </li>
+              <li>
+                <a href="#">학생 관리<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                  <li>
+                    <a href="studentList.html">학생 목록</a>
+                  </li>
+                  <li>
+                    <a href="studentRegistration.html">신규 학생 등록</a>
+                  </li>
+                  <li>
+                    <a href="leaveStudentList.html">퇴원 학생 관리</a>
+                  </li>
+                </ul>
+                <!-- /.nav-second-level -->
+              </li>
+              <li>
+                <a href="matchingList.html">매칭 관리</a>
+              </li>
+              <li>
+                <a href="#">선생님 관리<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                  <li>
+                    <a href="teacherList.html">선생님 목록</a>
+                  </li>
+                  <li>
+                    <a href="waitTeacherList.html">승인대기중 선생님</a>
+                  </li>
+                </ul>
+                <!-- /.nav-second-level -->
+              </li>
+            </ul>
+          </div>
+          <!-- /.sidebar-collapse -->
+        </div>
+        <!-- /.navbar-static-side -->
+      </nav>
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">퇴원 학생 관리</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>상태</th>
+                                        <th>과목</th>
+                                        <th>학년</th>
+                                        <th>주소</th>
+                                        <th>이름</th>
+                                        <th>선생님</th>
+                                        <th>수업형태</th>
+                                        <th>수강료</th>
+                                        <th>납입일</th>
+                                        <th>학교</th>
+                                        <th>전화상담가</th>
+                                        <th>방문상담가</th>
+                                        <th>이 달 수강료</th>
+                                        <th>납입액</th>
+                                        <th>전화 온 날</th>
+                                        <th>방문 상담일</th>
+                                        <th>첫 수업일</th>
+                                        <th>
+                                          퇴원 사유
+                                        </th>
+                                        <th>수정</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>퇴원</td>
+                                        <td>수학</td>
+                                        <td>3</td>
+                                        <td>대전광역시 둔산동</td>
+                                        <td>피카츄</td>
+                                        <td>라이츄</td>
+                                        <td>원내그룹</td>
+                                        <td>1000000</td>
+                                        <td>2017-05-24</td>
+                                        <td>중학교</td>
+                                        <td>꼬부기</td>
+                                        <td>파이리</td>
+                                        <td>100000</td>
+                                        <td>1400000</td>
+                                        <td>2017-01-01</td>
+                                        <td>2017-01-04</td>
+                                        <td>2017-01-07</td>
+                                        <td>개인적인 사유로 인한 퇴원</td>
+                                        <td class="center"><button>수정</button></td>
+                                    </tr>
+                            </table>
+                            <!-- /.table-responsive -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="../vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
+    <script src="../vendor/datatables-responsive/dataTables.responsive.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../dist/js/sb-admin-2.js"></script>
+
+    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
+    <script>
+
+    $(document).ready(function() {
+    $('#dataTables-example').children('thead').children('tr').children('th').css('white-space', 'nowrap')
+    $('#dataTables-example').children('thead').children('tr').children('th').css('text-align', 'center')
+    $('#dataTables-example').children('tbody').children('tr').children('td').css('white-space', 'nowrap')
+    $('#dataTables-example').children('tbody').children('tr').children('td').css('text-align', 'center')
+        $('#dataTables-example').DataTable({
+            responsive: true
+        });
+    });
+    </script>
+
+</body>
+
+</html>
