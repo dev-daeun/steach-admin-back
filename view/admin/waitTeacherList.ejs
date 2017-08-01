@@ -128,7 +128,7 @@
                 <% for(let i = 0; i<teacher.length; i++){%> 
                 <tbody>
                   <tr>
-                    <td><%=i %></td>
+                    <td><%=i+1%></td>
                     <td><%=teacher[i].employed%></td>
                     <td><%=teacher[i].address1%></td>
                     <td><%=teacher[i].age%></td>
@@ -137,7 +137,8 @@
                     <td><%=teacher[i].university%></td>
                     <td><%=teacher[i].grade%></td>
                     <td><%=teacher[i].univ_status%></td>
-                    <td><button>승인</button><button>거절</button></td>
+                    <td><button type = 'submit' name='join' value = true onClick="CheckPermit">승인</button>
+                        <button type = 'submit' name='join' value = false onClick="CheckDeny">거절</button></td>
                   </tr>
                 </tbody>
                 <%}%>
