@@ -7,8 +7,13 @@
   },
   "dependencies": {
     "async": "^2.5.0",
+    "body-parser": "^1.17.2",
+    "cookie-parser": "^1.4.3",
+    "coolsms-rest-sdk": "^1.0.7",
     "ejs": "^2.5.7",
     "express": "~4.14.0",
+    "fcm-push": "^1.1.2",
+    "morgan": "^1.8.2",
     "mysql": "^2.14.0",
     "mysql-pool-booster": "^1.0.2"
   }
