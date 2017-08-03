@@ -88,11 +88,11 @@
             <li>
               <a href="#">선생님 관리<span class="fa arrow"></span></a>
               <ul class="nav nav-second-level">
-                <li>
-                  <a href="teacherList.html">선생님 목록</a>
+                <li >
+                  <a href='/teacher/list'>선생님 목록</a>
                 </li>
                 <li>
-                  <a href="waitTeacherList.html">승인대기중 선생님</a>
+                  <a href="/teacher/waitlist">승인대기중 선생님</a>
                 </li>
               </ul>
               <!-- /.nav-second-level -->
@@ -132,103 +132,27 @@
                     <th>상태</th>
                     <th>영업이익</th>
                     <th>수업료 지급일</th>
-                    <th>주민번호</th>
                     <th>계좌번호</th>
-
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>퇴직</td>
-                    <td>대전광역시 둔산동</td>
-                    <td>23</td>
-                    <td>버터풀</td>
-                    <td>남</td>
-                    <td>포켓대학교</td>
-                    <td>3</td>
-                    <td>휴학</td>
-                    <td>100000</td>
-                    <td>2017-05-21</td>
-                    <td>951110-1234567</td>
-                    <td>국민 1100120312310</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>재직</td>
-                    <td>대전광역시 둔산동</td>
-                    <td>23</td>
-                    <td>버터풀</td>
-                    <td>남</td>
-                    <td>포켓대학교</td>
-                    <td>3</td>
-                    <td>휴학</td>
-                    <td>100000</td>
-                    <td>2017-05-21</td>
-                    <td>951110-1234567</td>
-                    <td>국민 1100120312310</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>만강</td>
-                    <td>대전광역시 둔산동</td>
-                    <td>23</td>
-                    <td>버터풀</td>
-                    <td>남</td>
-                    <td>포켓대학교</td>
-                    <td>3</td>
-                    <td>휴학</td>
-                    <td>100000</td>
-                    <td>2017-05-21</td>
-                    <td>951110-1234567</td>
-                    <td>국민 1100120312310</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>대기</td>
-                    <td>대전광역시 둔산동</td>
-                    <td>23</td>
-                    <td>버터풀</td>
-                    <td>남</td>
-                    <td>포켓대학교</td>
-                    <td>3</td>
-                    <td>휴학</td>
-                    <td>100000</td>
-                    <td>2017-05-21</td>
-                    <td>951110-1234567</td>
-                    <td>국민 1100120312310</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>만강</td>
-                    <td>대전광역시 둔산동</td>
-                    <td>23</td>
-                    <td>버터풀</td>
-                    <td>남</td>
-                    <td>포켓대학교</td>
-                    <td>3</td>
-                    <td>휴학</td>
-                    <td>100000</td>
-                    <td>2017-05-21</td>
-                    <td>951110-1234567</td>
-                    <td>국민 1100120312310</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>대기</td>
-                    <td>대전광역시 둔산동</td>
-                    <td>23</td>
-                    <td>버터풀</td>
-                    <td>남</td>
-                    <td>포켓대학교</td>
-                    <td>3</td>
-                    <td>휴학</td>
-                    <td>100000</td>
-                    <td>2017-05-21</td>
-                    <td>951110-1234567</td>
-                    <td>국민 1100120312310</td>
-                  </tr>
-                </tbody>
+                <% for(let i = 0; i<teacher.length; i++){ %>
+                  <tbody>
+                    <tr>
+                      <td><%=teacher[i].t_id%></td>
+                      <td><%=teacher[i].employed%></td>
+                      <td><%=teacher[i].address1%></td>
+                      <td><%=teacher[i].age%></td>
+                      <td><%=teacher[i].name%></td>
+                      <td><%=teacher[i].gender%></td>
+                      <td><%=teacher[i].university%></td>
+                      <td><%=teacher[i].grade%></td>
+                      <td><%=teacher[i].univ_status%></td>
+                      <td><%=teacher[i].profit%></td>
+                      <td>2017-05-21</td>
+                      <td><%=teacher[i].account_number%></td>
+                    </tr>
+                  </tbody>
+                <% }%>
               </table>
               <!-- /.table-responsive -->
             </div>
@@ -262,7 +186,7 @@
   <script src="../dist/js/sb-admin-2.js"></script>
 
   <!-- Page-Level Demo Scripts - Tables - Use for reference -->
-  <script>
+  <script>  
   $(document).ready(function() {
     $('#dataTables-example').DataTable({
       responsive: true,
@@ -284,6 +208,7 @@
     $('#dataTables-example_filter').addClass('col-lg-6');
     $('#filterDiv').addClass('col-lg-4');
   });
+
   </script>
 
 </body>

@@ -20,7 +20,6 @@ Teacher.getWaitingTeachers = function(){
                     });
             } 
         ], function(err, [teachers, connection]){
-            console.log('teachers : ', teachers);
                 connection.release();
                 if(err) reject(err);
                 else resolve(teachers);
@@ -40,7 +39,7 @@ Teacher.getJoinedTeachers = function(){
             },/* TODO: 수강료 지급일? */
             function(connection, callback){
                 connection.query(`select id as t_id , employed, address1, age, name, gender, university, grade, 
-                (select sum(fee) from expectation where id = t_id), 
+                (select sum(fee) from expectation, assignment where expectation.id = assignment.expectation_id and assignment.teacher_id = t_id) as profit, 
                 univ_status, account_number from teacher where join_status = 1 order by id desc`, function(err, teachers){
                     if(err) callback(err);
                     else callback(null, [teachers, connection]);
@@ -59,7 +58,6 @@ Teacher.getJoinedTeachers = function(){
 /* 회원가입 요청한 선생님 가입 승인/거절 */
 Teacher.givePermission = function(teacher_id, is_permitted){
     return new Promise(function(resolve, reject){
-        if(is_permitted){
             async.waterfall([
                 function(callback){
                     pool.getConnection(function(err, connection){
@@ -68,7 +66,7 @@ Teacher.givePermission = function(teacher_id, is_permitted){
                     });
                 },
                 function(connection, callback){
-                    connection.query('update teacher set join_status = 1 where id = ?', teacher_id, function(err, result){
+                    connection.query('update teacher set join_status = ? where id = ?', [ is_permitted ? 1 : 2, teacher_id], function(err, result){
                         if(err) callback(err);
                         else callback(null, connection);
                     });
@@ -78,8 +76,6 @@ Teacher.givePermission = function(teacher_id, is_permitted){
                 if(err) reject(err);
                 else resolve(true);
             });
-        }
-        else resolve(false);
     });
 };
 

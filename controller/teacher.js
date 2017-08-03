@@ -34,6 +34,10 @@ router.get('/list', function(req, res, next){
                         case 3: element.univ_status = '수료'; break;
                         case 4: element.univ_status = '졸업';
                     }
+                    switch(element.gender){
+                        case 0: element.gender = '남'; break;
+                        case 1: element.gender = '여';
+                    }
                 });
                 res.status(200).send(ejs.render(view,{
                     teacher: teachers
@@ -65,6 +69,10 @@ router.get('/waitlist', function(req, res, next){
                         case 3: element.univ_status = '수료'; break;
                         case 4: element.univ_status = '졸업';
                     }
+                    switch(element.gender){
+                        case 0: element.gender = '남'; break;
+                        case 1: element.gender = '여';
+                    }
                 });
                 res.status(200).send(ejs.render(view,{
                     teacher: teachers
@@ -79,15 +87,14 @@ router.get('/waitlist', function(req, res, next){
 });
 
 router.post('/waitlist', function(req, res, next){
-    Teacher.givePermission(req.body.teacher_id, req.body.is_permitted)
+    Teacher.givePermission(req.body.teacher_id, req.body.is_permitted) //true / false
     .then(function(permitted){
-        console.log(permitted);
         Teacher.selectPhone(req.body.teacher_id)
         .then(function(phone){
             if(phone.length===0) res.status(400).send('해당 선생님의 핸드폰 번호 없음');
             else{
                 let content, location;
-                if(permitted) {
+                if(req.body.is_permitted) {
                     location = 'list';
                     content = '승인';
                 }
@@ -108,8 +115,8 @@ router.post('/waitlist', function(req, res, next){
                 //         res.sendStatus(500);
                 //     }
                 // });
-                pushMessage('가입요청 승인여부', text, phone[0].fcm_token); 
-                res.redirect('/teacher/'+location);
+                // pushMessage('가입요청 승인여부', text, phone[0].fcm_token); 
+               res.status(200).send(true);
             }   
         })
         .catch(function(err){
