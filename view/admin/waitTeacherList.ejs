@@ -82,10 +82,10 @@
                   <a href="#">선생님 관리<span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
                     <li>
-                      <a href="teacherList.html">선생님 목록</a>
+                      <a href="/teacher/list">선생님 목록</a>
                     </li>
                     <li>
-                      <a href="waitTeacherList.html">승인대기중 선생님</a>
+                      <a href="/teacher/waitlist">승인대기중 선생님</a>
                     </li>
                   </ul>
                   <!-- /.nav-second-level -->
@@ -190,7 +190,7 @@
            dataType: 'json',
            data: JSON.stringify({ teacher_id: $("#permitButton").val(), is_permitted: true }), 
            success: function(data){
-              console.log('success : ', data);
+             window.location.href = '/teacher/list';
            }
           });
         }
@@ -208,7 +208,7 @@
            dataType: 'json',
            data: JSON.stringify({ teacher_id: $("#denyButton").val(), is_permitted: false }), 
            success: function(data){
-              console.log('success : ', data);
+              window.location.href = '/teacher/waitlist';
            }
           });
         } 
@@ -223,6 +223,9 @@
         responsive: true
       });
     });
+      
+
+  
   </script>
 
 </body>
