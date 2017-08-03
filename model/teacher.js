@@ -36,11 +36,26 @@ Teacher.getJoinedTeachers = function(){
                     if(err) callback(err);
                     else callback(null, connection);
                 });
-            },/* TODO: 수강료 지급일? */
+            },
             function(connection, callback){
                 connection.query(`select id as t_id , employed, address1, age, name, gender, university, grade, 
                 (select sum(fee) from expectation, assignment where expectation.id = assignment.expectation_id and assignment.teacher_id = t_id) as profit, 
                 univ_status, account_number from teacher where join_status = 1 order by id desc`, function(err, teachers){
+                    if(err) callback(err);
+                    else callback(null, teachers, connection);
+                });
+            },
+            function(teachers, connection, callback){
+                async.each(teachers, function(element, done){
+                    connection.query(`select pay_day, subject, name from expectation as e, assignment as a, student as s 
+                    where e.id = a.expectation_id and a.teacher_id = ?`, element.t_id, function(err, result){
+                        if(err) done(err);
+                        else {
+                            element.payday = result;
+                            done();
+                        }
+                    });
+                }, function(err){
                     if(err) callback(err);
                     else callback(null, [teachers, connection]);
                 });

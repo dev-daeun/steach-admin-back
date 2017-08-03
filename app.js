@@ -11,7 +11,9 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-
+app.use(function(req, res, next){
+  if(req.url!='/favicon-32x32.png') next();
+});
 app.use('/', require('./controller/index'));
 app.use('/teacher', require('./controller/teacher'));
 app.use(express.static(__dirname + '/public'));
@@ -29,4 +31,4 @@ app.use(function(err, req, res, next) {
 });
 
 var server = http.createServer(app);
-server.listen(3005);
+server.listen(3006);
