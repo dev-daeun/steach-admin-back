@@ -148,7 +148,12 @@
                       <td><%=teacher[i].grade%></td>
                       <td><%=teacher[i].univ_status%></td>
                       <td><%=teacher[i].profit%></td>
-                      <td>2017-05-21</td>
+                      <td>
+                          <% for(let j = 0; j<teacher[i].payday.length; j++) { %>
+                            [<%=teacher[i].payday[j].name%>,<%=teacher[i].payday[j].subject%>]-<%=teacher[i].payday[j].pay_day%>
+                            <br>
+                            <%}%>
+                      </td>
                       <td><%=teacher[i].account_number%></td>
                     </tr>
                   </tbody>

@@ -3,6 +3,7 @@ const express = require('express');
 const router  = express.Router();
 const ejs = require('ejs');
 const fs = require('fs');
+const moment = require('moment');
 const Coolsms = require('coolsms-rest-sdk');
 const adminName = require('../config.json').admin_name;
 const coolsmsConfig = require('../config.json').coolsms;
@@ -38,6 +39,9 @@ router.get('/list', function(req, res, next){
                         case 0: element.gender = '남'; break;
                         case 1: element.gender = '여';
                     }
+                    element.payday.forEach(function(micro){
+                        micro.pay_day = moment(micro.pay_day).format("MM-DD");
+                    });
                 });
                 res.status(200).send(ejs.render(view,{
                     teacher: teachers
