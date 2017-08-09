@@ -23,18 +23,6 @@ router.get('/list', function(req, res, next){
             }
             else {
                 teachers.forEach(function(element){
-                    switch(element.employed){
-                        case 0: element.employed = '퇴직'; break;
-                        case 1: element.employed = '재직'; break;
-                        case 2: element.employed = '만강'; break;
-                        case 3: element.employed = '대기';
-                    }
-                    switch(element.univ_status){
-                        case 1: element.univ_status = '재학'; break;
-                        case 2: element.univ_status = '휴학'; break;
-                        case 3: element.univ_status = '수료'; break;
-                        case 4: element.univ_status = '졸업';
-                    }
                     switch(element.gender){
                         case 0: element.gender = '남'; break;
                         case 1: element.gender = '여';
@@ -61,18 +49,6 @@ router.get('/waitlist', function(req, res, next){
             }
             else {
                 teachers.forEach(function(element){
-                    switch(element.employed){
-                        case 0: element.employed = '퇴직'; break;
-                        case 1: element.employed = '재직'; break;
-                        case 2: element.employed = '만강'; break;
-                        case 3: element.employed = '대기';
-                    }
-                    switch(element.univ_status){
-                        case 1: element.univ_status = '재학'; break;
-                        case 2: element.univ_status = '휴학'; break;
-                        case 3: element.univ_status = '수료'; break;
-                        case 4: element.univ_status = '졸업';
-                    }
                     switch(element.gender){
                         case 0: element.gender = '남'; break;
                         case 1: element.gender = '여';
