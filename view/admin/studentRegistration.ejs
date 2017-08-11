@@ -59,13 +59,13 @@
                   <a href="#">학생 관리<span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
                     <li>
-                      <a href="/students/list">학생 목록</a>
+                      <a href="/student/list">학생 목록</a>
                     </li>
                     <li>
-                      <a href="/students/registration">신규 학생 등록</a>
+                      <a href="/student/registration">신규 학생 등록</a>
                     </li>
                     <li>
-                      <a href="/students/retired">퇴원 학생 관리</a>
+                      <a href="/student/retired">퇴원 학생 관리</a>
                     </li>
                   </ul>
                   <!-- /.nav-second-level -->
@@ -107,13 +107,13 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <!-- <form role="form" method="POST" action="/students/registration"> -->
+                                     <form onsubmit="return window.confirm('정말 등록하시겠습니까?');" method="POST" action="/student/registration"> 
                                       <div class="form-group col-lg-12">
                                         <h2>학생 기본정보</h2>
                                       </div>
                                         <div class="form-group col-lg-4">
                                             <label>구분</label>
-                                            <select id="consult_status"class="form-control">
+                                            <select name="consult_status"class="form-control">
                                                 <option value=3>성공</option>
                                                 <option value=2>전화실패</option>
                                                 <option value=1>취소</option>
@@ -122,19 +122,19 @@
                                         </div>
                                         <div class="form-group col-lg-8">
                                             <label>실패 사유</label>
-                                            <input id="fail_reason" class="form-control">
+                                            <input name="fail_reason" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-2">
                                             <label>전화 상담가</label>
-                                            <input id="called_consultant"class="form-control">
+                                            <input name="called_consultant"class="form-control">
                                         </div>
                                         <div class="form-group col-lg-2">
                                             <label>방문 상담가</label>
-                                            <input id="visited_consultant"class="form-control">
+                                            <input name="visited_consultant"class="form-control">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>알게된 경로</label>
-                                            <select id="known_path" onchange="openTextbox(this);" class="form-control">
+                                            <select name="known_path" onchange="openTextbox(this);" class="form-control">
                                                 <option value="명함">명함</option>
                                                 <option value="소개">소개</option>
                                                 <option value="인터넷">인터넷</option>
@@ -148,40 +148,48 @@
                                         </div> 
                                         <div class="form-group col-lg-4">
                                             <label>이름</label>
-                                            <input id="name"class="form-control">
+                                            <input name="name"class="form-control">
                                         </div>
                                         <div class="form-group col-lg-2">
                                             <label>성별</label>
                                             <div class="form-group">
                                               <label class="radio-inline">
-                                                  <input type="radio" name="optionsRadiosInline1" id="gender" value=0 checked>남
+                                                  <input type="radio" name="gender" value=0 checked>남
                                               </label>
                                               <label class="radio-inline">
-                                                  <input type="radio" name="optionsRadiosInline1" id="gender" value=1>여
+                                                  <input type="radio" name="gender" value=1>여
                                               </label>
                                             </div>
                                         </div>
 
                                         <div class="form-group col-lg-2">
                                               <label>주소(시/도)</label>
-                                                <input type="text" id="address1" class="form-control">
+                                                <input type="text" name="address1" class="form-control">
                                         </div>
                                          <div class="form-group col-lg-2">
                                               <label>주소(군/구)</label>
-                                                <input type="text" id="address2" class="form-control">
+                                                <input type="text" name="address2" class="form-control">
                                         </div>
 
                                         <div class="form-group col-lg-12">
                                             <label>상세 주소</label>
-                                            <input id="address3" class="form-control">
+                                            <input type="text" name="address3" class="form-control">
+                                        </div>
+                                        <div class="form-group col-lg-2">
+                                            <label>학교</label>
+                                            <select name="school" class="form-control">
+                                                <option value=1>초</option>
+                                                <option value=2>중</option>
+                                                <option value=3>고</option>                                            
+                                            </select>
                                         </div>
                                         <div class="form-group col-lg-4">
-                                            <label>학교</label>
-                                            <input id="school_name" class="form-control">
+                                            <label>학교명</label>
+                                            <input name="school_name" class="form-control">
                                         </div>
-                                        <div class="form-group col-lg-2 col-lg-offset-6 col-lg-pull-6">
+                                        <div class="form-group col-lg-4">
                                             <label>학년</label>
-                                            <select id="grade" class="form-control">
+                                            <select name="grade" class="form-control">
                                                 <option>1</option>
                                                 <option>2</option>
                                                 <option>3</option>
@@ -190,22 +198,21 @@
                                                 <option>6</option>
                                             </select>
                                         </div>
-
                                         <div class="form-group col-lg-4">
                                             <label>학생 연락처</label>
-                                            <input id="phone" class="form-control">
+                                            <input name="phone" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>아버지 연락처</label>
-                                            <input id="father_phone" class="form-control">
+                                            <input name="father_phone" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>어머니 연락처</label>
-                                            <input id="mother_phone" class="form-control">
+                                            <input name="mother_phone" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>희망과목</label>
-                                            <select id="subject" class="form-control">
+                                            <select name="subject" class="form-control">
                                                 <option>영어</option>
                                                 <option>수학</option>
                                                 <option>국어</option>
@@ -216,7 +223,7 @@
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>수업형태</label>
-                                            <select id = "class_form" class="form-control">
+                                            <select name= "class_form" class="form-control">
                                                 <option>원내그룹</option>
                                                 <option>개인방문</option>
                                             </select>
@@ -225,17 +232,17 @@
                                             <label>차량 지원</label>
                                             <div class="form-group">
                                               <label class="radio-inline">
-                                                  <input type="radio" name="optionsRadiosInline2" id="car_provided" value=1 checked>Y
+                                                  <input type="radio" name="car_provided" value=1 checked>Y
                                               </label>
                                               <label class="radio-inline">
-                                                  <input type="radio" name="optionsRadiosInline2" id="car_provided" value=0>N
+                                                  <input type="radio" name="car_provided" value=0>N
                                               </label>
                                             </div>
                                         </div>
 
                                         <div class="form-group col-lg-12">
                                             <label>학생 성향</label>
-                                            <input id="student_memo" class="form-control">
+                                            <input name="student_memo" class="form-control">
                                         </div>
 
                                         <div class="form-group col-lg-12">
@@ -244,7 +251,7 @@
 
                                         <div class="form-group col-lg-2">
                                             <label>나이대</label>
-                                            <select id="teacher_age" class="form-control">
+                                            <select name="teacher_age" class="form-control">
                                                 <option>20대</option>
                                                 <option>30대</option>
                                                 <option>40대</option>
@@ -256,121 +263,140 @@
                                             <label>성별</label>
                                             <div class="form-group">
                                               <label class="radio-inline">
-                                                  <input type="radio" name="optionsRadiosInline3" id="teacher_gender" value=0 checked>남
+                                                  <input type="radio" name="teacher_gender" value=0 checked>남
                                               </label>
                                               <label class="radio-inline">
-                                                  <input type="radio" name="optionsRadiosInline3" id="teacher_gender" value=1>여
+                                                  <input type="radio" name="teacher_gender" value=1>여
                                               </label>
                                             </div>
                                         </div>
                                         <div class="form-group col-lg-8">
                                             <label>희망하는 선생님 성향</label>
-                                            <input id="teacher_memo" class="form-control">
+                                            <input id="recommanded" class="form-control">
                                         </div>
                                         <div class="clearfix visible-lg"></div>
-                                        <div name="schedules" id="schedules">
-                                          <div id="regular_date" class="form-group col-lg-12">
+                                        <div name="schedules" id="schedules" class="schedules">
+                                          <div name="regular_date" class="form-group col-lg-12">
                                             <div class="form-group col-lg-6">
                                                 <label>희망 요일</label>
                                                 <div class="form-group">
                                                   <label class="radio-inline">
-                                                      <input type="radio" name="dayofweek" id="dayofweek" value="option1" checked>일
+                                                      <input type="radio" name="dayofweek0" id="dayofweek" value="일" checked>일
                                                   </label>
                                                   <label class="radio-inline">
-                                                      <input type="radio" name="dayofweek" id="dayofweek" value="option2">월
+                                                      <input type="radio" name="dayofweek0" id="dayofweek" value="월">월
                                                   </label>
                                                   <label class="radio-inline">
-                                                      <input type="radio" name="dayofweek" id="dayofweek" value="option2">화
+                                                      <input type="radio" name="dayofweek0" id="dayofweek" value="화">화
                                                   </label>
                                                   <label class="radio-inline">
-                                                      <input type="radio" name="dayofweek" id="dayofweek" value="option2">수
+                                                      <input type="radio" name="dayofweek0" id="dayofweek" value="수">수
                                                   </label>
                                                   <label class="radio-inline">
-                                                      <input type="radio" name="dayofweek" id="dayofweek" value="option2">목
+                                                      <input type="radio" name="dayofweek0" id="dayofweek" value="목">목
                                                   </label>
                                                   <label class="radio-inline">
-                                                      <input type="radio" name="dayofweek" id="dayofweek" value="option2">금
+                                                      <input type="radio" name="dayofweek0" id="dayofweek" value="금">금
                                                   </label>
                                                   <label class="radio-inline">
-                                                      <input type="radio" name="dayofweek" id="dayofweek" value="option2">토
+                                                      <input type="radio" name="dayofweek0" id="dayofweek" value="토">토
                                                   </label>
                                                 </div>
                                             </div>
-                                            <div class="form-group col-lg-6">
+                                                <div class="form-group col-lg-6">
                                                   <label>희망 시간</label>
                                                   <div class="form-inline">
-                                                    <select class="form-control">
+                                                    <select name="start_meridiem" class="form-control">
+                                                        <option value="오전">오전</option>
+                                                        <option value="오후">오후</option>
+                                                    </select>
+                                                    <select name="start_hour" class="form-control">
+                                                        <option>01</option>
+                                                        <option>02</option>
+                                                        <option>03</option>
+                                                        <option>04</option>
+                                                        <option>05</option>
+                                                        <option>06</option>
+                                                        <option>07</option>
+                                                        <option>08</option>
+                                                        <option>09</option>
+                                                        <option>10</option>
+                                                        <option>11</option>
                                                         <option>12</option>
-                                                        <option>2</option>
-                                                        <option>3</option>
-                                                        <option>4</option>
-                                                        <option>5</option>
-                                                        <option>6</option>
                                                     </select>
                                                     <label>시</label>
-                                                    <select class="form-control">
+                                                    <select name="start_minute" class="form-control">
+                                                        <option>00</option>
+                                                        <option>10</option>
+                                                        <option>20</option>
                                                         <option>30</option>
-                                                        <option>2</option>
-                                                        <option>3</option>
-                                                        <option>4</option>
-                                                        <option>5</option>
-                                                        <option>6</option>
+                                                        <option>40</option>
+                                                        <option>50</option>
                                                     </select>
                                                     <label>분</label>
                                                     <label>~</label>
-                                                    <select class="form-control">
+                                                    <select name="end_meridiem" class="form-control">
+                                                        <option value="오전">오전</option>
+                                                        <option value="오후">오후</option>
+                                                    </select>
+                                                    <select name="end_hour" class="form-control">
+                                                        <option>01</option>
+                                                        <option>02</option>
+                                                        <option>03</option>
+                                                        <option>04</option>
+                                                        <option>05</option>
+                                                        <option>06</option>
+                                                        <option>07</option>
+                                                        <option>08</option>
+                                                        <option>09</option>
+                                                        <option>10</option>
+                                                        <option>11</option>
                                                         <option>12</option>
-                                                        <option>2</option>
-                                                        <option>3</option>
-                                                        <option>4</option>
-                                                        <option>5</option>
-                                                        <option>6</option>
                                                     </select>
                                                     <label>시</label>
-                                                    <select class="form-control">
-                                                        <option>12</option>
-                                                        <option>2</option>
-                                                        <option>3</option>
-                                                        <option>4</option>
-                                                        <option>5</option>
-                                                        <option>6</option>
+                                                    <select name="end_minute" class="form-control">
+                                                        <option>00</option>
+                                                        <option>10</option>
+                                                        <option>20</option>
+                                                        <option>30</option>
+                                                        <option>40</option>
+                                                        <option>50</option>
                                                     </select>
                                                     <label>분</label>
                                                   </div>
-
+                                                </div>
                                             </div>
-                                          </div>
                                         </div>
                                         <div class="form-group col-lg-4 col-lg-offset-8 col-lg-pull-8">
                                             <input type=button id ='scheduleAddBtn' value="희망 수업일 추가"/>
                                         </div>
                                         <div class="form-group col-lg-4 col-lg-offset-8 col-lg-pull-8">
                                             <label>첫 수업 희망일</label>
-                                            <input type="date" id="first_date" class="form-control">
+                                            <input type="date" name="first_date" class="form-control">
                                         </div>
 
                                         <div class="form-group col-lg-4">
                                             <label>희망 교재</label>
-                                            <input id="book" class="form-control">
+                                            <input name="book" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>수강료</label>
-                                            <input id="fee" class="form-control">
+                                            <input name="fee" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>강의료</label>
-                                            <input id="teacher_fee" class="form-control">
+                                            <input name="teacher_fee" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-12">
                                           <h2>과거 기록</h2>
                                         </div>
                                         <div class="form-group col-lg-2 col-lg-offset-10 col-lg-pull-10">
                                             <label>현재등급</label>
-                                            <select id="current_score" class="form-control">
+                                            <select name="current_score" class="form-control">
                                                 <option>1</option>
                                                 <option>2</option>
                                                 <option>3</option>
-                                                <option>5</option>
+                                                <option>4</option>
                                                 <option>5</option>
                                                 <option>6</option>
                                                 <option>7</option>
@@ -378,7 +404,7 @@
                                         </div>
                                         <div class="form-group col-lg-4 col-lg-offset-8 col-lg-pull-8">
                                             <label>수강했던 프로그램</label>
-                                            <select id="program" class="form-control">
+                                            <select name="program" class="form-control">
                                                 <option value="학원">학원</option>
                                                 <option value="과외">과외</option>
                                                 <option value="인강">인강</option>
@@ -389,29 +415,29 @@
                                         <div class="form-group col-lg-6">
                                             <label>기간</label>
                                           <div class="form-inline">
-                                            <input type="date" id="start_term" class="form-control">
+                                            <input type="date" name="start_term" class="form-control">
                                                 <label style="text-align:center;width:auto;">~</label>
-                                            <input type="date" id="end_term" class="form-control">
+                                            <input type="date" name="end_term" class="form-control">
                                           </div>
 
                                         </div>
 
                                         <div class="form-group col-lg-6">
                                               <label>교재</label>
-                                              <input id="used_book" class="form-control">
+                                              <input name="used_book" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-12">
                                               <label>좋았던 점</label>
-                                              <textarea id="pros" class="form-control"></textarea>
+                                              <textarea name="pros" class="form-control"></textarea>
                                         </div>
                                         <div class="form-group col-lg-12">
                                               <label>아쉬웠던 점</label>
-                                              <textarea id="cons" class="form-control"></textarea>
+                                              <textarea name="cons" class="form-control"></textarea>
                                         </div>
                                         <div class="form-group col-lg-12">
                                               <button type="submit" id="registerButton" class="center-block">등록</button>
                                         </div>
-                                    <!-- </form> -->
+                                     </form> 
                                 </div>
                                 <!-- /.col-lg-6 (nested) -->
                             </div>
@@ -434,9 +460,6 @@
 
 
     <script type="text/javascript">
-        var content = [
-            {}
-        ]
         function openTextbox(selection){
             var element = document.getElementById('apartOrEtc');
             if(selection.value=="아파트 게시판"){
@@ -450,74 +473,106 @@
             else element.style.visibility = 'hidden';
         }
 
+
     </script>
     <!-- jQuery -->
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script>
-     $("#registerButton").click(function() {
-        if(window.confirm('정말 등록하시겠습니까?')) {
-          $.ajax({ 
-           url: '/students/registration', 
-           processData: false,
-           type: 'POST',
-           cache: false, 
-           contentType: 'application/json; charset=utf-8',
-           dataType: 'json',
-           data: JSON.stringify({
-               expectation: { 
-                    book: $("#book").val(),
-                    consult_status : $("#consult_status").val(),
-                    fail_reason: $("#fail_reason").val(),
-                    called_consultant: $("#called_consultant").val(),
-                    visited_consultant: $("#visited_consultant").val(),
-                    known_path: $("#known_path").val(),
-                    etc: $("#apartOrEtc").val(),
-                    teacher_age: $("#teacher_age").val(),
-                    teacher_gender: $("#teacher_gender").val(),
-                    subject: $("#subject").val(),
-                    car_provided: $("#car_provided").val(),
-                    class_form: $("#class_form").val(),
-                    fee: $("#fee").val(),
-                    teacher_fee: $("#fee").val(),
-                    teacher_memo: $("#teacher_memo").val(),
-                    student_memo: $("#student_memo").val(),
-                    first_date: $("#first_date").val(),
-                    regular_date: $("#regular_date").length,
-               },
-               student: {
-                   name: $("#name").val(),
-                   gender: $("#gender").val(),
-                   address1: $("#address1").val(),
-                   address2: $("#address2").val(),
-                   address3: $("address3").val(),
-                   school_name: $("#school_name").val(),
-                   grade: $("#grade").val(),
-                   phone: $("#phone").val(),
-                   father_phone: $("#father_phone").val(),
-                   mother_phone: $("#mother_phone").val(),
-               },
-                student_log: {
-                    current_score: $("#current_score").val(),
-                    program: $("#program").val(),
-                    start_term: $("#start_term").val(),
-                    end_term: $("#end_term").val(),
-                    pros: $("#pros").val(),
-                    cons: $("#cons").val(),
-                    used_book: $("#used_book").val()
-                }
-            }),
-           success: function(data){
-             window.location.href = '/students/list';
-           }
-          });
-        }
-        else return;
-    });
+
       $(function() {
         //html함수 적용하여 htmltest태그내의 html 변경
         $("#scheduleAddBtn").click(function() {
           var len = $("#schedules").children().length;
-          var tag = '<div class="form-group col-lg-12"> <div class="form-group col-lg-6"> <label>희망 요일</label> <div class="form-group"> <label class="radio-inline"> <input type="radio" name="dayofweek' + len + '" id="dayofweek" value="option1" checked>일 </label> <label class="radio-inline"> <input type="radio" name="dayofweek' + len + '" id="dayofweek" value="option2">월 </label> <label class="radio-inline"> <input type="radio" name="dayofweek' + len + '" id="dayofweek" value="option2">화 </label> <label class="radio-inline"> <input type="radio" name="dayofweek' + len + '" id="dayofweek" value="option2">수 </label> <label class="radio-inline"> <input type="radio" name="dayofweek' + len + '" id="dayofweek" value="option2">목 </label> <label class="radio-inline"> <input type="radio" name="dayofweek' + len + '" id="dayofweek" value="option2">금 </label> <label class="radio-inline"> <input type="radio" name="dayofweek' + len + '" id="dayofweek" value="option2">토 </label> </div> </div> <div class="form-group col-lg-6"> <label>희망 시간</label> <div class="form-inline"> <select class="form-control"> <option>12</option> <option>2</option> <option>3</option> <option>4</option> <option>5</option> <option>6</option> </select> <label>시</label> <select class="form-control"> <option>30</option> <option>2</option> <option>3</option> <option>4</option> <option>5</option> <option>6</option> </select> <label>분</label> <label>~</label> <select class="form-control"> <option>12</option> <option>2</option> <option>3</option> <option>4</option> <option>5</option> <option>6</option> </select> <label>시</label> <select class="form-control"> <option>12</option> <option>2</option> <option>3</option> <option>4</option> <option>5</option> <option>6</option> </select> <label>분</label> </div> </div> </div>';
+          var tag =                       `<div name="regular_date" class="form-group col-lg-12">
+                                            <div class="form-group col-lg-6">
+                                                <label>희망 요일</label>
+                                                <div class="form-group">
+                                                  <label class="radio-inline">
+                                                      <input type="radio" name="dayofweek` + len + `" id="dayofweek" value="일" checked>일
+                                                  </label>
+                                                  <label class="radio-inline">
+                                                      <input type="radio" name="dayofweek` + len + `" id="dayofweek" value="월">월
+                                                  </label>
+                                                  <label class="radio-inline">
+                                                      <input type="radio" name="dayofweek` + len + `" id="dayofweek" value="화">화
+                                                  </label>
+                                                  <label class="radio-inline">
+                                                      <input type="radio" name="dayofweek` + len + `" id="dayofweek" value="수">수
+                                                  </label>
+                                                  <label class="radio-inline">
+                                                      <input type="radio" name="dayofweek` + len + `" id="dayofweek" value="목">목
+                                                  </label>
+                                                  <label class="radio-inline">
+                                                      <input type="radio" name="dayofweek` + len + `" id="dayofweek" value="금">금
+                                                  </label>
+                                                  <label class="radio-inline">
+                                                      <input type="radio" name="dayofweek` + len + `" id="dayofweek" value="토">토
+                                                  </label>
+                                                </div>
+                                            </div>
+                                                <div class="form-group col-lg-6">
+                                                  <label>희망 시간</label>
+                                                  <div class="form-inline">
+                                                    <select name="start_meridiem" class="form-control">
+                                                        <option value="오전">오전</option>
+                                                        <option value="오후">오후</option>
+                                                    </select>
+                                                    <select name="start_hour" class="form-control">
+                                                        <option>01</option>
+                                                        <option>02</option>
+                                                        <option>03</option>
+                                                        <option>04</option>
+                                                        <option>05</option>
+                                                        <option>06</option>
+                                                        <option>07</option>
+                                                        <option>08</option>
+                                                        <option>09</option>
+                                                        <option>10</option>
+                                                        <option>11</option>
+                                                        <option>12</option>
+                                                    </select>
+                                                    <label>시</label>
+                                                    <select name="start_minute" class="form-control">
+                                                        <option>00</option>
+                                                        <option>10</option>
+                                                        <option>20</option>
+                                                        <option>30</option>
+                                                        <option>40</option>
+                                                        <option>50</option>
+                                                    </select>
+                                                    <label>분</label>
+                                                    <label>~</label>
+                                                    <select name="end_meridiem" class="form-control">
+                                                        <option value="오전">오전</option>
+                                                        <option value="오후">오후</option>
+                                                    </select>
+                                                    <select name="end_hour" class="form-control">
+                                                        <option>01</option>
+                                                        <option>02</option>
+                                                        <option>03</option>
+                                                        <option>04</option>
+                                                        <option>05</option>
+                                                        <option>06</option>
+                                                        <option>07</option>
+                                                        <option>08</option>
+                                                        <option>09</option>
+                                                        <option>10</option>
+                                                        <option>11</option>
+                                                        <option>12</option>
+                                                    </select>
+                                                    <label>시</label>
+                                                    <select name="end_minute" class="form-control">
+                                                        <option>00</option>
+                                                        <option>10</option>
+                                                        <option>20</option>
+                                                        <option>30</option>
+                                                        <option>40</option>
+                                                        <option>50</option>
+                                                    </select>
+                                                    <label>분</label>
+                                                  </div>
+                                                </div>
+                                            </div>`;
           $("#schedules").append(tag);
         });
       })

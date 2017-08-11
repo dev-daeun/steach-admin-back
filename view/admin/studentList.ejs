@@ -70,13 +70,13 @@
                   <a href="#">학생 관리<span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
                     <li>
-                      <a href="/students/list">학생 목록</a>
+                      <a href="/student/list">학생 목록</a>
                     </li>
                     <li>
-                      <a href="/students/registration">신규 학생 등록</a>
+                      <a href="/student/registration">신규 학생 등록</a>
                     </li>
                     <li>
-                      <a href="/students/retired">퇴원 학생 관리</a>
+                      <a href="/student/retired">퇴원 학생 관리</a>
                     </li>
                   </ul>
                   <!-- /.nav-second-level -->
@@ -125,8 +125,10 @@
                                         <th>과목</th>
                                         <th>학년</th>
                                         <th>주소</th>
-                                        <th>이름</th>
-                                        <th>선생님</th>
+                                        <th>학생</th>
+                                        <th>어머니연락처</th>
+                                        <th>아버지연락처</th>
+                                        <th>선생님</th>                                        
                                         <th>수업형태</th>
                                         <th>수강료</th>
                                         <th>납입일</th>
@@ -142,259 +144,31 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                   <% for(let i = 0; i<student.length; i++){ %>
                                     <tr>
-                                        <td>1</td>
-                                        <td>배정중</td>
-                                        <td>수학</td>
-                                        <td>3</td>
-                                        <td>대전광역시 둔산동</td>
-                                        <td>피카츄</td>
-                                        <td>라이츄</td>
-                                        <td>원내그룹</td>
-                                        <td>1000000</td>
-                                        <td>2017-05-24</td>
-                                        <td>중학교</td>
-                                        <td>꼬부기</td>
-                                        <td>파이리</td>
-                                        <td>100000</td>
-                                        <td>1400000</td>
-                                        <td>2017-01-01</td>
-                                        <td>2017-01-04</td>
-                                        <td>2017-01-07</td>
+                                        <td><%=i+1%></td>
+                                        <td><%=student[i].assign_status%></td>
+                                        <td><%=student[i].subject %></td>
+                                        <td><%=student[i].grade %></td>
+                                        <td><%=student[i].address %></td>
+                                        <td><%=student[i].s_name %></td>
+                                        <td><%=student[i].mother_phone %></td>
+                                        <td><%=student[i].father_phone %></td>                                        
+                                        <td><%=student[i].t_name %></td>
+                                        <td><%=student[i].class_form %></td>
+                                        <td><%=student[i].fee %></td>
+                                        <td><%=student[i].deposit_day %></td>
+                                        <td><%=student[i].school_name %></td>
+                                        <td><%=student[i].called_consultant %></td>
+                                        <td><%=student[i].visited_consultant %></td>
+                                        <td><%=student[i].fee %></td>
+                                        <td><%=student[i].fee %></td>
+                                        <td><%=student[i].calling_day %></td>
+                                        <td><%=student[i].visiting_day %></td>
+                                        <td><%=student[i].first_date %></td>
                                         <td><button>수정</button></td>
                                     </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>배정중</td>
-                                        <td>수학</td>
-                                        <td>3</td>
-                                        <td>대전광역시 둔산동</td>
-                                        <td>피카츄</td>
-                                        <td>라이츄</td>
-                                        <td>원내그룹</td>
-                                        <td>1000000</td>
-                                        <td>2017-05-24</td>
-                                        <td>중학교</td>
-                                        <td>꼬부기</td>
-                                        <td>파이리</td>
-                                        <td>100000</td>
-                                        <td>1400000</td>
-                                        <td>2017-01-01</td>
-                                        <td>2017-01-04</td>
-                                        <td>2017-01-07</td>
-                                        <td><button>수정</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>배정중</td>
-                                        <td>수학</td>
-                                        <td>3</td>
-                                        <td>대전광역시 둔산동</td>
-                                        <td>피카츄</td>
-                                        <td>라이츄</td>
-                                        <td>원내그룹</td>
-                                        <td>1000000</td>
-                                        <td>2017-05-24</td>
-                                        <td>중학교</td>
-                                        <td>꼬부기</td>
-                                        <td>파이리</td>
-                                        <td>100000</td>
-                                        <td>1400000</td>
-                                        <td>2017-01-01</td>
-                                        <td>2017-01-04</td>
-                                        <td>2017-01-07</td>
-                                        <td><button>수정</button></td>
-                                </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>배정중</td>
-                                        <td>수학</td>
-                                        <td>3</td>
-                                        <td>대전광역시 둔산동</td>
-                                        <td>피카츄</td>
-                                        <td>라이츄</td>
-                                        <td>원내그룹</td>
-                                        <td>1000000</td>
-                                        <td>2017-05-24</td>
-                                        <td>중학교</td>
-                                        <td>꼬부기</td>
-                                        <td>파이리</td>
-                                        <td>100000</td>
-                                        <td>1400000</td>
-                                        <td>2017-01-01</td>
-                                        <td>2017-01-04</td>
-                                        <td>2017-01-07</td>
-                                        <td><button>수정</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>대기중</td>
-                                        <td>수학</td>
-                                        <td>3</td>
-                                        <td>대전광역시 둔산동</td>
-                                        <td>피카츄</td>
-                                        <td>라이츄</td>
-                                        <td>원내그룹</td>
-                                        <td>1000000</td>
-                                        <td>2017-05-24</td>
-                                        <td>중학교</td>
-                                        <td>꼬부기</td>
-                                        <td>파이리</td>
-                                        <td>100000</td>
-                                        <td>1400000</td>
-                                        <td>2017-01-01</td>
-                                        <td>2017-01-04</td>
-                                        <td>2017-01-07</td>
-                                        <td><button>수정</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>배정중</td>
-                                        <td>수학</td>
-                                        <td>3</td>
-                                        <td>대전광역시 둔산동</td>
-                                        <td>피카츄</td>
-                                        <td>라이츄</td>
-                                        <td>원내그룹</td>
-                                        <td>1000000</td>
-                                        <td>2017-05-24</td>
-                                        <td>중학교</td>
-                                        <td>꼬부기</td>
-                                        <td>파이리</td>
-                                        <td>100000</td>
-                                        <td>1400000</td>
-                                        <td>2017-01-01</td>
-                                        <td>2017-01-04</td>
-                                        <td>2017-01-07</td>
-                                        <td><button>수정</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>배정중</td>
-                                        <td>수학</td>
-                                        <td>3</td>
-                                        <td>대전광역시 둔산동</td>
-                                        <td>피카츄</td>
-                                        <td>라이츄</td>
-                                        <td>원내그룹</td>
-                                        <td>1000000</td>
-                                        <td>2017-05-24</td>
-                                        <td>중학교</td>
-                                        <td>꼬부기</td>
-                                        <td>파이리</td>
-                                        <td>100000</td>
-                                        <td>1400000</td>
-                                        <td>2017-01-01</td>
-                                        <td>2017-01-04</td>
-                                        <td>2017-01-07</td>
-                                        <td><button>수정</button></td>
-                                </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>배정중</td>
-                                        <td>수학</td>
-                                        <td>3</td>
-                                        <td>대전광역시 둔산동</td>
-                                        <td>피카츄</td>
-                                        <td>라이츄</td>
-                                        <td>원내그룹</td>
-                                        <td>1000000</td>
-                                        <td>2017-05-24</td>
-                                        <td>중학교</td>
-                                        <td>꼬부기</td>
-                                        <td>파이리</td>
-                                        <td>100000</td>
-                                        <td>1400000</td>
-                                        <td>2017-01-01</td>
-                                        <td>2017-01-04</td>
-                                        <td>2017-01-07</td>
-                                        <td><button>수정</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>배정중</td>
-                                        <td>수학</td>
-                                        <td>3</td>
-                                        <td>대전광역시 둔산동</td>
-                                        <td>피카츄</td>
-                                        <td>라이츄</td>
-                                        <td>원내그룹</td>
-                                        <td>1000000</td>
-                                        <td>2017-05-24</td>
-                                        <td>중학교</td>
-                                        <td>꼬부기</td>
-                                        <td>파이리</td>
-                                        <td>100000</td>
-                                        <td>1400000</td>
-                                        <td>2017-01-01</td>
-                                        <td>2017-01-04</td>
-                                        <td>2017-01-07</td>
-                                        <td><button>수정</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>대기중</td>
-                                        <td>수학</td>
-                                        <td>3</td>
-                                        <td>대전광역시 둔산동</td>
-                                        <td>피카츄</td>
-                                        <td>라이츄</td>
-                                        <td>원내그룹</td>
-                                        <td>1000000</td>
-                                        <td>2017-05-24</td>
-                                        <td>중학교</td>
-                                        <td>꼬부기</td>
-                                        <td>파이리</td>
-                                        <td>100000</td>
-                                        <td>1400000</td>
-                                        <td>2017-01-01</td>
-                                        <td>2017-01-04</td>
-                                        <td>2017-01-07</td>
-                                        <td><button>수정</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>대기중</td>
-                                        <td>수학</td>
-                                        <td>3</td>
-                                        <td>대전광역시 둔산동</td>
-                                        <td>피카츄</td>
-                                        <td>라이츄</td>
-                                        <td>원내그룹</td>
-                                        <td>1000000</td>
-                                        <td>2017-05-24</td>
-                                        <td>중학교</td>
-                                        <td>꼬부기</td>
-                                        <td>파이리</td>
-                                        <td>100000</td>
-                                        <td>1400000</td>
-                                        <td>2017-01-01</td>
-                                        <td>2017-01-04</td>
-                                        <td>2017-01-07</td>
-                                        <td><button>수정</button></td>
-                                </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>대기중</td>
-                                        <td>수학</td>
-                                        <td>3</td>
-                                        <td>대전광역시 둔산동</td>
-                                        <td>피카츄</td>
-                                        <td>라이츄</td>
-                                        <td>원내그룹</td>
-                                        <td>1000000</td>
-                                        <td>2017-05-24</td>
-                                        <td>중학교</td>
-                                        <td>꼬부기</td>
-                                        <td>파이리</td>
-                                        <td>100000</td>
-                                        <td>1400000</td>
-                                        <td>2017-01-01</td>
-                                        <td>2017-01-04</td>
-                                        <td>2017-01-07</td>
-                                        <td><button>수정</button></td>
-                                    </tr>
-
+                                   <% } %>
                                 </tbody>
                             </table>
                             <!-- /.table-responsive -->
