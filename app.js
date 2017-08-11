@@ -20,7 +20,7 @@ app.use(function(req, res, next){
 });
 app.use('/', require('./controller/index'));
 app.use('/teacher', require('./controller/teacher'));
-app.use('/students', require('./controller/students'));
+app.use('/student', require('./controller/student'));
 app.use(express.static(__dirname + '/public'));
 
 app.use(function(req, res, next) {
@@ -28,9 +28,7 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
-app.use(function(req, res, next){
-  if(req.url!='/favicon-32x32.png') next();
-});
+
 app.use(function(err, req, res, next) {
   console.log(err);
   res.sendStatus(err.status || 500);
