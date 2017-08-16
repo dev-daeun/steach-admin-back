@@ -21,9 +21,10 @@ app.use(function(req, res, next){
 app.use('/', require('./controller/index'));
 app.use('/teacher', require('./controller/teacher'));
 app.use('/student', require('./controller/student'));
+app.use('/matching', require('./controller/matching'));
 app.use(express.static(__dirname + '/public'));
 
-app.use(function(req, res, next) {
+app.use(function(err, req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);

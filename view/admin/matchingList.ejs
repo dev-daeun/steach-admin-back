@@ -78,7 +78,7 @@
                   <!-- /.nav-second-level -->
                 </li>
                 <li>
-                  <a href="/match">매칭 관리</a>
+                  <a href="/matching">매칭 관리</a>
                 </li>
                 <li>
                   <a href="#">선생님 관리<span class="fa arrow"></span></a>
@@ -128,31 +128,34 @@
                                         <th>희망요일/시간</th>
                                         <th>첫 수업 희망일</th>
                                         <th>희망교재</th>
-                                        <th>신청 선생님 수</th>
+                                        <th>신청 수</th>
                                         <th>배정하기</th>
                                     </tr>
                                 </thead>
+                                <% for(let i = 0; i<match.length; i++){%> 
+                                    <tbody>
+                                      <tr>
+                                        <td><%=i+1%></td>
+                                        <td><%=match[i].name%></td>
+                                        <td><%=match[i].gender%></td>
+                                        <td><%=match[i].subject%></td>
+                                        <td><%=match[i].school_name%></td>
+                                        <td><%=match[i].grade%></td>
+                                        <td><%=match[i].address%></td>
+                                        <td><%=match[i].class_form%></td>
+                                        <td><%=match[i].student_memo%></td>
+                                        <td><%=match[i].regular_date%></td>
+                                        <td><%=match[i].first_date%></td>
+                                        <td><%=match[i].book%></td>
+                                        <td><%=match[i].requested%></td>
+                                        <td class="center"><button onclick="location.href='/matching?id='+<%=match[i].e_id%>">선생님 배정</a></button></td>
+                                      </tr>
+                                    </tbody>
+                                    <%}%>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>꼬부기</td>
-                                        <td>남</td>
-                                        <td>수학</td>
-                                        <td>둔산고</td>
-                                        <td>3</td>
-                                        <td>대전광역시 둔산동</td>
-                                        <td>방문개인</td>
-                                        <td>계산 실수가 많은 편</td>
-                                        <td>월 - 18:00~19:00 / 수 - 20:00 ~ 21:00</td>
-                                        <td>2017-05-21</td>
-                                        <td>수능특강</td>
-                                        <td>3</td>
-                                        <td class="center"><button onclick="location.href='matching.html'">선생님 배정</a></button></td>
-                                    </tr>
-
                             </table>
                             <!-- /.table-responsive -->
-                        </div>
+                        </divmatching.html>
                         <!-- /.panel-body -->
                     </div>
                     <!-- /.panel -->

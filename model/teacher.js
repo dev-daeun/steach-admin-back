@@ -57,11 +57,11 @@ Teacher.getJoinedTeachers = function(){
                     });
                 }, function(err){
                     if(err) callback(err);
-                    else callback(null, [teachers, connection]);
+                    else callback(null, teachers, connection);
                 });
             }
         ], 
-        function(err, [teachers, connection]){
+        function(err, teachers, connection){
             connection.release();
             if(err) reject(err);
             else resolve(teachers);
