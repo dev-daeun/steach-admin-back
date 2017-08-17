@@ -137,8 +137,8 @@
                     <td><%=teacher[i].grade%></td>
                     <td><%=teacher[i].univ_status%></td>
                     <td>
-                      <button type = 'submit' value = <%=teacher[i].id%> id = "permitButton">승인</button>
-                      <button type = 'submit' value = <%=teacher[i].id%> id = "denyButton">거절</button>                  
+                      <button type = 'submit' value = <%=teacher[i].id%> class = "permitButton">승인</button>
+                      <button type = 'submit' value = <%=teacher[i].id%> class = "denyButton">거절</button>                  
                     </td>                       
                   </tr>
                 </tbody>
@@ -178,7 +178,7 @@
   <!-- Page-Level Demo Scripts - Tables - Use for reference -->
   <script>
         
-    $("#permitButton").click(function() {
+    $(".permitButton").click(function() {
         if(window.confirm('정말 승인하시겠습니까?')) {
           $.ajax({ 
            url: '/teacher/waitlist', 
@@ -187,7 +187,7 @@
            cache: false, 
            contentType: 'application/json; charset=utf-8',
            dataType: 'json',
-           data: JSON.stringify({ teacher_id: $("#permitButton").val(), is_permitted: true }), 
+           data: JSON.stringify({ teacher_id: $(".permitButton").val(), permitted: true }), 
            success: function(data){
              window.location.href = '/teacher/list';
            }
@@ -196,7 +196,7 @@
         else return;
     });
     
-    $("#denyButton").click(function() {
+    $(".denyButton").click(function() {
         if(window.confirm('정말 거절하시겠습니까?')){
           $.ajax({ 
            url: '/teacher/waitlist',
@@ -205,7 +205,7 @@
            cache: false, 
            contentType: 'application/json; charset=utf-8',
            dataType: 'json',
-           data: JSON.stringify({ teacher_id: $("#denyButton").val(), is_permitted: false }), 
+           data: JSON.stringify({ teacher_id: $(".denyButton").val(), permitted: false }), 
            success: function(data){
               window.location.href = '/teacher/waitlist';
            }

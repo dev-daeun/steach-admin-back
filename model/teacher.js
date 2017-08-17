@@ -69,9 +69,29 @@ Teacher.getJoinedTeachers = function(){
     });
 }
 
+Teacher.delete = function(teacher_id){
+    return new Promise(function(resolve, reject){
+        pool.getConnection(function(err ,connection){
+            if(err) reject(err);
+            else resolve(connection);
+        });
+    }).then(function(connection){
+        return new Promise(function(resolve, reject){
+            connection.query('delete from teacher where id = ?', teacher_id, function(err){
+                connection.release();
+                if(err) reject(err);
+                else resolve();
+            });
+        });
+    }).then(function(){
+        resolve();
+    }).catch(function(err){
+        reject(err);
+    });
+};
 
 /* 회원가입 요청한 선생님 가입 승인/거절 */
-Teacher.givePermission = function(teacher_id, is_permitted){
+Teacher.givePermission = function(teacher_id){
     return new Promise(function(resolve, reject){
             async.waterfall([
                 function(callback){
@@ -81,7 +101,7 @@ Teacher.givePermission = function(teacher_id, is_permitted){
                     });
                 },
                 function(connection, callback){
-                    connection.query('update teacher set join_status = ? where id = ?', [ is_permitted ? 1 : 2, teacher_id], function(err, result){
+                    connection.query('update teacher set join_status = 1 where id = ?', teacher_id, function(err, result){
                         if(err) callback(err);
                         else callback(null, connection);
                     });
@@ -89,7 +109,7 @@ Teacher.givePermission = function(teacher_id, is_permitted){
             ], function(err, connection){
                 connection.release();
                 if(err) reject(err);
-                else resolve(true);
+                else resolve();
             });
     });
 };

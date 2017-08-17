@@ -67,22 +67,36 @@ router.get('/waitlist', function(req, res, next){
 });
 
 router.post('/waitlist', function(req, res, next){
-    Teacher.givePermission(req.body.teacher_id, req.body.is_permitted) //true / false
-    .then(function(permitted){
+    var text;
+    if(req.body.permitted){
+        Teacher.givePermission(req.body.teacher_id)
+        .then(function(){ Teacher.selectPhone(req.body.teacher_id); })
+        .then(function(phone){
+            text = adminName + '으로부터 가입요청 승인되었습니다.';
+            console.log(text);
+            // coolsmsClient.sms.send({
+            //     to: phone[0].phone,
+            //     type: "SMS",
+            //     from: coolsmsConfig.from,
+            //     text: text
+            // }, function(err, result){
+            //     if(err) {
+            //         console.log(err);
+            //         res.sendStatus(500);
+            //     }
+            // });
+            // pushMessage('가입요청 승인여부', text, phone[0].fcm_token); 
+            res.status(200).send(true);   
+        }).catch(function(err){
+            console.log(err);
+            res.sendStatus(500);
+        });  
+    }      
+    else{
         Teacher.selectPhone(req.body.teacher_id)
         .then(function(phone){
-            if(phone.length===0) res.status(400).send('해당 선생님의 핸드폰 번호 없음');
-            else{
-                let content, location;
-                if(req.body.is_permitted) {
-                    location = 'list';
-                    content = '승인';
-                }
-                else{
-                    location = 'waitlist';
-                    content = '거절';
-                } 
-                let text = adminName + '으로부터 가입요청' + content + '되었습니다.';
+            return new Promise(function(resolve, reject){
+                text = '승인이 거절되어 가입에 실패하였습니다.';
                 console.log(text);
                 // coolsmsClient.sms.send({
                 //     to: phone[0].phone,
@@ -90,24 +104,20 @@ router.post('/waitlist', function(req, res, next){
                 //     from: coolsmsConfig.from,
                 //     text: text
                 // }, function(err, result){
-                //     if(err) {
-                //         console.log(err);
-                //         res.sendStatus(500);
-                //     }
+                //     if(err) reject(err);
+                //     else resolve();
                 // });
                 // pushMessage('가입요청 승인여부', text, phone[0].fcm_token); 
-               res.status(200).send(true);
-            }   
-        })
-        .catch(function(err){
+                resolve();
+            });
+        }).then(function(){ Teacher.delete(req.body.teacher_id); 
+        }).then(function(){ res.status(200).send(true); 
+        }).catch(function(err){
             console.log(err);
             res.sendStatus(500);
         });
-    })
-    .catch(function(err){
-        console.log(err);
-        res.sendStatus(500);
-    });
-
+    }
 });
+
+
 module.exports = router;
