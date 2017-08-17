@@ -1,9 +1,9 @@
 const pool = require('../utils/mysql').getPool();
 
-class Match{}
+class Assign{}
 
 //매칭 대기중인 학생 정보 및 각 학생에게 신청된 선생님 수 조회
-Match.getAll = function(){
+Assign.getStudents = function(){
     return new Promise(function(resolve, reject){
         return new Promise(function(resolve, reject){
             pool.getConnection(function(err, connection){
@@ -35,7 +35,7 @@ Match.getAll = function(){
 };
 
 //매칭 전 특정 학생정보 조회
-Match.getOneStudent = function(id){
+Assign.getOneStudent = function(id){
     return new Promise(function(resolve, reject){
         return new Promise(function(resolve, reject){
             pool.getConnection(function(err, connection){
@@ -63,7 +63,7 @@ Match.getOneStudent = function(id){
 };
 
 //매칭 신청한 선생님들 조회
-Match.getTeachers = function(id){
+Assign.getTeachers = function(id){
     return new Promise(function(resolve, reject){
         return new Promise(function(resolve, reject){
             pool.getConnection(function(err, connection){
@@ -73,7 +73,8 @@ Match.getTeachers = function(id){
         }).then(function(connection){
             return new Promise(function(resolve, reject){
                connection.query(
-                `select teacher.id, name, gender, age, university, grade, univ_status, phone, available from teacher, assignment 
+                `select teacher.id, name, gender, age, university, grade, univ_status, phone, available, status 
+                from teacher, assignment 
                 where assignment.teacher_id = teacher.id and assignment.expectation_id = ? `, id, 
                  function(err, result){
                      connection.release();
@@ -89,4 +90,30 @@ Match.getTeachers = function(id){
     });
 };
 
-module.exports = Match;
+
+/* 주어진 상태에 따라 배정상태(승인대기중, 최종선정, 거절됨) 변경*/
+Assign.update = function(status, t_id, e_id){
+    return new Promise(function(resolve, reject){ 
+        return new Promise(function(resolve, reject){
+            pool.getConnection(function(err, connection){
+                if(err) reject(err);
+                else resolve(connection);
+            });
+        }).then(function(connection){
+            return new Promise(function(resolve, reject){
+               connection.query(`update assignment set status = ? where teacher_id = ? and expectation_id = ?`,[status, t_id, e_id],
+                 function(err){
+                     connection.release();
+                     if(err) reject(err);
+                     else resolve();
+                 }); 
+            });
+        }).then(function(){
+            resolve();
+        }).catch(function(err){
+            reject(err);
+        });
+    });
+}
+
+module.exports = Assign;

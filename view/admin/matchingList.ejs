@@ -78,7 +78,7 @@
                   <!-- /.nav-second-level -->
                 </li>
                 <li>
-                  <a href="/matching">매칭 관리</a>
+                  <a href="/assignment">매칭 관리</a>
                 </li>
                 <li>
                   <a href="#">선생님 관리<span class="fa arrow"></span></a>
@@ -148,7 +148,7 @@
                                         <td><%=match[i].first_date%></td>
                                         <td><%=match[i].book%></td>
                                         <td><%=match[i].requested%></td>
-                                        <td class="center"><button onclick="location.href='/matching?id='+<%=match[i].e_id%>">선생님 배정</a></button></td>
+                                        <td class="center"><button onclick="location.href='/assignment?id='+<%=match[i].e_id%>">선생님 배정</a></button></td>
                                       </tr>
                                     </tbody>
                                     <%}%>

@@ -21,7 +21,7 @@ app.use(function(req, res, next){
 app.use('/', require('./controller/index'));
 app.use('/teacher', require('./controller/teacher'));
 app.use('/student', require('./controller/student'));
-app.use('/matching', require('./controller/matching'));
+app.use('/assignment', require('./controller/assignment'));
 app.use(express.static(__dirname + '/public'));
 
 app.use(function(err, req, res, next) {

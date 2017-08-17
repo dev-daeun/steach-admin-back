@@ -48,7 +48,7 @@ Teacher.getJoinedTeachers = function(){
             function(teachers, connection, callback){
                 async.each(teachers, function(element, done){
                     connection.query(`select pay_day, subject, name from expectation as e, assignment as a, student as s 
-                    where e.id = a.expectation_id and a.student_id = s.id and a.teacher_id = ?`, element.t_id, function(err, result){
+                    where e.id = a.expectation_id and a.student_id = s.id and a.teacher_id = ? and a.status = 5`, element.t_id, function(err, result){
                         if(err) done(err);
                         else {
                             element.payday = result;
