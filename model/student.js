@@ -17,7 +17,7 @@ Student.getAll = function(){
         .then(function(connection){ //TODO : 수강료, 이 달 수강료...
             return new Promise(function(resolve, reject){
                 let query = `select * from 
-                            (select e.id as e_id , e.assign_status, e.subject, s.school_name, s.grade, concat(s.address1,' ',s.address2) as address, s.name as s_name, s.mother_phone, s.father_phone, e.class_form, e.fee, e.deposit_day, e.called_consultant, e.visited_consultant, e.calling_day, e.visiting_day, e.first_date
+                            (select e.id as e_id , e.assign_status, e.deposit_fee, e.subject, s.school_name, s.grade, concat(s.address1,' ',s.address2) as address, s.name as s_name, s.mother_phone, s.father_phone, e.class_form, e.fee, e.deposit_day, e.called_consultant, e.visited_consultant, e.calling_day, e.visiting_day, e.first_date
                             from student s, expectation e 
                             where s.id = e.student_id order by s.id desc) as STU 
                             left outer join
