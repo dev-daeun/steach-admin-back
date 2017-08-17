@@ -1,5 +1,4 @@
 var express = require('express');
-var partials = require('express-partials');
 var path = require('path');
 var http = require('http');
 var logger = require('morgan');
@@ -9,7 +8,6 @@ var bodyParser = require('body-parser');
 var app = express();
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
-app.use(partials());
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
