@@ -6,8 +6,9 @@ const moment = require('moment');
 const Assign = require('../model/assignment');
 const Teacher = require('../model/teacher');
 
+/* 매칭대기중인 학생 조회 */
 router.get('/', function(req, res, next){
-    if(!req.query.id){
+    if(!req.query.id){ //파라미터 값이 없으면 학생 모두 조회
         Assign.getStudents()
         .then(function(result){
             fs.readFile('view/admin/matchingList.ejs', 'utf-8', function(err, view){
@@ -34,7 +35,7 @@ router.get('/', function(req, res, next){
             res.sendStatus(500);
         });
     }
-    else {
+    else { //값이 있으면 특정 학생 및 학생에게 붙은 선생님들 조회
         fs.readFile('view/admin/matching.ejs', 'utf-8', function(err, view){
             if(err) {
                 console.log(err);
