@@ -284,26 +284,28 @@
 
   <!-- Page-Level Demo Scripts - Tables - Use for reference -->
   <script>
-        $(".matchButton").click(function() {
-        if(window.confirm('정말로 매칭하시겠습니까?')){
-          $.ajax({ 
-           url: '/assignment',
-           processData: false,
-           type: 'POST',
-           cache: false, 
-           contentType: 'application/json; charset=utf-8',
-           dataType: 'json',
-           data: JSON.stringify({ 
-              teacher_id: $(".matchButton").val(), 
-              expect_id: location.href.slice(location.href.indexOf('?')+1).split('&')[0].split('=')[1]
-            }), 
-           success: function(data){
-              location.href = location.href;
-           }
-          });
-        } 
-        else return;
-    });
+        $(document).on('click', '.matchButton', function(){
+          var val = $(this).val();
+          if(window.confirm('정말로 매칭하시겠습니까?')){
+            $.ajax({ 
+              url: '/assignment',
+              processData: false,
+              type: 'POST',
+              cache: false, 
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'json',
+              data: JSON.stringify({ 
+                teacher_id: val, 
+                expect_id: location.href.slice(location.href.indexOf('?')+1).split('&')[0].split('=')[1]
+              }), 
+              success: function(data){
+                location.href = location.href;
+              }
+            });
+          } 
+          else return;
+        });
+
     $(document).ready(function() {
       $('#dataTables-example').children('thead').children('tr').children('th').css('white-space', 'nowrap')
       $('#dataTables-example').children('thead').children('tr').children('th').css('text-align', 'center')
