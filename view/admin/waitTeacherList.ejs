@@ -178,7 +178,8 @@
   <!-- Page-Level Demo Scripts - Tables - Use for reference -->
   <script>
         
-    $(".permitButton").click(function() {
+    $(document).on('click', '.permitButton', function() {
+        var val = $(this).val();
         if(window.confirm('정말 승인하시겠습니까?')) {
           $.ajax({ 
            url: '/teacher/waitlist', 
@@ -187,7 +188,7 @@
            cache: false, 
            contentType: 'application/json; charset=utf-8',
            dataType: 'json',
-           data: JSON.stringify({ teacher_id: $(".permitButton").val(), permitted: true }), 
+           data: JSON.stringify({ teacher_id: val, permitted: true }), 
            success: function(data){
              window.location.href = '/teacher/list';
            }
@@ -196,8 +197,9 @@
         else return;
     });
     
-    $(".denyButton").click(function() {
-        if(window.confirm('정말 거절하시겠습니까?')){
+    $(document).on('click', '.denyButton', function() {
+      var val = $(this).val();
+      if(window.confirm('정말 거절하시겠습니까?')){
           $.ajax({ 
            url: '/teacher/waitlist',
            processData: false,
@@ -205,7 +207,7 @@
            cache: false, 
            contentType: 'application/json; charset=utf-8',
            dataType: 'json',
-           data: JSON.stringify({ teacher_id: $(".denyButton").val(), permitted: false }), 
+           data: JSON.stringify({ teacher_id: val, permitted: false }), 
            success: function(data){
               window.location.href = '/teacher/waitlist';
            }
