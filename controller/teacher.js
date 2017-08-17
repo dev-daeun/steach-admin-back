@@ -13,6 +13,7 @@ const coolsmsClient = new Coolsms({
     secret: coolsmsConfig.secret
 });
 
+/* 가입승인된 선생님들 목록 조회 */
 router.get('/list', function(req, res, next){
     Teacher.getJoinedTeachers()
     .then(function(teachers){
@@ -39,6 +40,7 @@ router.get('/list', function(req, res, next){
     });
 });
 
+/* 승인 대기중인 선생님들 목록 조회*/
 router.get('/waitlist', function(req, res, next){
     Teacher.getWaitingTeachers()
     .then(function(teachers){
@@ -66,14 +68,16 @@ router.get('/waitlist', function(req, res, next){
     });
 });
 
+/* 가입승인/거절*/
 router.post('/waitlist', function(req, res, next){
     var text;
     if(req.body.permitted){
         Teacher.givePermission(req.body.teacher_id)
-        .then(function(){ Teacher.selectPhone(req.body.teacher_id); })
-        .then(function(phone){
-            text = adminName + '으로부터 가입요청 승인되었습니다.';
-            console.log(text);
+        .then(function(){ 
+            Teacher.selectPhone(req.body.teacher_id) 
+            .then(function(phone){
+                text = adminName + '으로부터 가입요청 승인되었습니다.';
+                console.log(text);
             // coolsmsClient.sms.send({
             //     to: phone[0].phone,
             //     type: "SMS",
@@ -86,7 +90,8 @@ router.post('/waitlist', function(req, res, next){
             //     }
             // });
             // pushMessage('가입요청 승인여부', text, phone[0].fcm_token); 
-            res.status(200).send(true);   
+                res.status(200).send(true);   
+            });
         }).catch(function(err){
             console.log(err);
             res.sendStatus(500);
@@ -110,8 +115,11 @@ router.post('/waitlist', function(req, res, next){
                 // pushMessage('가입요청 승인여부', text, phone[0].fcm_token); 
                 resolve();
             });
-        }).then(function(){ Teacher.delete(req.body.teacher_id); 
-        }).then(function(){ res.status(200).send(true); 
+        }).then(function(){ 
+            Teacher.delete(req.body.teacher_id)
+            .then(function(){ 
+                res.status(200).send(true); 
+            });
         }).catch(function(err){
             console.log(err);
             res.sendStatus(500);
