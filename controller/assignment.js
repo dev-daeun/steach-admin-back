@@ -63,9 +63,7 @@ router.get('/', function(req, res, next){
                             }
                             switch(element.status){
                                 case 1: element.status = '배정하기'; break;
-                                case 2: element.status = '승인대기중'; break;
-                                case 3: element.status = '최종선정'; break;
-                                case 4: element.status = '거절됨';
+                                case 2: element.status = '최종선정'; break;
                             }
                         });
                         res.status(200).send(ejs.render(view, {
@@ -88,17 +86,14 @@ router.get('/', function(req, res, next){
 router.post('/', function(req, res){
     var t_id = req.body.teacher_id;
     var e_id = req.body.expect_id;
-    console.log(t_id, ', ', e_id);
-    Assign.update(2, t_id, e_id)
+    Assign.update(t_id, e_id)
     .then(function(){ 
         Assign.getOneStudent(e_id)
         .then(function(student){
-            console.log('student : ', student);
-           var text = student[0].name + '학생의 수업 매칭신청이 승인되었습니다.';
+           var text = student[0].name + '학생의 '+student[0].subject+'수업에 최종배정 되었습니다.';
            console.log(text);
            Teacher.selectPhone(t_id)
            .then(function(teacher){
-               return new Promise(function(resolve, reject){
                     // coolsmsClient.sms.send({
                     //     to: teacher[0].phone,
                     //     type: "SMS",
@@ -108,18 +103,14 @@ router.post('/', function(req, res){
                     //         if(err) reject(err);
                     //         else resolve();
                     // });
-                    resolve();
-               });
-           })
-           .then(function(){
-                res.status(200).send(true); 
+            res.status(200).send(true); 
            });
         });
-    }).catch(function(err){
+    })
+    .catch(function(err){
         console.log(err);
         res.sendStatus(500);
     });
-
 });
 
 module.exports = router;

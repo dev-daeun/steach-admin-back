@@ -23,8 +23,8 @@ router.get('/list', function(req, res, next){
                     switch(element.assign_status){
                         case 0: element.assign_status = '실패'; break;
                         case 1: element.assign_status = '배정실패'; break;
-                        case 2: element.assign_status = '대기중'; break;
-                        case 3: element.assign_status = '배정중'; break;
+                        case 2: element.assign_status = '배정중'; break;
+                        case 3: element.assign_status = '대기중'; break;
                         case 4: element.assign_status = '재원중'
                     }
                 });

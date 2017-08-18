@@ -91,8 +91,8 @@ Assign.getTeachers = function(id){
 };
 
 
-/* 주어진 상태에 따라 배정상태(승인대기중, 최종선정, 거절됨) 변경*/
-Assign.update = function(status, t_id, e_id){
+/* 선생님 배정 */
+Assign.update = function(t_id, e_id){
     return new Promise(function(resolve, reject){ 
         return new Promise(function(resolve, reject){
             pool.getConnection(function(err, connection){
@@ -101,17 +101,46 @@ Assign.update = function(status, t_id, e_id){
             });
         }).then(function(connection){
             return new Promise(function(resolve, reject){
-               connection.query(`update assignment set status = ? where teacher_id = ? and expectation_id = ?`,[status, t_id, e_id],
-                 function(err){
-                     connection.release();
-                     if(err) reject(err);
-                     else resolve();
-                 }); 
+                connection.beginTransaction(function(err){
+                    if(err) {
+                        connection.release();
+                        reject(err);
+                    }
+                    else resolve(connection);
+                });
             });
-        }).then(function(){
-            resolve();
-        }).catch(function(err){
-            reject(err);
+        }).then(function(connection){
+            return new Promise(function(resolve, reject){
+                console.log(t_id, ',', e_id);
+                    /* assignment 상태를 배정완료로 수정 */
+                connection.query(`update assignment set status = 2 where teacher_id = ? and expectation_id = ?`,[t_id, e_id], function(err){
+                    if(err) reject([err,connection]);
+                    else resolve(connection);
+                }); 
+            });
+        }).then(function(connection){
+            return new Promise(function(resolve, reject){
+                console.log(e_id);
+                /* 매칭대기정보 상태를 대기중(선생님은 배정되었지만 첫 수업은 시작하지 않은 상태)으로 수정 */
+                connection.query('update expectation set assign_status = 3 where id = ?', e_id, function(err){
+                    if(err) reject([err,connection]);
+                    else resolve(connection);
+                });
+            });
+        }).then(function(connection){
+            connection.commit(function(err){
+                if(err) {
+                    connection.rollback(function(){ connection.release(); });
+                    reject(err);
+                }
+                else {
+                    connection.release();
+                    resolve();
+                }
+            });
+        }).catch(function([err,connection]){
+                if(connection) connection.rollback(function(){ connection.release(); });
+                reject(err);
         });
     });
 }
