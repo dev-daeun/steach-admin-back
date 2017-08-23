@@ -89,7 +89,8 @@ router.post('/waitlist', function(req, res, next){
             //         res.sendStatus(500);
             //     }
             // });
-            // pushMessage('가입요청 승인여부', text, phone[0].fcm_token); 
+            console.log(phone[0].fcm_token);
+            pushMessage('가입요청 승인여부', text, phone[0].fcm_token); 
                 res.status(200).send(true);   
             });
         }).catch(function(err){
