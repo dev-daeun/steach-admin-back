@@ -88,24 +88,22 @@ router.post('/', function(req, res){
     var e_id = req.body.expect_id;
     Assign.update(t_id, e_id)
     .then(function(){ 
-        Assign.getOneStudent(e_id)
-        .then(function(student){
-           var text = student[0].name + '학생의 '+student[0].subject+'수업에 최종배정 되었습니다.';
-           console.log(text);
-           Teacher.selectPhone(t_id)
-           .then(function(teacher){
-                    // coolsmsClient.sms.send({
-                    //     to: teacher[0].phone,
-                    //     type: "SMS",
-                    //     from: coolsmsConfig.from,
-                    //     text: text
-                    // }, function(err, result){
-                    //         if(err) reject(err);
-                    //         else resolve();
-                    // });
+        Promise.all([Assign.getOneStudent(e_id), Teacher.selectPhone(t_id)])
+        .then(function([student, teacher]){
+            var text = student[0].name + '학생의 '+student[0].subject+'수업에 최종배정 되었습니다.';
+            console.log(text);
+                        // coolsmsClient.sms.send({
+                        //     to: teacher[0].phone,
+                        //     type: "SMS",
+                        //     from: coolsmsConfig.from,
+                        //     text: text
+                        // }, function(err, result){
+                        //         if(err) reject(err);
+                        //         else resolve();
+                        // });
             res.status(200).send(true); 
-           });
         });
+        
     })
     .catch(function(err){
         console.log(err);

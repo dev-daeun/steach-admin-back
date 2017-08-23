@@ -111,7 +111,6 @@ Assign.update = function(t_id, e_id){
             });
         }).then(function(connection){
             return new Promise(function(resolve, reject){
-                console.log(t_id, ',', e_id);
                     /* assignment 상태를 배정완료로 수정 */
                 connection.query(`update assignment set status = 2 where teacher_id = ? and expectation_id = ?`,[t_id, e_id], function(err){
                     if(err) reject([err,connection]);
@@ -120,10 +119,29 @@ Assign.update = function(t_id, e_id){
             });
         }).then(function(connection){
             return new Promise(function(resolve, reject){
-                console.log(e_id);
                 /* 매칭대기정보 상태를 대기중(선생님은 배정되었지만 첫 수업은 시작하지 않은 상태)으로 수정 */
                 connection.query('update expectation set assign_status = 3 where id = ?', e_id, function(err){
                     if(err) reject([err,connection]);
+                    else resolve(connection);
+                });
+            });
+        }).then(function(connection){ /* course 테이블에 들어갈 수업정보 */
+            return new Promise(function(resolve, reject){
+                connection.query('select student_id, first_date from expectation where id = ?', e_id, function(err, result){
+                    if(err) reject([err, connection]);
+                    else resolve([result[0], connection]);
+                });
+            });
+        }).then(function([result, connection]){
+            return new Promise(function(resolve, reject){
+                var record = {
+                    expectation_id: e_id,
+                    student_id: result.student_id,
+                    teacher_id: t_id,
+                    next_date: result.first_date
+                }; /* 수업 생성 */
+                connection.query('insert into course set ?', record, function(err){
+                    if(err) reject([err, connection]);
                     else resolve(connection);
                 });
             });
