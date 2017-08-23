@@ -17,7 +17,7 @@ Student.getAll = function(){
         .then(function(connection){ //TODO : 수강료, 이 달 수강료...
             return new Promise(function(resolve, reject){
                 let query = `select * from 
-                            (select e.id as e_id , e.assign_status, e.deposit_fee, e.subject, s.school_name, s.grade, concat(s.address1,' ',s.address2) as address, s.name as s_name, s.mother_phone, s.father_phone, e.class_form, e.fee, e.deposit_day, e.called_consultant, e.visited_consultant, e.calling_day, e.visiting_day, e.first_date
+                            (select e.id as e_id , e.assign_status, e.deposit_fee, e.subject, s.id as s_id, s.school_name, s.grade, concat(s.address1,' ',s.address2) as address, s.name as s_name, s.mother_phone, s.father_phone, e.class_form, e.fee, e.deposit_day, e.called_consultant, e.visited_consultant, e.calling_day, e.visiting_day, e.first_date
                             from student s, expectation e 
                             where s.id = e.student_id order by s.id desc) as STU 
                             left outer join
@@ -37,6 +37,27 @@ Student.getAll = function(){
     });
 };
 
+Student.getOne = function(id){
+    return new Promise(function(resolve, reject){
+        Student.getConn()
+        .then(function(connection){
+            return new Promise(function(resolve, reject){
+                connection.query(`select * from expectation e, 
+                (select start_term, end_term, program, used_book, current_score, pros, cons, name, gender, school_name, father_phone, mother_phone, grade, address1, address2, address3, phone, school, s.id as s_id 
+                from student s, student_log l where s.id = l.student_id) as STU 
+                where e.student_id = STU.s_id and STU.s_id = ?`, id, function(err, result){
+                    connection.release();
+                    if(err) reject(err);
+                    else resolve(result);
+                });
+            });
+        }).then(function(result){
+            resolve(result);
+        }).catch(function(err){
+            reject(err);
+        });
+    });
+};
 
 Student.registerStudent = function(student, student_log, expectation){
     return new Promise(function(resolve, reject){
