@@ -137,4 +137,27 @@ Teacher.selectPhone = function(teacher_id){
     });
 };
 
+Teacher.getOne = function(field, data){
+    return new Promise(function(resolve, reject){
+        return new Promise(function(resolve, reject){
+            pool.getConnection(function(err ,connection){
+                if(err) reject(err);
+                else resolve(connection);
+            });
+        }).then(function(connection){ 
+            return new Promise(function(resolve, reject){
+                connection.query(`select t.id as teacher_id, name, age, gender, university, grade, univ_status, concat(address1, ' ', address2) address from teacher t, assignment a where a.teacher_id = t.id and a.status = 2 and ?? = ?`, [field, data], function(err, result){
+                    connection.release();
+                    if(err) reject(err);
+                    else resolve(result);
+                });
+            });
+        }).then(function(result){
+            resolve(result);
+        }).catch(function(err){
+            reject(err);
+        });
+    });
+}                
+
 module.exports = Teacher;

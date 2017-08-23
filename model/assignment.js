@@ -16,7 +16,7 @@ Assign.getStudents = function(){
                 `select * from 
                 (select s.id as s_id, e.id as e_id, s.name, s.gender, s.school_name, s.grade, concat(s.address1, ' ', s.address2) as address, e.subject, e.class_form, e.student_memo, e.first_date, e.regular_date, e.book
                 from student s, expectation e
-                where s.id = e.student_id and (e.assign_status = 2 or e.assign_status = 3 )) as STU
+                where s.id = e.student_id and e.assign_status = 2) as STU
                 join
                 (select count(teacher_id) as requested, expectation_id from assignment where status = 1 group by expectation_id) as AST
                 where STU.e_id = AST.expectation_id`,

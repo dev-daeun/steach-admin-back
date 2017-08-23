@@ -136,6 +136,7 @@
                                         <th>수강료</th>
                                         <th>납입일</th>
                                         <th>납입액</th>
+                                        <!-- <th>마지막 수업일</th> -->
                                         <th>전화 온 날</th>
                                         <th>방문 상담일</th>
                                         <th>첫 수업일</th>
@@ -164,7 +165,7 @@
                                         <td><%=student[i].calling_day %></td>
                                         <td><%=student[i].visiting_day %></td>
                                         <td><%=student[i].first_date %></td>
-                                        <td><button>수정</button></td>
+                                        <td><button onclick="location.href='/student/list?id='+<%=student[i].s_id%>">수정</button></td>
                                     </tr>
                                    <% } %>
                                 </tbody>
