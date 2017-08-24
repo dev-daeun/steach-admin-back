@@ -95,7 +95,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">신규 학생 등록</h1>
+                    <h1 class="page-header">학생 정보 수정</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -107,156 +107,188 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-12">
-                                     <form onsubmit="return window.confirm('정말 등록하시겠습니까?');" method="POST" action="/student/registration"> 
+                                     <form onsubmit="return window.confirm('정말 수정하시겠습니까?');" method="POST" action="/student/edition"> 
                                       <div class="form-group col-lg-12">
                                         <h2>학생 기본정보</h2>
                                       </div>
                                         <div class="form-group col-lg-4">
                                             <label>구분</label>
-                                            <select name="consult_status"class="form-control">
-                                                <option value=3>성공</option>
-                                                <option value=2>전화실패</option>
-                                                <option value=1>취소</option>
-                                                <option value=0>퇴원</option>
+                                            <select name="consult_status" class="form-control">
+                                                <% for(let i = 0; i<info.consult_status.length; i++) { %>
+                                                    <% if(i==student.consult_status) { %> 
+                                                        <option value="<%=i%>" selected><%=info.consult_status[i]%></option>
+                                                    <% } else { %>  
+                                                        <option value="<%=i%>"><%=info.consult_status[i]%></option> 
+                                                    <% } %>
+                                                <% } %>
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-8">
                                             <label>실패 사유</label>
-                                            <input name="fail_reason" class="form-control">
+                                            <input name="fail_reason" value="<%=student.fail_reason%>" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-2">
                                             <label>전화 상담가</label>
-                                            <input name="called_consultant"class="form-control">
+                                            <input name="called_consultant" value="<%=student.called_consultant%>" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-2">
                                             <label>방문 상담가</label>
-                                            <input name="visited_consultant"class="form-control">
+                                            <input name="visited_consultant" value="<%=student.visited_consultant%>" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>알게된 경로</label>
                                             <select name="known_path" onchange="openTextbox(this);" class="form-control">
-                                                <option value="명함">명함</option>
-                                                <option value="소개">소개</option>
-                                                <option value="인터넷">인터넷</option>
-                                                <option value="아파트 게시판">아파트 게시판</option>
-                                                <option value="기타">기타</option>
+                                                    <% for(let i = 0; i<info.known_path.length; i++) { %>
+                                                            <% if(i==student.known_path) { %> 
+                                                                <option value="<%=i%>" selected><%=info.known_path[i]%></option>
+                                                            <% } else { %>  
+                                                                <option value="<%=i%>"><%=info.known_path[i]%></option> 
+                                                            <% } %>
+                                                        <% } %>
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label style="visibility:hidden">아파트명/기타</label>
-                                            <input type="text" class="form-control" name="apartOrEtc" id="apartOrEtc" style="visibility:hidden;"/>
+                                            <input type="text" class="form-control" name="apartOrEtc" value="<%=student.etc%>" id="apartOrEtc" style="visibility:hidden;"/>
                                         </div> 
                                         <div class="form-group col-lg-4">
                                             <label>이름</label>
-                                            <input name="name"class="form-control">
+                                            <input name="name" value="<%=student.name%>" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-2">
                                             <label>성별</label>
                                             <div class="form-group">
-                                              <label class="radio-inline">
-                                                  <input type="radio" name="gender" value=0 checked>남
-                                              </label>
-                                              <label class="radio-inline">
-                                                  <input type="radio" name="gender" value=1>여
-                                              </label>
+                                                    <% for(let i = 0; i<info.gender.length; i++) { %>
+                                                            <% if(i==student.gender) { %> 
+                                                                <label class="radio-inline">
+                                                                <input type="radio" name="gender" value="<%=i%>" checked><%=info.gender[i]%>
+                                                                </label>
+                                                            <% } else { %>  
+                                                                <label class="radio-inline">
+                                                                <input type="radio" name="gender" value="<%=i%>"><%=info.gender[i]%>
+                                                                </label>
+                                                            <% } %>
+                                                    <% } %>
                                             </div>
                                         </div>
 
                                         <div class="form-group col-lg-2">
                                               <label>주소(시/도)</label>
-                                                <input type="text" name="address1" class="form-control">
+                                                <input type="text" name="address1" value="<%=student.address1%>"class="form-control">
                                         </div>
                                          <div class="form-group col-lg-2">
                                               <label>주소(군/구)</label>
-                                                <input type="text" name="address2" class="form-control">
+                                                <input type="text" name="address2" value="<%=student.address2%>" class="form-control">
                                         </div>
 
                                         <div class="form-group col-lg-12">
                                             <label>상세 주소</label>
-                                            <input type="text" name="address3" class="form-control">
+                                            <input type="text" name="address3" value="<%=student.address3%>" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-2">
                                             <label>학교</label>
                                             <select name="school" class="form-control">
-                                                <option value=1>초</option>
-                                                <option value=2>중</option>
-                                                <option value=3>고</option>                                            
+                                                    <% for(let i = 0; i<info.school.length; i++) { %>
+                                                            <% if(i==student.school) { %> 
+                                                                <option value="<%=i%>" selected><%=info.school[i]%></option>
+                                                            <% } else { %>  
+                                                                <option value="<%=i%>"><%=info.school[i]%></option>
+                                                            <% } %>
+                                                    <% } %>                                         
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>학교명</label>
-                                            <input name="school_name" class="form-control">
+                                            <input name="school_name" value="<%=student.school_name%>" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>학년</label>
                                             <select name="grade" class="form-control">
-                                                <option>1</option>
-                                                <option>2</option>
-                                                <option>3</option>
-                                                <option>4</option>
-                                                <option>5</option>
-                                                <option>6</option>
+                                                    <% for(let i = 1; i<=6; i++) { %>
+                                                            <% if(i==student.grade) { %> 
+                                                                <option value="<%=i%>" selected><%=i%></option>
+                                                            <% } else { %>  
+                                                                <option value="<%=i%>"><%=i%></option>
+                                                            <% } %>
+                                                    <% } %>   
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>학생 연락처</label>
-                                            <input name="phone" class="form-control">
+                                            <input name="phone" value="<%=student.phone%>" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>아버지 연락처</label>
-                                            <input name="father_phone" class="form-control">
+                                            <input name="father_phone" value="<%=student.father_phone%>" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>어머니 연락처</label>
-                                            <input name="mother_phone" class="form-control">
+                                            <input name="mother_phone" value="<%=student.mother_phone%>" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>희망과목</label>
                                             <select name="subject" class="form-control">
-                                                <option>영어</option>
-                                                <option>수학</option>
-                                                <option>국어</option>
-                                                <option>과학</option>
-                                                <option>사회</option>
-                                                <option value="기타">기타</option>
+                                                    <% for(let i = 0; i<info.subject.length; i++) { %>
+                                                        <% if(i==student.subject) { %> 
+                                                            <option value="<%=i%>" selected><%=info.subject[i]%></option>
+                                                        <% } else { %>  
+                                                            <option value="<%=i%>"><%=info.subject[i]%></option>
+                                                        <% } %>
+                                                <% } %>  
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>수업형태</label>
                                             <select name= "class_form" class="form-control">
-                                                <option>원내그룹</option>
-                                                <option>개인방문</option>
+                                                <% if('원내그룹'==student.subject) { %> 
+                                                    <option selected>원내그룹</option>
+                                                    <option>개인방문</option>
+                                                <% } else { %>  
+                                                    <option selected>개인방문</option>
+                                                    <option>원내그룹</option>
+                                                <% } %>
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>차량 지원</label>
                                             <div class="form-group">
+                                                <% if(1==student.car_provided) { %>
                                               <label class="radio-inline">
                                                   <input type="radio" name="car_provided" value=1 checked>Y
                                               </label>
                                               <label class="radio-inline">
                                                   <input type="radio" name="car_provided" value=0>N
                                               </label>
+                                              <% } else { %>
+                                                <label class="radio-inline">
+                                                  <input type="radio" name="car_provided" value=1>Y
+                                                </label>
+                                                <label class="radio-inline">
+                                                  <input type="radio" name="car_provided" value=0 checke`d>N
+                                                </label>
+                                                <% } %>
                                             </div>
                                         </div>
 
                                         <div class="form-group col-lg-12">
                                             <label>학생 성향</label>
-                                            <input name="student_memo" class="form-control">
+                                            <input name="student_memo" value="<%=student.student_memo%>" class="form-control">
                                         </div>
 
-                                        <div class="form-group col-lg-12">
+                                        <!-- <div class="form-group col-lg-12">
                                           <h2>희망 사항</h2>
                                         </div>
 
                                         <div class="form-group col-lg-2">
                                             <label>나이대</label>
                                             <select name="teacher_age" class="form-control">
-                                                <option>20대</option>
-                                                <option>30대</option>
-                                                <option>40대</option>
-                                                <option>50대</option>
-                                                <option>60대</option>
+                                                    <% for(let i in info.teacher_age) { %>
+                                                            <% if(i==student.teacher_age) { %> 
+                                                                <option value="<%=i%>" selected><%=i%></option>
+                                                            <% } else { %>  
+                                                                <option value="<%=i%>"><%=i%></option>
+                                                            <% } %>
+                                                    <% } %>  
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-2">
@@ -272,7 +304,7 @@
                                         </div>
                                         <div class="form-group col-lg-8">
                                             <label>희망하는 선생님 성향</label>
-                                            <input id="recommanded" class="form-control">
+                                            <input id="recommanded" value="<%=student.recommended%>" class="form-control">
                                         </div>
                                         <div class="clearfix visible-lg"></div>
                                         <div name="schedules" id="schedules" class="schedules">
@@ -370,71 +402,147 @@
                                         <div class="form-group col-lg-4 col-lg-offset-8 col-lg-pull-8">
                                             <input type=button id ='scheduleAddBtn' value="희망 수업일 추가"/>
                                         </div>
-                                        <div class="form-group col-lg-4 col-lg-offset-8 col-lg-pull-8">
-                                            <label>첫 수업 희망일</label>
-                                            <input type="date" name="first_date" class="form-control">
+                                        <div class="form-group col-lg-4 col-lg-offset-8 col-lg-pull-8" > 
+                                            <label id="getDate" value="<%=student.first_date%>">첫 수업 희망일</label>
+                                            <input type="date" name="first_date" id="first_date" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>희망 교재</label>
-                                            <input name="book" class="form-control">
+                                            <input name="book" value="<%=student.book%>" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>수강료</label>
-                                            <input name="fee" class="form-control">
+                                            <input name="fee" value="<%=student.fee%>" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>강의료</label>
-                                            <input name="teacher_fee" class="form-control">
+                                            <input name="teacher_fee" value="<%=student.teacher_fee%>" class="form-control">
+                                        </div> -->
+
+
+                                        <div class="form-gourp col-lg-12">
+                                            <h2>배정된 선생님</h2>
+                                        </div> 
+
+                                        <div class="panel-body">
+                                            <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                                <thead>
+                                                    <th>이름</th>
+                                                    <th>나이</th>
+                                                    <th>성별</th>
+                                                    <th>학교</th>
+                                                    <th>학년</th>
+                                                    <th>상태</th>
+                                                    <th>주소</th>
+                                                </thead>                                                
+                                                <tbody>
+                                                    <td><%=teacher.name%></td>
+                                                    <td><%=teacher.age%></td>
+                                                    <td><%=teacher.gender%></td>
+                                                    <td><%=teacher.university%></td>
+                                                    <td><%=teacher.grade%></td>
+                                                    <td><%=teacher.univ_status%></td>
+                                                    <td><%=teacher.address%></td>
+                                                </tbody>
+                                            </table>
+
+                                            <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                                <thead>
+                                                    <th>수업 시간</th>
+                                                    <th>회차 정보</th>
+                                                </thead>    
+                                                <tbody>
+                                                    <td>
+                                                        <% for(let i = 0; i<schedule.length; i++) { %>
+                                                            <%=schedule[i]%><br>
+                                                        <% } %>
+                                                    </td>
+                                                    <td> 앞으로 다가올 회차 : <%=course.now_count+1%>회 ( <%=course.next_date%> )<br> 총 회차 : <%=course.total_count%>회</td>
+                                                </tbody>
+                                            </table>
+
+                                            <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                                    <thead>
+                                                        <th>첫 수업일</th>
+                                                    </thead>    
+                                                    <tbody>
+                                                        <td><%=first_date%></td>
+                                                    </tbody>
+                                                </table>
+                                            
                                         </div>
+                                        <div class="form-gourp col-lg-12">
+                                                <h2>성적 정보</h2>
+                                        </div> 
+                                        <div class="panel-body">
+                                                <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                                    <thead>
+                                                        <th>년도</th>
+                                                        <th>구분</th>
+                                                        <th>점수</th>
+                                                        <th>등급</th>
+                                                    </thead>                                                
+                                                    <tbody>
+                                                        <% for(let i = 0; i<grade.length; i++) { %>
+                                                        <td><%=grade[i].year%></td>
+                                                        <td><%=grade[i].test_form1%> <%=grade[i].test_form2%></td>
+                                                        <td><%=grade[i].score%></td>
+                                                        <td><%=grade[i].rating%></td>
+                                                        <% } %>
+                                                    </tbody>
+                                                </table>
+                                        </div>                                      
                                         <div class="form-group col-lg-12">
                                           <h2>과거 기록</h2>
                                         </div>
                                         <div class="form-group col-lg-2 col-lg-offset-10 col-lg-pull-10">
                                             <label>현재등급</label>
                                             <select name="current_score" class="form-control">
-                                                <option>1</option>
-                                                <option>2</option>
-                                                <option>3</option>
-                                                <option>4</option>
-                                                <option>5</option>
-                                                <option>6</option>
-                                                <option>7</option>
+                                                <% for(let i = 1; i<=7; i++) { %>
+                                                    <% if(i==student.current_score) { %>
+                                                        <option value="<%=i%>" selected><%=i%></option>
+                                                    <% } else { %>
+                                                        <option value="<%=i%>"><%=i%></option>
+                                                    <% } %>
+                                                <% } %>
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-4 col-lg-offset-8 col-lg-pull-8">
                                             <label>수강했던 프로그램</label>
-                                            <select name="program" class="form-control">
-                                                <option value="학원">학원</option>
-                                                <option value="과외">과외</option>
-                                                <option value="인강">인강</option>
-                                                <option value="독학">독학</option>
-                                                <option value="기타">기타</option>
+                                            <select name="program" value="<%=student.program%>" class="form-control">
+                                                <% for(let i in info.program) { %>
+                                                    <% if(i==student.program) { %>
+                                                        <option value="<%=i%>" selected><%=i%></option>
+                                                    <% } else { %>
+                                                        <option value="<%=i%>"><%=i%></option>
+                                                    <% } %>
+                                                <% } %>
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-6">
                                             <label>기간</label>
                                           <div class="form-inline">
-                                            <input type="date" name="start_term" class="form-control">
+                                            <input type="date" name="start_term" value="<%=student.start_term%>" class="form-control">
                                                 <label style="text-align:center;width:auto;">~</label>
-                                            <input type="date" name="end_term" class="form-control">
+                                            <input type="date" name="end_term" value="<%=student.end_term%>" class="form-control">
                                           </div>
 
                                         </div>
 
                                         <div class="form-group col-lg-6">
-                                              <label>교재</label>
-                                              <input name="used_book" class="form-control">
+                                              <label>교재</label>"
+                                              <input name="used_book" value="<%=student.used_book%>" class="form-control">
                                         </div>
                                         <div class="form-group col-lg-12">
                                               <label>좋았던 점</label>
-                                              <textarea name="pros" class="form-control"></textarea>
+                                              <input type="text" name="pros" value="<%=student.pros%>" class="form-control"></textarea>
                                         </div>
                                         <div class="form-group col-lg-12">
                                               <label>아쉬웠던 점</label>
-                                              <textarea name="cons" class="form-control"></textarea>
+                                              <input type="text" name="cons" value="<%=student.cons%>" class="form-control"></textarea>
                                         </div>
                                         <div class="form-group col-lg-12">
-                                              <button type="submit" id="registerButton" class="center-block">등록</button>
+                                              <button type="submit" name="edit_id" value="<%=student.s_id%>" id="editButton" class="center-block">등록</button>
                                         </div>
                                      </form> 
                                 </div>
@@ -461,23 +569,25 @@
     <script type="text/javascript">
         function openTextbox(selection){
             var element = document.getElementById('apartOrEtc');
-            if(selection.value=="아파트 게시판"){
+            if(selection.value==3){
                 element.style.visibility = 'visible';
                 element.placeholder = "아파트 이름";
             }
-            else if(selection.value=="기타"){
+            else if(selection.value==4){
                 element.style.visibility = 'visible';
                 element.placeholder = "기타";
             }
             else element.style.visibility = 'hidden';
         }
 
-
     </script>
     <!-- jQuery -->
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script>
-
+        function getStudentId(){
+            return location.href.slice(location.href.indexOf('?')+1).split('&')[0].split('=')[1];
+        }
+        
       $(function() {
         //html함수 적용하여 htmltest태그내의 html 변경
         $("#scheduleAddBtn").click(function() {

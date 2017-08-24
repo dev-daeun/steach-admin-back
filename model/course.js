@@ -53,7 +53,7 @@ Course.getGrade = function(field, data){
         Course.getConn()
         .then(function(connection){
             return new Promise(function(resolve, reject){
-                connection.query('select test_form1, test_form2, score, rating, year from grade where ?? = ?', [field, data], function(err, result){
+                connection.query('select test_form1, test_form2, score, rating, year from grade where ?? = ? order by id desc', [field, data], function(err, result){
                     connection.release();
                     if(err) reject(err);
                     else resolve(result);
@@ -67,5 +67,23 @@ Course.getGrade = function(field, data){
     });
 };
 
+Course.getLesson = function(field, data){
+    return new Promise(function(resolve, reject){
+        Course.getConn()
+        .then(function(connection){
+            return new Promise(function(resolve, reject){
+                connection.query('select date from lesson where now_count = 1 and course_count = 1 and ?? = ?', [field, data], function(err, result){
+                    connection.release();
+                    if(err) reject(err);
+                    else resolve(result);
+                });
+            }).then(function(result){
+                resolve(result);
+            }).catch(function(err){
+                reject(err);
+            });
+        });
+    });
+}
 
 module.exports = Course;
