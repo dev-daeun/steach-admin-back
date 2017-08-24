@@ -55,7 +55,21 @@ router.get('/list', function(req, res, next){
                     .then(function(teacher){
                         if(teacher.length==0) { /* 선생님이 아직 배정된 상태가 아니면 */
                             console.log(student[0]);
-                            res.status(200).send(ejs.render(view, {student: student[0]})); //학생 정보만 보냄.
+                            res.status(200).send(ejs.render(view, {
+                                student: student[0],
+                                info: info,
+                                teacher: {},
+                                course: {
+                                    now_count: -1,
+                                    next_date: '00-00-00',
+                                    total_count: 0
+                                },
+                                schedule: [],
+                                grade: [],
+                                first_date: '',
+                                info: info
+
+                            })); //학생 정보만 보냄.
                             return;
                         }
                         else{ //선생님이 배정되었으면 자동으로 수업도 생성
