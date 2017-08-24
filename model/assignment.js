@@ -17,9 +17,9 @@ Assign.getStudents = function(){
                 (select s.id as s_id, e.id as e_id, s.name, s.gender, s.school_name, s.grade, concat(s.address1, ' ', s.address2) as address, e.subject, e.class_form, e.student_memo, e.first_date, e.regular_date, e.book
                 from student s, expectation e
                 where s.id = e.student_id and e.assign_status = 2) as STU
-                join
+                left join
                 (select count(teacher_id) as requested, expectation_id from assignment where status = 1 group by expectation_id) as AST
-                where STU.e_id = AST.expectation_id`,
+                on STU.e_id = AST.expectation_id`,
                  function(err, result){
                      connection.release();
                      if(err) reject(err);
@@ -91,8 +91,69 @@ Assign.getTeachers = function(id){
 };
 
 
+/* 선생님 배정 취소 */
+Assign.unmatch = function(t_id, e_id){
+    return new Promise(function(resolve, reject){ 
+        return new Promise(function(resolve, reject){
+            pool.getConnection(function(err, connection){
+                if(err) reject(err);
+                else resolve(connection);
+            });
+        }).then(function(connection){
+            return new Promise(function(resolve, reject){
+                connection.beginTransaction(function(err){
+                    if(err) {
+                        connection.release();
+                        reject(err);
+                    }
+                    else resolve(connection);
+                });
+            });
+        }).then(function(connection){
+            return new Promise(function(resolve, reject){
+                    /* assignment 상태를 배정대기중으로 수정 */
+                connection.query(`update assignment set status = 1 where teacher_id = ? and expectation_id = ?`,[t_id, e_id], function(err){
+                    if(err) reject([err,connection]);
+                    else resolve(connection);
+                }); 
+            });
+        }).then(function(connection){
+            return new Promise(function(resolve, reject){
+                /* 매칭대기정보 상태를 배정중(배정을 기다리는 상태)으로 수정 */
+                connection.query('update expectation set assign_status = 2 where id = ?', e_id, function(err){
+                    if(err) reject([err,connection]);
+                    else resolve(connection);
+                });
+            });
+        }).then(function([result, connection]){
+            return new Promise(function(resolve, reject){
+                /* 수업 삭제 */
+                connection.query('delete from course where expectation_id = ? and teacher_id = ?', [e_id, t_id], function(err){
+                    if(err) reject([err, connection]);
+                    else resolve(connection);
+                });
+            });
+        }).then(function(connection){
+            connection.commit(function(err){
+                if(err) {
+                    connection.rollback(function(){ connection.release(); });
+                    reject(err);
+                }
+                else {
+                    connection.release();
+                    resolve();
+                }
+            });
+        }).catch(function([err,connection]){
+                if(connection) connection.rollback(function(){ connection.release(); });
+                reject(err);
+        });
+    });
+}
+
+
 /* 선생님 배정 */
-Assign.update = function(t_id, e_id){
+Assign.match = function(t_id, e_id){
     return new Promise(function(resolve, reject){ 
         return new Promise(function(resolve, reject){
             pool.getConnection(function(err, connection){

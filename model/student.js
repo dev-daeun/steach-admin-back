@@ -14,7 +14,7 @@ Student.getConn = function(){
 Student.getAll = function(){
     return new Promise(function(resolve, reject){
         Student.getConn()
-        .then(function(connection){ //TODO : 수강료, 이 달 수강료...
+        .then(function(connection){ 
             return new Promise(function(resolve, reject){
                 let query = `select * from 
                             (select e.id as e_id , e.assign_status, e.deposit_fee, e.subject, s.id as s_id, s.school_name, s.grade, concat(s.address1,' ',s.address2) as address, s.name as s_name, s.mother_phone, s.father_phone, e.class_form, e.fee, e.deposit_day, e.called_consultant, e.visited_consultant, e.calling_day, e.visiting_day, e.first_date
@@ -66,9 +66,8 @@ Student.registerStudent = function(student, student_log, expectation){
             return new Promise(function(resolve, reject){
                 connection.beginTransaction(function(err){
                     if(err) {
-                        console.log(err);
                         connection.release();
-                        reject([err]);
+                        reject(err);
                     }
                     else resolve(connection); //에러 없으면 커낵션 객체 resolve(다음 then으로 넘어감)
                 });
@@ -122,5 +121,65 @@ Student.registerStudent = function(student, student_log, expectation){
     });
 };
 
+
+Student.updateStudent = function(id, student, student_log, expectation){
+    return new Promise(function(resolve, reject){
+        Student.getConn()
+        .then(function(connection){
+            return new Promise(function(resolve, reject){
+                connection.beginTransaction(function(err){
+                    if(err) {
+                        connection.release();
+                        reject(err);
+                    }
+                    else resolve(connection); //에러 없으면 커낵션 객체 resolve(다음 then으로 넘어감)
+                });
+            });
+        }).then(function(connection){
+            return new Promise(function(resolve, reject){
+                connection.query('update student set ? where id = ?', [student, id], function(err, result){
+                    if(err) reject([err, connection]);
+                    else resolve(connection);
+                });
+            });
+        }).then(function(connection){
+            return new Promise(function(resolve, reject){
+                connection.query('update student_log set ? where student_id = ?', [student_log, id], function(err){
+                    if(err) reject([err, connection]);
+                    else resolve(connection);
+                });
+            });
+        }).then(function(connection){
+            return new Promise(function(resolve, reject){
+                connection.query('update expectation set ? where student_id = ?', [expectation, id], function(err){
+                    if(err) reject([err, connection]);
+                    else  {
+                        connection.commit(function(err){
+                            if(err){
+                                connection.rollback(function(){
+                                    connection.release();
+                                });
+                            }
+                            else {
+                                connection.release();
+                                resolve();
+                            }
+                        });
+                    }
+                });
+            });
+        })
+        .then(function(){ resolve(); })
+        .catch(function([err,connection]){
+            if(connection){
+                connection.rollback(function(){
+                    connection.release();
+                    reject(err);
+                });
+            }
+            else reject(err);
+        });
+    });
+};
 
 module.exports = Student;

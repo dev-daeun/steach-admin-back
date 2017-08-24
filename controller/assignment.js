@@ -87,7 +87,7 @@ router.get('/', function(req, res, next){
 router.post('/', function(req, res){
     var t_id = req.body.teacher_id;
     var e_id = req.body.expect_id;
-    Assign.update(t_id, e_id)
+    Assign.match(t_id, e_id)
     .then(function(){ 
         Promise.all([Assign.getOneStudent(e_id), Teacher.selectPhone(t_id)])
         .then(function([student, teacher]){
