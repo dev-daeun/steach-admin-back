@@ -143,7 +143,7 @@ router.post('/registration', function(req, res, next){
     var expectation = {
         times_week: req.body.start_hour.length,
         consult_status: req.body.consult_status,
-        assign_status: req.body.consult_status==3 ? 3 : 0,
+        assign_status: req.body.consult_status==3 ? 2 : 0,
         subject: req.body.subject,
         class_form: req.body.class_form,
         teacher_gender: req.body.teacher_gender,
@@ -157,7 +157,7 @@ router.post('/registration', function(req, res, next){
         first_date: req.body.first_date,
         fail_reason: req.body.fail_reason,
         deposit_day: req.body.deposit_day,
-        recommended: req.body.recommanded,
+        recommended: req.body.recommended,
         student_memo: req.body.student_memo,
         called_consultant: req.body.called_consultant,
         visited_consultant: req.body.visited_consultant,

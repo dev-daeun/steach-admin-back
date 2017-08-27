@@ -188,7 +188,7 @@ Assign.match = function(t_id, e_id){
             });
         }).then(function(connection){ /* course 테이블에 들어갈 수업정보 */
             return new Promise(function(resolve, reject){
-                connection.query('select student_id, first_date from expectation where id = ?', e_id, function(err, result){
+                connection.query('select student_id, first_date, subject from expectation where id = ?', e_id, function(err, result){
                     if(err) reject([err, connection]);
                     else resolve([result[0], connection]);
                 });
@@ -199,7 +199,8 @@ Assign.match = function(t_id, e_id){
                     expectation_id: e_id,
                     student_id: result.student_id,
                     teacher_id: t_id,
-                    next_date: result.first_date
+                    next_date: result.first_date,
+                    subject: result.subject
                 }; /* 수업 생성 */
                 connection.query('insert into course set ?', record, function(err){
                     if(err) reject([err, connection]);
