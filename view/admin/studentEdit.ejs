@@ -228,11 +228,11 @@
                                         <div class="form-group col-lg-4">
                                             <label>희망과목</label>
                                             <select name="subject" class="form-control">
-                                                    <% for(let i = 0; i<info.subject.length; i++) { %>
+                                                    <% for(let i in info.subject) { %>
                                                         <% if(i==student.subject) { %> 
-                                                            <option value="<%=i%>" selected><%=info.subject[i]%></option>
+                                                            <option value="<%=i%>" selected><%=i%></option>
                                                         <% } else { %>  
-                                                            <option value="<%=i%>"><%=info.subject[i]%></option>
+                                                            <option value="<%=i%>"><%=i%></option>
                                                         <% } %>
                                                 <% } %>  
                                             </select>
@@ -434,6 +434,7 @@
                                                     <th>학년</th>
                                                     <th>상태</th>
                                                     <th>주소</th>
+                                                    <th></th>
                                                 </thead>                                                
                                                 <tbody>
                                                     <td><%=teacher.name%></td>
@@ -443,6 +444,7 @@
                                                     <td><%=teacher.grade%></td>
                                                     <td><%=teacher.univ_status%></td>
                                                     <td><%=teacher.address%></td>
+                                                    <td><input type="button" onclick="cancelTeacher(this);" value="배정취소"></td>
                                                 </tbody>
                                             </table>
 
@@ -567,6 +569,11 @@
 
 
     <script type="text/javascript">
+        function cancelTeacher(button){
+            if(button.value=="배정취소") button.value = "배정";
+            else button.value = "배정취소";
+        }
+
         function openTextbox(selection){
             var element = document.getElementById('apartOrEtc');
             if(selection.value==3){
@@ -584,10 +591,6 @@
     <!-- jQuery -->
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script>
-        function getStudentId(){
-            return location.href.slice(location.href.indexOf('?')+1).split('&')[0].split('=')[1];
-        }
-        
       $(function() {
         //html함수 적용하여 htmltest태그내의 html 변경
         $("#scheduleAddBtn").click(function() {
