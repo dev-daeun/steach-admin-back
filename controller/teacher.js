@@ -113,7 +113,7 @@ router.post('/waitlist', function(req, res, next){
                 //     if(err) reject(err);
                 //     else resolve();
                 // });
-                pushMessage('가입요청 승인여부', text, phone[0].fcm_token); 
+                pushMessage('가입요청 승인여부', text, phone[0].fcm_token, "assigned"); 
                 resolve();
             });
         }).then(function(){ 
