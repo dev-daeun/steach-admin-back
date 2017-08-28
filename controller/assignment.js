@@ -102,7 +102,7 @@ router.post('/', function(req, res){
                         //         if(err) reject(err);
                         //         else resolve();
                         // });
-            pushMessage('매칭요청 승인여부', text, teacher[0].fcm_token);
+            pushMessage('매칭요청 승인여부', text, teacher[0].fcm_token, "match");
             res.status(200).send(true); 
         });
         
