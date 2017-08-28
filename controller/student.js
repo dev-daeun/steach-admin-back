@@ -51,10 +51,9 @@ router.get('/list', function(req, res, next){
             else{
                 Student.getOne(req.query.id)
                 .then(function(student){
-                    Teacher.getOne('student_id', student[0].student_id)
+                    Teacher.getOne('student_id', req.query.id)
                     .then(function(teacher){
                         if(teacher.length==0) { /* 선생님이 아직 배정된 상태가 아니면 */
-                            console.log(student[0]);
                             res.status(200).send(ejs.render(view, {
                                 student: student[0],
                                 info: info,
@@ -75,9 +74,9 @@ router.get('/list', function(req, res, next){
                         else{ //선생님이 배정되었으면 자동으로 수업도 생성
                             var schedule_array = [];
                             teacher[0].gender == 0 ? teacher[0].gender = '남' : teacher[0].gender = '여';
-                            Course.getCourse(student[0].student_id, teacher[0].teacher_id)
+                            Course.getCourse(req.query.id, teacher[0].teacher_id)
                             .then(function(course){
-                                course[0].next_date = moment(course[0].next_date).format("YY-MM-DD");
+                                course[0].next_date = moment(course[0].next_date).format('YY-MM-DD');
                                 Promise.all([Course.getLesson('course_id', course[0].id), Course.getSchedule('course_id', course[0].id),  Course.getGrade('course_id',course[0].id)])
                                 .then(function([lesson, schedule, grade]){
                                     schedule.forEach(function(element){
@@ -92,12 +91,7 @@ router.get('/list', function(req, res, next){
                                         }
                                         schedule_array.push(element.day + ' ' + element.start_time + ' - ' + element.end_time);
                                     });
-                                    // console.log(student[0]);
-                                    // console.log(teacher[0]);
-                                    // console.log(course[0]);
-                                    // console.log(schedule_array);
-                                    // console.log(grade);
-                                    var first_date = lesson.length>0 ? lesson[0].date : student[0].first_date;
+                                    var first_date = lesson.length > 0 ? lesson[0].date : student[0].first_date;
                                     res.status(200).send(ejs.render(view, {
                                         student: student[0],
                                         teacher: teacher[0],
