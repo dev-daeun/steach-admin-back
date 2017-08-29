@@ -155,7 +155,14 @@ router.post('/registration', function(req, res, next){
         student_memo: req.body.student_memo,
         called_consultant: req.body.called_consultant,
         visited_consultant: req.body.visited_consultant,
-        regular_date: regular_date
+        regular_date: regular_date,
+        prev_program: req.body.program,
+        prev_start_term: req.body.start_term || '2000-01-01',
+        prev_end_term: req.body.end_term || '2000-01-01',
+        prev_used_book: req.body.used_book,
+        prev_score: req.body.current_score,
+        prev_pros: req.body.pros,
+        prev_cons: req.body.cons
     };
     var student = {
         name: req.body.name,
@@ -170,17 +177,9 @@ router.post('/registration', function(req, res, next){
         father_phone: req.body.father_phone,
         mother_phone: req.body.mother_phone
     };
-    var student_log = {
-        program: req.body.program,
-        start_term: req.body.start_term,
-        end_term: req.body.end_term,
-        used_book: req.body.used_book,
-        current_score: req.body.current_score,
-        pros: req.body.pros,
-        cons: req.body.cons
-    };
 
-   Student.registerStudent(student, student_log, expectation)
+
+   Student.registerStudent(student, expectation)
    .then(function(){
       res.status(201).redirect('/student/list');
    })
@@ -206,6 +205,14 @@ router.post('/edition', function(req, res){
         student_memo: req.body.student_memo,
         called_consultant: req.body.called_consultant,
         visited_consultant: req.body.visited_consultant,
+        regular_date: req.body.regular_date,
+        prev_program: req.body.program,
+        prev_start_term: req.body.start_term,
+        prev_end_term: req.body.end_term,
+        prev_used_book: req.body.used_book,
+        prev_score: req.body.current_score,
+        prev_pros: req.body.pros,
+        prev_cons: req.body.cons
     };
     var student = {
         name: req.body.name,
@@ -220,17 +227,8 @@ router.post('/edition', function(req, res){
         father_phone: req.body.father_phone,
         mother_phone: req.body.mother_phone
     };
-    var student_log = {
-        program: req.body.program,
-        start_term: req.body.start_term,
-        end_term: req.body.end_term,
-        used_book: req.body.used_book,
-        current_score: req.body.current_score,
-        pros: req.body.pros,
-        cons: req.body.cons
-    };
-    console.log(student_log);
-    Student.updateStudent(req.body.edit_id, student, student_log, expectation)
+
+    Student.updateStudent(req.body.edit_id, student, expectation)
     .then(function(){
        res.status(200).redirect('/student/list?id='+req.body.edit_id);
     })
