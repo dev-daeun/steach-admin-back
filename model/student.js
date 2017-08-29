@@ -42,10 +42,8 @@ Student.getOne = function(id){
         Student.getConn()
         .then(function(connection){
             return new Promise(function(resolve, reject){
-                connection.query(`select * from expectation e, 
-                (select start_term, end_term, program, used_book, current_score, pros, cons, name, gender, school_name, father_phone, mother_phone, grade, address1, address2, address3, phone, school, s.id as s_id 
-                from student s, student_log l where s.id = l.student_id) as STU 
-                where e.student_id = STU.s_id and STU.s_id = ?`, id, function(err, result){
+                connection.query(` select prev_start_term as start_term, prev_end_term as end_term, prev_program as program, prev_used_book as used_book, prev_score as current_score, prev_pros as pros, prev_cons as cons, name, gender, school_name, father_phone, mother_phone, grade, address1, address2, address3, phone, school, s.id as s_id 
+                from student s, expectation e where s.id = e.student_id and s.id = ?`, id, function(err, result){
                     connection.release();
                     if(err) reject(err);
                     else resolve(result);
@@ -59,7 +57,7 @@ Student.getOne = function(id){
     });
 };
 
-Student.registerStudent = function(student, student_log, expectation){
+Student.registerStudent = function(student, expectation){
     return new Promise(function(resolve, reject){
         Student.getConn()
         .then(function(connection){
@@ -77,14 +75,6 @@ Student.registerStudent = function(student, student_log, expectation){
                 connection.query('insert into student set ?', student, function(err, result){
                     if(err) reject([err, connection]);
                     else resolve([connection, result.insertId]);
-                });
-            });
-        }).then(function([connection, id]){
-            return new Promise(function(resolve, reject){
-                student_log.student_id = id;
-                connection.query('insert into student_log set ? ', student_log, function(err){
-                    if(err) reject([err, connection]);
-                    else resolve([connection, id]);
                 });
             });
         }).then(function([connection, id]){
@@ -122,7 +112,7 @@ Student.registerStudent = function(student, student_log, expectation){
 };
 
 
-Student.updateStudent = function(id, student, student_log, expectation){
+Student.updateStudent = function(id, student, expectation){
     return new Promise(function(resolve, reject){
         Student.getConn()
         .then(function(connection){
@@ -138,13 +128,6 @@ Student.updateStudent = function(id, student, student_log, expectation){
         }).then(function(connection){
             return new Promise(function(resolve, reject){
                 connection.query('update student set ? where id = ?', [student, id], function(err, result){
-                    if(err) reject([err, connection]);
-                    else resolve(connection);
-                });
-            });
-        }).then(function(connection){
-            return new Promise(function(resolve, reject){
-                connection.query('update student_log set ? where student_id = ?', [student_log, id], function(err){
                     if(err) reject([err, connection]);
                     else resolve(connection);
                 });
