@@ -132,8 +132,8 @@
                                         <th>배정하기</th>
                                     </tr>
                                 </thead>
+                                <tbody>
                                 <% for(let i = 0; i<match.length; i++){%> 
-                                    <tbody>
                                       <tr>
                                         <td><%=i+1%></td>
                                         <td><%=match[i].name%></td>
@@ -150,9 +150,8 @@
                                         <td><%=match[i].requested%></td>
                                         <td class="center"><button onclick="location.href='/assignment?id='+<%=match[i].e_id%>">선생님 배정</a></button></td>
                                       </tr>
-                                    </tbody>
                                     <%}%>
-                                <tbody>
+                                    </tbody>
                             </table>
                             <!-- /.table-responsive -->
                         </divmatching.html>

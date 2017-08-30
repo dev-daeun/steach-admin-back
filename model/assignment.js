@@ -202,7 +202,15 @@ Assign.match = function(t_id, e_id){
                     next_date: result.first_date,
                     subject: result.subject
                 }; /* 수업 생성 */
-                connection.query('insert into course set ?', record, function(err){
+                connection.query('insert into course set ?', record, function(err, result){
+                    if(err) reject([err, connection]);
+                    else resolve([result.insertId, connection]);
+                });
+            }); 
+        }).then(function([course_id, connection]){
+            return new Promise(function(resolve, reject){
+                /* 만들어진 수업의 turn 생성 */
+                connection.query('insert into turn set ?', {course_id: course_id}, function(err){
                     if(err) reject([err, connection]);
                     else resolve(connection);
                 });
