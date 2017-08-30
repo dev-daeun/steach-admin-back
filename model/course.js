@@ -16,7 +16,7 @@ Course.getCourse = function(s_id, t_id){
         Course.getConn()
         .then(function(connection){
             return new Promise(function(resolve, reject){
-                connection.query('select id, now_count, next_date, total_count from course where student_id = ? and teacher_id = ? and next_date > CURRENT_DATE() ', [s_id, t_id], function(err, result){
+                connection.query('select course.id, turn.now_count, course.next_date, course.total_count from course, turn where course.id = turn.course_id and student_id = ? and teacher_id = ? ', [s_id, t_id], function(err, result){
                     connection.release();
                     if(err) reject(err);
                     else resolve(result);
