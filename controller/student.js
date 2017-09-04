@@ -1,4 +1,5 @@
-const Student = require('../model/student');
+const StudentService = require('../service/student');
+const StudentModel = require('../model/student');
 const Teacher = require('../model/teacher');
 const Course = require('../model/course');
 const express = require('express');
@@ -6,17 +7,40 @@ const router  = express.Router();
 const ejs = require('ejs');
 const fs = require('fs');
 const moment = require('moment');
+
+const CustomError = require('../libs/customError');
 const adminName = require('../config.json').admin_name;
 const info = require('../libs/info');
-router.get('/list', function(req, res, next){
-    if(!req.query.id){
+
+/* 학생 목록 조회 */
+router.get('/', function(req, res, next){
+    if(req.query.student!=null && req.query.expectation!=null){
+        fs.readFile('view/admin/studentEdit.ejs', 'utf-8', function(err, view){
+            if(err){
+                console.log(err);
+                res.sendStatus(500);
+            }
+            else{
+                return StudentService.showStudentInfoBeforeEdit(req.query.student, req.query.expectation)
+                .then( result => {
+                    result.student.start_term = moment(result.student.start_term).format("YYYY-MM-DD");
+                    result.student.end_term = moment(result.student.end_term).format("YYYY-MM-DD");
+                    // console.log("result : ", result);
+                    res.status(200).send(ejs.render(view, result)); 
+                }).catch(err => {
+                    next(new CustomError(500, err.message || err));
+                });
+            }
+        });
+    }
+    else {
         fs.readFile('view/admin/studentList.ejs', 'utf-8', function(err, view){
             if(err){
                 console.log(err);
                 res.sendStatus(500);
             }
             else{
-                Student.getAll()
+                StudentModel.getAll()
                 .then(function(students){
                     students.forEach(function(element){
                         element.deposit_day = moment(element.first_date).add(28, 'days').format("MM-DD");
@@ -35,92 +59,73 @@ router.get('/list', function(req, res, next){
                         student: students
                     }));
                 }).catch(function(err){
-                    console.log(err);
-                    res.sendStatus(500);
+                    next(new CustomError(500, err.message || err));
                 });
                 
             }
         });
     }
-    else { /* 학생 정보 수정 시 수정 전 보여지는 학생정보 */
-        fs.readFile('view/admin/studentEdit.ejs', 'utf-8', function(err, view){
-            if(err){
-                console.log(err);
-                res.sendStatus(500);
-            }
-            else{
-                Student.getOne(req.query.id)
-                .then(function(student){
-                    Teacher.getOne('student_id', req.query.id)
-                    .then(function(teacher){
-                        if(teacher.length==0) { /* 선생님이 아직 배정된 상태가 아니면 */
-                            res.status(200).send(ejs.render(view, {
-                                student: student[0],
-                                info: info,
-                                teacher: {},
-                                course: {
-                                    now_count: -1,
-                                    next_date: '00-00-00',
-                                    total_count: 0
-                                },
-                                schedule: [],
-                                grade: [],
-                                first_date: '',
-                                info: info
-
-                            })); //학생 정보만 보냄.
-                            return;
-                        }
-                        else{ //선생님이 배정되었으면 자동으로 수업도 생성
-                            var schedule_array = [];
-                            teacher[0].gender == 0 ? teacher[0].gender = '남' : teacher[0].gender = '여';
-                            Course.getCourse(req.query.id, teacher[0].teacher_id)
-                            .then(function(course){
-                                course[0].next_date = moment(course[0].next_date).format('YY-MM-DD');
-                                Promise.all([Course.getLesson('course_id', course[0].id), Course.getSchedule('course_id', course[0].id),  Course.getGrade('course_id',course[0].id)])
-                                .then(function([lesson, schedule, grade]){
-                                    schedule.forEach(function(element){
-                                        switch(element.day){
-                                            case 1: element.day = "월"; break;
-                                            case 2: element.day = "화"; break;
-                                            case 3: element.day = "수"; break;
-                                            case 4: element.day = "목"; break;
-                                            case 5: element.day = "금"; break;
-                                            case 6: element.day = "토"; break;
-                                            case 7: element.day = "일"; break;
-                                        }
-                                        schedule_array.push(element.day + ' ' + element.start_time + ' - ' + element.end_time);
-                                    });
-                                    var first_date = lesson.length > 0 ? lesson[0].date : student[0].first_date;
-                                    res.status(200).send(ejs.render(view, {
-                                        student: student[0],
-                                        teacher: teacher[0],
-                                        course: course[0],
-                                        first_date: moment(first_date).format('YY-MM-DD'),
-                                        schedule: schedule_array,
-                                        grade: grade,
-                                        info: info
-                                    }));
-                                });
-                            });
-                        }
-                    });
-                }).catch(function(err){
-                    console.log(err);
-                    res.sendStatus(500);
-                });
-            }
-        });
-    }
-
 });
+
+
+router.put('/:id', function(req, res, next){
+    var expectation = {
+        consult_status: req.body.consult_status,
+        subject: req.body.subject,
+        class_form: req.body.class_form,
+        known_path: req.body.known_path,
+        etc: req.body.etc,
+        car_provided: req.body.car_provided,
+        fail_reason: req.body.fail_reason,
+        student_memo: req.body.student_memo,
+        called_consultant: req.body.called_consultant,
+        visited_consultant: req.body.visited_consultant,
+        prev_program: req.body.prev_program,
+        prev_start_term: req.body.prev_start_term,
+        prev_end_term: req.body.prev_end_term,
+        prev_used_book: req.body.prev_used_book,
+        prev_score: req.body.prev_score,
+        prev_pros: req.body.prev_pros,
+        prev_cons: req.body.prev_cons
+    };
+    var student = {
+        name: req.body.name,
+        gender: req.body.gender,
+        school_name: req.body.school_name,
+        school: req.body.school,
+        grade: req.body.grade,
+        address1: req.body.address1,
+        address2: req.body.address2,
+        address3: req.body.address3,
+        phone: req.body.phone,
+        father_phone: req.body.father_phone,
+        mother_phone: req.body.mother_phone
+    };
+    console.log('----------------');
+    let studentId = req.params.id;
+    console.log(studentId);
+    let expectId = req.body.expectation;
+    console.log(expectId);
+    let teacherId = req.body.teacher_id;
+    console.log(teacherId);
+    let matched = req.body.matched;
+    console.log(matched); 
+    console.log('----------------');
+    StudentService.editStudentInfo(expectation, student, matched, studentId, expectId, teacherId)
+        .then(function(){
+           res.status(200).send(true);
+        })
+        .catch(function(err){
+            next(new CustomError(500, err.message || err));
+        });
+    });
+
 
 
 router.get('/registration', function(req, res, next){
     fs.readFile('view/admin/studentRegistration.ejs', 'utf-8', function(err, view){
         if(err){
-            console.log(err);
-            res.sendStatus(500);
+            next(new CustomError(500, err.message || err));
         }
         else{
             res.status(200).send(ejs.render(view));
@@ -157,8 +162,8 @@ router.post('/registration', function(req, res, next){
         visited_consultant: req.body.visited_consultant,
         regular_date: regular_date,
         prev_program: req.body.program,
-        prev_start_term: req.body.start_term || '2000-01-01',
-        prev_end_term: req.body.end_term || '2000-01-01',
+        prev_start_term: req.body.start_term || '2017-01-01',
+        prev_end_term: req.body.end_term || '2017-01-01',
         prev_used_book: req.body.used_book,
         prev_score: req.body.current_score,
         prev_pros: req.body.pros,
@@ -181,60 +186,13 @@ router.post('/registration', function(req, res, next){
 
    Student.registerStudent(student, expectation)
    .then(function(){
-      res.status(201).redirect('/student/list');
+      res.status(201).redirect('/student');
    })
    .catch(function(err){
-       console.log(err);
-       res.sendStatus(500);
+        next(new CustomError(500, err.message || err));
    });
 
 });
 
 
-router.post('/edition', function(req, res){
-
-    var expectation = {
-        consult_status: req.body.consult_status,
-        assign_status: req.body.consult_status,
-        subject: req.body.subject,
-        class_form: req.body.class_form,
-        known_path: req.body.known_path,
-        etc: req.body.etc,
-        car_provided: req.body.car_provided,
-        fail_reason: req.body.fail_reason,
-        student_memo: req.body.student_memo,
-        called_consultant: req.body.called_consultant,
-        visited_consultant: req.body.visited_consultant,
-        regular_date: req.body.regular_date,
-        prev_program: req.body.program,
-        prev_start_term: req.body.start_term,
-        prev_end_term: req.body.end_term,
-        prev_used_book: req.body.used_book,
-        prev_score: req.body.current_score,
-        prev_pros: req.body.pros,
-        prev_cons: req.body.cons
-    };
-    var student = {
-        name: req.body.name,
-        gender: req.body.gender,
-        school_name: req.body.school_name,
-        school: req.body.school,
-        grade: req.body.grade,
-        address1: req.body.address1,
-        address2: req.body.address2,
-        address3: req.body.address3,
-        phone: req.body.phone,
-        father_phone: req.body.father_phone,
-        mother_phone: req.body.mother_phone
-    };
-
-    Student.updateStudent(req.body.edit_id, student, expectation)
-    .then(function(){
-       res.status(200).redirect('/student/list?id='+req.body.edit_id);
-    })
-    .catch(function(err){
-        console.log(err);
-        res.sendStatus(500);
-    });
-});
 module.exports = router;
