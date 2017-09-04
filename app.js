@@ -4,7 +4,7 @@ var http = require('http');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
