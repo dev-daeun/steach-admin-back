@@ -59,7 +59,7 @@
                   <a href="#">학생 관리<span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
                     <li>
-                      <a href="/student">학생 목록</a>
+                      <a href="/student/joined">학생 목록</a>
                     </li>
                     <li>
                       <a href="/student/registration">신규 학생 등록</a>
@@ -77,10 +77,10 @@
                   <a href="#">선생님 관리<span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
                     <li>
-                      <a href="/teacher/list">선생님 목록</a>
+                      <a href="/teacher/joined">선생님 목록</a>
                     </li>
                     <li>
-                      <a href="/teacher/waitlist">승인대기중 선생님</a>
+                      <a href="/teacher/waiting">승인대기중 선생님</a>
                     </li>
                   </ul>
                   <!-- /.nav-second-level -->
@@ -214,15 +214,15 @@
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>학생 연락처</label>
-                                            <input name="phone" value="<%=student.phone%>" class="form-control">
+                                            <input name="phone" placeholder="000-0000-0000" value="<%=student.phone%>" class="form-control phone-number">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>아버지 연락처</label>
-                                            <input name="father_phone" value="<%=student.father_phone%>" class="form-control">
+                                            <input name="father_phone" placeholder="000-0000-0000" value="<%=student.father_phone%>" class="form-control phone-number">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>어머니 연락처</label>
-                                            <input name="mother_phone" value="<%=student.mother_phone%>" class="form-control">
+                                            <input name="mother_phone" placeholder="000-0000-0000" value="<%=student.mother_phone%>" class="form-control phone-number">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>희망과목</label>
@@ -599,54 +599,77 @@
     <!-- jQuery -->
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script>
-     $(document).on('click', '#editButton', function() {
-      if(window.confirm('정말 수정하시겠습니까?')){
-          $.ajax({ 
-           url: '/student/'+location.href.slice(location.href.indexOf('?')+1).split('&')[0].split('=')[1],
-           processData: false,
-           type: 'PUT',
-           cache: false, 
-           contentType: 'application/json; charset=utf-8',
-           dataType: 'json',
-           data:  JSON.stringify({
-                consult_status: document.getElementsByName('consult_status')[0].value,
-                fail_reason: document.getElementsByName('fail_reason')[0].value,
-                called_consultant: document.getElementsByName('called_consultant')[0].value,
-                visited_consultant: document.getElementsByName('visited_consultant')[0].value,
-                known_path: document.getElementsByName('known_path')[0].value,
-                etc: document.getElementsByName('apartOrEtc')[0].value,
-                name: document.getElementsByName('name')[0].value,
-                gender: document.getElementsByName('gender')[0].value,
-                address1: document.getElementsByName('address1')[0].value,
-                address2: document.getElementsByName('address2')[0].value,
-                address3: document.getElementsByName('address3')[0].value,
-                school: document.getElementsByName('school')[0].value,
-                school_name: document.getElementsByName('school_name')[0].value,
-                grade: document.getElementsByName('grade')[0].value,
-                phone: document.getElementsByName('phone')[0].value,
-                father_phone: document.getElementsByName('father_phone')[0].value,
-                mother_phone: document.getElementsByName('mother_phone')[0].value,
-                subject: document.getElementsByName('subject')[0].value,
-                class_form: document.getElementsByName('class_form')[0].value,
-                car_provided: document.getElementsByName('car_provided')[0].value,
-                student_memo: document.getElementsByName('student_memo')[0].value,
-                prev_program: document.getElementsByName('program')[0].value,
-                prev_start_term: document.getElementsByName('start_term')[0].value || "2017-01-01",
-                prev_end_term: document.getElementsByName('end_term')[0].value || "2017-01-01",
-                prev_used_book: document.getElementsByName('used_book')[0].value,
-                prev_score: document.getElementsByName('current_score')[0].value,
-                prev_pros: document.getElementsByName('pros')[0].value,
-                prev_cons: document.getElementsByName('cons')[0].value,
-                expectation: location.href.slice(location.href.indexOf('?')+1).split('&')[1].split('=')[1],
-                matched: document.getElementById('matched').getAttribute("value"),
-                teacher_id: document.getElementById('teacher_id').getAttribute("value")
-            }), 
-           success: function(data){
-              window.location.href = '/student';
-           }
-          });
-        } 
-        else return;
+        $(() => {
+            $('#editButton').click(() => {
+            if(window.confirm('정말 수정하시겠습니까?')){
+                let PhoneRegExp = /^\d{2,4}-\d{3,4}-\d{4}$/;
+                let phones = document.querySelectorAll('.phone-number');
+                for(let i in phones){
+                    if(!phones[i].value) continue;
+                    else if (!PhoneRegExp.test(phones[i].value)){
+                        alert("잘못된 전화번호입니다. - 를 포함한 숫자만 입력하세요.");
+                        return;
+                    }
+                }
+                let parameters = location.href.slice(location.href.indexOf('/')+1).split('/');
+                var student_name = document.getElementsByName('name')[0].value;
+                var school_name = document.getElementsByName('school_name')[0].value;
+                // if(!student_name || !school_name) {
+                //     alert('학생 이름 및 학교명을 입력하세요.');
+                //     return;
+                // }
+                $.ajax({ 
+                    url: '/student/'+parameters[3]+'/'+parameters[4],
+                    processData: false,
+                    type: 'PUT',
+                    cache: false, 
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    data:  JSON.stringify({
+                    expectation: {
+                        consult_status: document.getElementsByName('consult_status')[0].value,
+                        fail_reason: document.getElementsByName('fail_reason')[0].value,
+                        called_consultant: document.getElementsByName('called_consultant')[0].value,
+                        visited_consultant: document.getElementsByName('visited_consultant')[0].value,
+                        known_path: document.getElementsByName('known_path')[0].value,
+                        etc: document.getElementsByName('apartOrEtc')[0].value,
+                        subject: document.getElementsByName('subject')[0].value,
+                        class_form: document.getElementsByName('class_form')[0].value,
+                        car_provided: document.getElementsByName('car_provided')[0].value,
+                        student_memo: document.getElementsByName('student_memo')[0].value,
+                        prev_program: document.getElementsByName('program')[0].value,
+                        prev_start_term: document.getElementsByName('start_term')[0].value || "2017-01-01",
+                        prev_end_term: document.getElementsByName('end_term')[0].value || "2017-01-01",
+                        prev_used_book: document.getElementsByName('used_book')[0].value,
+                        prev_score: document.getElementsByName('current_score')[0].value,
+                        prev_pros: document.getElementsByName('pros')[0].value,
+                        prev_cons: document.getElementsByName('cons')[0].value     
+                    },
+                    student: {
+                        name: student_name,
+                        gender: document.getElementsByName('gender')[0].value,
+                        address1: document.getElementsByName('address1')[0].value,
+                        address2: document.getElementsByName('address2')[0].value,
+                        address3: document.getElementsByName('address3')[0].value,
+                        school: document.getElementsByName('school')[0].value,
+                        school_name: school_name,
+                        grade: document.getElementsByName('grade')[0].value,
+                        phone: document.getElementsByName('phone')[0].value,
+                        father_phone: document.getElementsByName('father_phone')[0].value,
+                        mother_phone: document.getElementsByName('mother_phone')[0].value
+                    },
+                    matched: document.getElementById('matched').getAttribute("value"),
+                    teacher_id: document.getElementById('teacher_id').getAttribute("value")
+                }), 
+                success: function(data){
+                    window.location.href = '/student/joined';
+                },
+                error: function(xhr, status, error){
+                    alert(xhr.responseText);
+                }
+              });
+            }
+        });
     });
 
       $(function() {

@@ -70,7 +70,7 @@
                   <a href="#">학생 관리<span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
                     <li>
-                      <a href="/student">학생 목록</a>
+                      <a href="/student/joined">학생 목록</a>
                     </li>
                     <li>
                       <a href="/student/registration">신규 학생 등록</a>
@@ -88,10 +88,10 @@
                   <a href="#">선생님 관리<span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
                     <li>
-                      <a href="/teacher/list">선생님 목록</a>
+                      <a href="/teacher/joined">선생님 목록</a>
                     </li>
                     <li>
-                      <a href="/teacher/waitlist">승인대기중 선생님</a>
+                      <a href="/teacher/waiting">승인대기중 선생님</a>
                     </li>
                   </ul>
                   <!-- /.nav-second-level -->
@@ -165,7 +165,7 @@
                                         <td><%=student[i].calling_day %></td>
                                         <td><%=student[i].visiting_day %></td>
                                         <td><%=student[i].first_date %></td>
-                                        <td><button onclick="location.href='/student?student='+<%=student[i].s_id%>+'&expectation='+<%=student[i].e_id%>">수정</button></td>
+                                        <td><button onclick="location.href='/student/'+<%=student[i].s_id%>+'/'+<%=student[i].e_id%>">수정</button></td>
                                     </tr>
                                    <% } %>
                                 </tbody>
