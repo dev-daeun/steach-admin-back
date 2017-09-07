@@ -4,87 +4,73 @@ const ejs = require('ejs');
 const fs = require('fs');
 const moment = require('moment');
 const Assign = require('../model/assignment');
+
 const Teacher = require('../model/teacher');
 const pushMessage = require('../utils/push').pushMessage;
+const CustomError = require('../libs/customError');
 
-/* 매칭대기중인 학생 조회 */
-router.get('/', function(req, res, next){
-    if(!req.query.id){ //파라미터 값이 없으면 학생 모두 조회
-        Assign.getStudents()
-        .then(function(result){
-            fs.readFile('view/admin/matchingList.ejs', 'utf-8', function(err, view){
-                if(err) {
-                    console.log(err);
-                    res.sendStatus(500);
+/* 특정 학생정보 및 붙은 선생님 조회 */
+router.get('/:expectation', function(req, res, next){
+    var expect_id = req.params.expectation;
+    Assign.getOneStudent(expect_id)//학생 조회
+    .then(function(student){
+        if(student.length==0) next(new CustomError(404, 'student not found'));
+        switch(student[0].gender){
+            case 0: student[0].gender = '남'; break;
+            case 1: student[0].gender = '여';
+        }
+        student[0].first_date = moment(student[0].first_date).format("YY.MM.DD");
+        Assign.getTeachers(expect_id) //학생에 붙은 선생님들 조회
+        .then(function(teachers){
+            teachers.forEach(function(element){
+                switch(element.gender){
+                    case 0: element.gender = '남'; break;
+                    case 1: element.gender = '여';
                 }
-                else {
-                    result.forEach(function(element){
-                        switch(element.gender){
-                            case 0: element.gender = '남'; break;
-                            case 1: element.gender = '여';
-                        }
-                        element.first_date = moment(element.first_date).format("YY-MM-DD");
-                    });
-                    res.status(200).send(ejs.render(view, {
-                        match: result
-                    }));
+                switch(element.status){
+                    case 1: element.status = '배정하기'; break;
+                    case 2: element.status = '최종선정'; break;
                 }
             });
-        })
-        .catch(function(err){
-            console.log(err);
-            res.sendStatus(500);
+            ejs.renderFile('view/admin/matching.ejs', {
+                student: student[0],
+                teachers: teachers
+            }, function(err, view){
+                if(err) throw err;
+                else res.status(200).send(view);
+            });
         });
-    }
-    else { //값이 있으면 특정 학생 및 학생에게 붙은 선생님들 조회
-        fs.readFile('view/admin/matching.ejs', 'utf-8', function(err, view){
-            if(err) {
-                console.log(err);
-                res.sendStatus(500);
-            }
-            else {
-                Assign.getOneStudent(req.query.id) //학생 조회
-                .then(function(student){
-                    if(student.length==0){
-                        res.sendStatus(404);
-                         return;
-                    }
-                    switch(student[0].gender){
-                        case 0: student[0].gender = '남'; break;
-                        case 1: student[0].gender = '여';
-                    }
-                    student[0].first_date = moment(student[0].first_date).format("YY.MM.DD");
-                    Assign.getTeachers(req.query.id) //학생에 붙은 선생님들 조회
-                    .then(function(teachers){
-                        console.log('teacher : ', teachers);
-                        teachers.forEach(function(element){
-                            switch(element.gender){
-                                case 0: element.gender = '남'; break;
-                                case 1: element.gender = '여';
-                            }
-                            switch(element.status){
-                                case 1: element.status = '배정하기'; break;
-                                case 2: element.status = '최종선정'; break;
-                            }
-                        });
-                        res.status(200).send(ejs.render(view, {
-                            student: student[0],
-                            teachers: teachers
-                        }));
-                    });
-                }).catch(function(err){
-                    console.log(err);
-                    res.sendStatus(500);
-                });
-            }
-        });
-    }
+    }).catch(function(err){
+        next(new CustomError(500, err.message || err));
+    });
+});
+    
 
+/* 매칭대기중인 학생 전체 조회 */
+router.get('/', function(req, res, next){
+    Assign.getStudents()
+    .then(function(result){
+        result.forEach(function(element){
+            switch(element.gender){
+                case 0: element.gender = '남'; break;
+                case 1: element.gender = '여';
+            }
+            element.first_date = moment(element.first_date).format("YY-MM-DD");
+        });
+        ejs.renderFile('view/admin/matchingList.ejs', { match: result }, function(err, view){
+            if(err) throw err;        
+            else res.status(200).send(view);
+        });
+    })
+    .catch(function(err){
+        next(new CustomError(500, err.message || err));
+    });
 });
 
 
+
 /* 배정대기중인 선생님에게 학생 매칭하기( assign의 status : 배정하기 -> (선생님으로부터) 승인대기중*/
-router.post('/', function(req, res){
+router.post('/', function(req, res, next){
     var t_id = req.body.teacher_id;
     var e_id = req.body.expect_id;
     Assign.match(t_id, e_id)
@@ -105,11 +91,9 @@ router.post('/', function(req, res){
             pushMessage('매칭요청 승인여부', text, teacher[0].fcm_token, "match");
             res.status(200).send(true); 
         });
-        
     })
     .catch(function(err){
-        console.log(err);
-        res.sendStatus(500);
+        next(new CustomError(500, err.message || err));
     });
 });
 

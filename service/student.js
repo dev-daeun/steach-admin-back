@@ -107,26 +107,24 @@ class StudentClass{
                 else { //배정된 선생님이 배정취소되면
                     Assign.deleteByStudentTeacherExpectId(connection, s_id, t_id, e_id) //assignment에서 사라짐
                     .then(connection => {
-                        Expect.updateById(connection, {assign_status: 2}, e_id) //해당 괴외정보의 상태는 선생님 배정대기중으로 변경
+                        return Expect.updateById(connection, {assign_status: 2}, e_id) //해당 괴외정보의 상태는 선생님 배정대기중으로 변경
+                    })
                     .then(connection => {
-                             // return Course.deleteByStudentTeacherExpectId(connection, s_id, t_id, e_id) //수업정보도 삭제  
-                        Mysql.commitTransConn(connection)
-                    .then(() => {
-                        resolve();
-                        });
-                     });
-                    });
+                            //  return Course.deleteByStudentTeacherExpectId(connection, s_id, t_id, e_id) //수업정보도 삭제  
+                        return Mysql.commitTransConn(connection)
+                    
+                    })
+                    .then(() => { resolve(); });
                 }
-            }).catch(([err, connection]) => {
+            })
+            .catch(([err, connection]) => {
                 if(connection) {
                     Mysql.rollbackTransConn(connection)
-                    .then(() => {
-                        reject(err);
-                    });
+                    .then(() => { reject(err); });
                 }
                 else reject(err);
-            })
-        });
+            });
+        }); 
     }
 }
 

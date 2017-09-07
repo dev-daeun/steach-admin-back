@@ -103,7 +103,7 @@ Student.selectById = function(connection, id){
     });
 };
 
-Student.registerStudent = function(student, expectation){
+Student.insertStudent = function(student, expectation){
     return new Promise(function(resolve, reject){
         Student.getConn()
         .then(function(connection){
@@ -163,7 +163,6 @@ Student.registerStudent = function(student, expectation){
 
 Student.updateById = function(connection, record, id){
     return new Promise(function(resolve, reject){
-        console.log('record : ', record);
         connection.query('update student set ? where id = ?', [record, id], (err) => {
             if(err) reject([err, connection]);
             else resolve(connection);
