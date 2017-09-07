@@ -11,81 +11,62 @@ Course.getConn = function(){
     });
 };
 
-Course.getCourse = function(s_id, t_id){
+Course.selectByStudentTeacherId = function(connection, s_id, e_id, t_id){
     return new Promise(function(resolve, reject){
-        Course.getConn()
-        .then(function(connection){
-            return new Promise(function(resolve, reject){
-                connection.query('select course.id, turn.now_count, course.next_date, course.total_count from course, turn where course.id = turn.course_id and student_id = ? and teacher_id = ? ', [s_id, t_id], function(err, result){
-                    connection.release();
-                    if(err) reject(err);
-                    else resolve(result);
-                });
-            }).then(function(result){
-                resolve(result);
-            }).catch(function(err){
-                reject(err);
-            });
+        connection.query(`
+        SELECT lsn.first_date, crs.* 
+        FROM ( 
+                 SELECT   date AS first_date, 
+                          course_id 
+                 FROM     lesson 
+                 WHERE    course_count = 1 
+                 ORDER BY date limit 1
+             ) AS lsn 
+        RIGHT JOIN (      
+            SELECT  course.id, 
+                    turn.next_count, 
+                    course.next_date, 
+                    course.subject,
+                    turn.total_count                  
+            FROM    course, turn 
+            WHERE   course.id = turn.course_id 
+                    AND student_id = ?
+                    AND expectation_id = ?
+                    AND teacher_id = ? 
+        ) AS crs 
+        ON crs.id = lsn.course_id
+        `, [s_id, e_id, t_id], function(err, result){
+            if(err) reject([err, connection]);
+            else resolve([result, connection]);
         });
     });
 }
 
-
-Course.getSchedule = function(field, data){
+Course.getScheduleByCourseId = function(connection, id){
     return new Promise(function(resolve, reject){
-        Course.getConn()
-        .then(function(connection){
-            return new Promise(function(resolve, reject){
-                connection.query('select course_id, day, start_time, end_time from schedule where ?? = ?', [field, data], function(err, result){
-                    connection.release();
-                    if(err) reject(err);
-                    else resolve(result);
-                });
-            }).then(function(result){
-                resolve(result);
-            }).catch(function(err){
-                reject(err);
-            });
+        connection.query('select course_id, day, start_time, end_time from schedule where course_id = ? order by day', [id], function(err, result){
+            if(err) reject(err);
+            else resolve([result, connection]);
+        });       
+    });
+};
+
+Course.getGradeByCourseId = function(connection, id){
+    return new Promise(function(resolve, reject){
+        connection.query('select test_form1, test_form2, score, rating, year from grade where course_id = ? order by id desc', [id], function(err, result){
+            if(err) reject(err);
+            else resolve([result, connection]);
         });
     });
 };
 
-Course.getGrade = function(field, data){
-    return new Promise(function(resolve, reject){
-        Course.getConn()
-        .then(function(connection){
-            return new Promise(function(resolve, reject){
-                connection.query('select test_form1, test_form2, score, rating, year from grade where ?? = ? order by id desc', [field, data], function(err, result){
-                    connection.release();
-                    if(err) reject(err);
-                    else resolve(result);
-                });
-            }).then(function(result){
-                resolve(result);
-            }).catch(function(err){
-                reject(err);
-            });
+Course.deleteByStudentTeacherExpectId = function(connection, s_id, t_id, e_id){
+    return new Promise((resolve, reject) => {
+        connection.query('delete from course where student_id = ? and teacher_id = ? and expectation_id = ?', [s_id, t_id, e_id], (err) => {
+            if(err) reject([err, connection]);
+            else resolve(connection);
         });
     });
 };
-
-Course.getLesson = function(field, data){
-    return new Promise(function(resolve, reject){
-        Course.getConn()
-        .then(function(connection){
-            return new Promise(function(resolve, reject){
-                connection.query('select date from lesson where course_count = 1 and ?? = ? order by date', [field, data], function(err, result){
-                    connection.release();
-                    if(err) reject(err);
-                    else resolve(result);
-                });
-            }).then(function(result){
-                resolve(result);
-            }).catch(function(err){
-                reject(err);
-            });
-        });
-    });
-}
 
 module.exports = Course;
