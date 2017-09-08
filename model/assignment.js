@@ -109,22 +109,9 @@ Assign.unmatch = function(t_id, e_id){
                     else resolve(connection);
                 });
             });
+        
         }).then(function(connection){
-            return new Promise(function(resolve, reject){
-                    /* assignment 상태를 배정대기중으로 수정 */
-                connection.query(`update assignment set status = 1 where teacher_id = ? and expectation_id = ?`,[t_id, e_id], function(err){
-                    if(err) reject([err,connection]);
-                    else resolve(connection);
-                }); 
-            });
-        }).then(function(connection){
-            return new Promise(function(resolve, reject){
-                /* 매칭대기정보 상태를 배정중(배정을 기다리는 상태)으로 수정 */
-                connection.query('update expectation set assign_status = 2 where id = ?', e_id, function(err){
-                    if(err) reject([err,connection]);
-                    else resolve(connection);
-                });
-            });
+
         }).then(function([result, connection]){
             return new Promise(function(resolve, reject){
                 /* 수업 삭제 */
@@ -144,13 +131,26 @@ Assign.unmatch = function(t_id, e_id){
                     resolve();
                 }
             });
-        }).catch(function([err,connection]){
+        }).catch(function([err, connection]){
                 if(connection) connection.rollback(function(){ connection.release(); });
                 reject(err);
         });
     });
 }
 
+
+Assign.deleteByStudentTeacherExpectId = function(connection, s_id, t_id, e_id){
+    return new Promise((resolve, reject) => {
+        console.log("S : ", s_id);
+        console.log("T : ", t_id);
+        console.log("E : ", e_id);
+        connection.query('delete from assignment where student_id = ? and teacher_id = ? and expectation_id = ?',
+        [s_id, t_id, e_id], (err) => {
+            if(err) reject([err, connection]);
+            else resolve(connection);
+        });
+    });
+};
 
 /* 선생님 배정 */
 Assign.match = function(t_id, e_id){

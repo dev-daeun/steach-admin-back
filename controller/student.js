@@ -1,4 +1,5 @@
-const Student = require('../model/student');
+const StudentService = require('../service/student');
+const StudentModel = require('../model/student');
 const Teacher = require('../model/teacher');
 const Course = require('../model/course');
 const express = require('express');
@@ -6,125 +7,83 @@ const router  = express.Router();
 const ejs = require('ejs');
 const fs = require('fs');
 const moment = require('moment');
+
+const CustomError = require('../libs/customError');
 const adminName = require('../config.json').admin_name;
 const info = require('../libs/info');
-router.get('/list', function(req, res, next){
-    if(!req.query.id){
-        fs.readFile('view/admin/studentList.ejs', 'utf-8', function(err, view){
-            if(err){
-                console.log(err);
-                res.sendStatus(500);
-            }
-            else{
-                Student.getAll()
-                .then(function(students){
-                    students.forEach(function(element){
-                        element.deposit_day = moment(element.first_date).add(28, 'days').format("MM-DD");
-                        element.calling_day = moment(element.calling_day).format("YYYY-MM-DD");
-                        element.visiting_day = moment(element.visiting_day).format("YYYY-MM-DD");
-                        element.first_date = moment(element.first_date).format("YYYY-MM-DD");
-                        switch(element.assign_status){
-                            case 0: element.assign_status = '실패'; break;
-                            case 1: element.assign_status = '배정실패'; break;
-                            case 2: element.assign_status = '배정중'; break;
-                            case 3: element.assign_status = '대기중'; break;
-                            case 4: element.assign_status = '재원중'
-                        }
-                    });
-                    res.status(200).send(ejs.render(view,{
-                        student: students
-                    }));
-                }).catch(function(err){
-                    console.log(err);
-                    res.sendStatus(500);
-                });
-                
-            }
-        });
-    }
-    else { /* 학생 정보 수정 시 수정 전 보여지는 학생정보 */
-        fs.readFile('view/admin/studentEdit.ejs', 'utf-8', function(err, view){
-            if(err){
-                console.log(err);
-                res.sendStatus(500);
-            }
-            else{
-                Student.getOne(req.query.id)
-                .then(function(student){
-                    Teacher.getOne('student_id', req.query.id)
-                    .then(function(teacher){
-                        if(teacher.length==0) { /* 선생님이 아직 배정된 상태가 아니면 */
-                            res.status(200).send(ejs.render(view, {
-                                student: student[0],
-                                info: info,
-                                teacher: {},
-                                course: {
-                                    now_count: -1,
-                                    next_date: '00-00-00',
-                                    total_count: 0
-                                },
-                                schedule: [],
-                                grade: [],
-                                first_date: '',
-                                info: info
 
-                            })); //학생 정보만 보냄.
-                            return;
-                        }
-                        else{ //선생님이 배정되었으면 자동으로 수업도 생성
-                            var schedule_array = [];
-                            teacher[0].gender == 0 ? teacher[0].gender = '남' : teacher[0].gender = '여';
-                            Course.getCourse(req.query.id, teacher[0].teacher_id)
-                            .then(function(course){
-                                course[0].next_date = moment(course[0].next_date).format('YY-MM-DD');
-                                Promise.all([Course.getLesson('course_id', course[0].id), Course.getSchedule('course_id', course[0].id),  Course.getGrade('course_id',course[0].id)])
-                                .then(function([lesson, schedule, grade]){
-                                    schedule.forEach(function(element){
-                                        switch(element.day){
-                                            case 1: element.day = "월"; break;
-                                            case 2: element.day = "화"; break;
-                                            case 3: element.day = "수"; break;
-                                            case 4: element.day = "목"; break;
-                                            case 5: element.day = "금"; break;
-                                            case 6: element.day = "토"; break;
-                                            case 7: element.day = "일"; break;
-                                        }
-                                        schedule_array.push(element.day + ' ' + element.start_time + ' - ' + element.end_time);
-                                    });
-                                    var first_date = lesson.length > 0 ? lesson[0].date : student[0].first_date;
-                                    res.status(200).send(ejs.render(view, {
-                                        student: student[0],
-                                        teacher: teacher[0],
-                                        course: course[0],
-                                        first_date: moment(first_date).format('YY-MM-DD'),
-                                        schedule: schedule_array,
-                                        grade: grade,
-                                        info: info
-                                    }));
-                                });
-                            });
-                        }
-                    });
-                }).catch(function(err){
-                    console.log(err);
-                    res.sendStatus(500);
-                });
-            }
-        });
-    }
 
+/* 학생수정 전 이전정보 조회 */
+router.get('/:student/:expectation', function(req, res, next){
+    StudentService.showStudentInfoBeforeEdit(req.params.student, req.params.expectation)
+    .then( result => {
+        if(!result.student) next(new CustomError(404, 'student not found'));
+        result.student.start_term = moment(result.student.start_term).format("YYYY-MM-DD");
+        result.student.end_term = moment(result.student.end_term).format("YYYY-MM-DD");
+        ejs.renderFile('view/admin/studentEdit.ejs', result, function(err, view){
+            if(err) throw err;
+            else res.status(200).send(view);
+        }); 
+    }).catch(err => {
+        next(new CustomError(500, err.message || err));
+    });
 });
 
 
+/* 학생 목록 조회 */
+router.get('/joined', function(req, res, next){
+    StudentModel.getAll()
+    .then(function(students){
+        students.forEach(function(element){
+            element.deposit_day = moment(element.first_date).add(28, 'days').format("MM-DD");
+            element.calling_day = moment(element.calling_day).format("YYYY-MM-DD");
+            element.visiting_day = moment(element.visiting_day).format("YYYY-MM-DD");
+            element.first_date = moment(element.first_date).format("YYYY-MM-DD");
+                switch(element.assign_status){
+                    case 0: element.assign_status = '실패'; break;
+                    case 1: element.assign_status = '배정실패'; break;
+                    case 2: element.assign_status = '배정중'; break;
+                    case 3: element.assign_status = '대기중'; break;
+                    case 4: element.assign_status = '재원중'
+                }
+            });
+            ejs.renderFile('view/admin/studentList.ejs', { student: students }, function(err, view){
+                if(err) throw err;
+                else res.status(200).send(view);
+            }); 
+    }).catch(function(err){
+        next(new CustomError(500, err.message || err));
+    });    
+});
+
+/* 학생정보수정 */
+router.put('/:student/:expectation', function(req, res, next){
+    //ORM 적용시 student, expectation id로 조회, 유무 예외처리 필요
+    let student = req.body.student;
+    let expectation = req.body.expectation;
+    let matched = req.body.matched;
+    let studentId = req.params.student;
+    let expectId = req.params.expectation;
+    let teacherId = req.body.teacher_id;
+    if(!student.name || !student.school_name) {
+        next(new CustomError(400, '학생 이름 및 학생명을 입력하세요.'));
+        return;
+    }
+    StudentService.editStudentInfo(expectation, student, matched, studentId, expectId, teacherId)
+    .then(function(){
+        res.status(200).send(true);
+    })
+    .catch(function(err){
+        next(new CustomError(500, err.message || err));
+    });
+});
+
+
+
 router.get('/registration', function(req, res, next){
-    fs.readFile('view/admin/studentRegistration.ejs', 'utf-8', function(err, view){
-        if(err){
-            console.log(err);
-            res.sendStatus(500);
-        }
-        else{
-            res.status(200).send(ejs.render(view));
-        }
+    ejs.renderFile('view/admin/studentRegistration.ejs', function(err, view){
+        if(err) next(new CustomError(500, err.message || err));
+        else res.status(200).send(ejs.render(view));
     });
 });
 
@@ -157,8 +116,8 @@ router.post('/registration', function(req, res, next){
         visited_consultant: req.body.visited_consultant,
         regular_date: regular_date,
         prev_program: req.body.program,
-        prev_start_term: req.body.start_term || '2000-01-01',
-        prev_end_term: req.body.end_term || '2000-01-01',
+        prev_start_term: req.body.start_term || '2017-01-01',
+        prev_end_term: req.body.end_term || '2017-01-01',
         prev_used_book: req.body.used_book,
         prev_score: req.body.current_score,
         prev_pros: req.body.pros,
@@ -179,62 +138,15 @@ router.post('/registration', function(req, res, next){
     };
 
 
-   Student.registerStudent(student, expectation)
+   StudentModel.insertStudent(student, expectation)
    .then(function(){
-      res.status(201).redirect('/student/list');
+        res.status(201).redirect('/student/joined');
    })
    .catch(function(err){
-       console.log(err);
-       res.sendStatus(500);
+        next(new CustomError(500, err.message || err));
    });
 
 });
 
 
-router.post('/edition', function(req, res){
-
-    var expectation = {
-        consult_status: req.body.consult_status,
-        assign_status: req.body.consult_status,
-        subject: req.body.subject,
-        class_form: req.body.class_form,
-        known_path: req.body.known_path,
-        etc: req.body.etc,
-        car_provided: req.body.car_provided,
-        fail_reason: req.body.fail_reason,
-        student_memo: req.body.student_memo,
-        called_consultant: req.body.called_consultant,
-        visited_consultant: req.body.visited_consultant,
-        regular_date: req.body.regular_date,
-        prev_program: req.body.program,
-        prev_start_term: req.body.start_term,
-        prev_end_term: req.body.end_term,
-        prev_used_book: req.body.used_book,
-        prev_score: req.body.current_score,
-        prev_pros: req.body.pros,
-        prev_cons: req.body.cons
-    };
-    var student = {
-        name: req.body.name,
-        gender: req.body.gender,
-        school_name: req.body.school_name,
-        school: req.body.school,
-        grade: req.body.grade,
-        address1: req.body.address1,
-        address2: req.body.address2,
-        address3: req.body.address3,
-        phone: req.body.phone,
-        father_phone: req.body.father_phone,
-        mother_phone: req.body.mother_phone
-    };
-
-    Student.updateStudent(req.body.edit_id, student, expectation)
-    .then(function(){
-       res.status(200).redirect('/student/list?id='+req.body.edit_id);
-    })
-    .catch(function(err){
-        console.log(err);
-        res.sendStatus(500);
-    });
-});
 module.exports = router;
