@@ -6,6 +6,9 @@ const Course = require('./CourseModel');
 
 const Student = bookshelf.Model.extend({
         tableName: 'student',
+        constructor: function(){
+            bookshelf.Model.apply(this, arguments);
+        },
         expectation: function(){
             return this.hasMany(Expectation);
         },
@@ -14,11 +17,11 @@ const Student = bookshelf.Model.extend({
         },
         course: function(){
             return this.hasMany(Course);
-        }
-    },{
+        },
+    },
+    {  
         selectRetired: function(){
-            return new Promise((resolve, reject) => {
-                return knex.raw(`
+            return knex.raw(`
                 SELECT ATD.attendance, INF.* 
                 FROM   ((SELECT attendance, 
                                 course_id 
@@ -52,12 +55,7 @@ const Student = bookshelf.Model.extend({
                                             WHERE  s.id = e.student_id 
                                                    AND e.assign_status = 0) AS STU 
                                             ON STU.student_id = TC.student_id) AS INF 
-                          ON ATD.course_id = INF.course_id )`)
-                .then(rows => {
-                    console.log(rows);
-                    resolve(rows);
-                });                
-            });
+                          ON ATD.course_id = INF.course_id )`);
         }
     }
 );

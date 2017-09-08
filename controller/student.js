@@ -78,6 +78,25 @@ router.put('/:student/:expectation', function(req, res, next){
     });
 });
 
+router.get('/retired', function(req, res, next){
+    StudentService.getRetiredStudents()
+    .then(students => {
+        console.log('students : ',students);
+        // students.forEach(element => {
+            // element.calling_day = moment(calling_day).format('YYYY-MM-DD');
+            // element.visiting_day = moment(visiting_day).format('YYYY-MM-DD');
+            // element.first_date = moment(first_date).format('YYYY-MM-DD');
+        // });
+        ejs.renderFile('view/admin/leaveStudentList.ejs', { student: students }, (err, view) => {
+            if(err) throw err;
+            else res.status(200).send(ejs.render(view));
+        })
+    })
+    .catch(err => {
+        next(new CustomError(500, err.message || err));
+    });
+});
+
 
 
 router.get('/registration', function(req, res, next){
