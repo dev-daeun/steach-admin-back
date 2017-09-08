@@ -1,4 +1,5 @@
 const Student = require('../model/student');
+const StudentModel = require('../model/StudentModel');
 const Teacher = require('../model/teacher');
 const Expect = require('../model/expectation');
 const Course = require('../model/course');
@@ -125,6 +126,19 @@ class StudentClass{
                 else reject(err);
             });
         }); 
+    }
+
+
+    static getRetiredStudents(){
+        return new Promise((resolve, reject) => {
+            StudentModel.selectRetired()
+            .then(rows => {
+                resolve(rows[0]);
+            })
+            .catch(err => {
+                reject(err);
+            });
+        });
     }
 }
 
