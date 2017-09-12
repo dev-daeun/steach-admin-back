@@ -1,4 +1,9 @@
 const Student = require('../model/student');
+const StudentModel = require('../model/StudentModel');
+const ExpectModel = require('../model/ExpectationModel');
+const CourseModel = require('../model/CourseModel');
+const LessonModel = require('../model/LessonModel');
+const TeacherModel = require('../model/TeacherModel');
 const Teacher = require('../model/teacher');
 const Expect = require('../model/expectation');
 const Course = require('../model/course');
@@ -6,6 +11,8 @@ const Assign = require('../model/assignment');
 const Mysql = require('../utils/mysql');
 const express = require('express');
 const router  = express.Router();
+const bookshelf = require('../utils/bookshelf').bookshelf;
+const knex = bookshelf.knex;
 const ejs = require('ejs');
 const fs = require('fs');
 const moment = require('moment');
@@ -125,6 +132,48 @@ class StudentClass{
                 else reject(err);
             });
         }); 
+    }
+
+
+    static getRetiredStudents(){
+        //
+        return knex.raw(`
+        SELECT ATD.attendance, INF.* 
+        FROM   ((SELECT attendance, 
+                        course_id 
+                 FROM   lesson) AS ATD 
+                RIGHT JOIN (SELECT TC.teacher_name, 
+                                   TC.course_id, 
+                                   STU.* 
+                            FROM   (SELECT c.student_id, 
+                                           c.id   AS course_id, 
+                                           t.NAME AS teacher_name 
+                                    FROM   teacher t, 
+                                           course c 
+                                    WHERE  c.teacher_id = t.id) AS TC 
+                                    RIGHT JOIN (SELECT s.id AS student_id, 
+                                                       e.id AS expect_id, 
+                                                       assign_status, 
+                                                       fail_reason, 
+                                                       subject, 
+                                                       school_name, 
+                                                       grade, 
+                                                       concat(address1, ' ', address2) AS address, 
+                                                       NAME AS student_name, 
+                                                       called_consultant, 
+                                                       visited_consultant, 
+                                                       class_form, 
+                                                       fee, 
+                                                       deposit_day,
+                                                       deposit_fee,
+                                                       calling_day, 
+                                                       visiting_day, 
+                                                       first_date 
+                                    FROM   student s, expectation e 
+                                    WHERE  s.id = e.student_id 
+                                           AND e.assign_status = 0) AS STU 
+                                    ON STU.student_id = TC.student_id) AS INF 
+                  ON ATD.course_id = INF.course_id )`);
     }
 }
 

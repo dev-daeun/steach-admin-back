@@ -17,7 +17,7 @@ const info = require('../libs/info');
 router.get('/:student/:expectation', function(req, res, next){
     StudentService.showStudentInfoBeforeEdit(req.params.student, req.params.expectation)
     .then( result => {
-        if(!result.student) next(new CustomError(404, 'student not found'));
+        if(!result.student) next(new CustomError(404, '학생정보를 찾을 수 없습니다.'));
         result.student.start_term = moment(result.student.start_term).format("YYYY-MM-DD");
         result.student.end_term = moment(result.student.end_term).format("YYYY-MM-DD");
         ejs.renderFile('view/admin/studentEdit.ejs', result, function(err, view){
@@ -74,6 +74,25 @@ router.put('/:student/:expectation', function(req, res, next){
         res.status(200).send(true);
     })
     .catch(function(err){
+        next(new CustomError(500, err.message || err));
+    });
+});
+
+router.get('/retired', function(req, res, next){
+    StudentService.getRetiredStudents()
+    .then(students => {
+        console.log('students : ',students[0]);
+        students[0].forEach(element => {
+            element.calling_day = moment(element.calling_day).format('YYYY-MM-DD');
+            element.visiting_day = moment(element.visiting_day).format('YYYY-MM-DD');
+            element.first_date = moment(element.first_date).format('YYYY-MM-DD');
+        });
+        ejs.renderFile('view/admin/leaveStudentList.ejs', { student: students[0] }, (err, view) => {
+            if(err) throw err;
+            else res.status(200).send(ejs.render(view));
+        })
+    })
+    .catch(err => {
         next(new CustomError(500, err.message || err));
     });
 });

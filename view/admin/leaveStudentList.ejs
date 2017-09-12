@@ -127,7 +127,6 @@
                                         <th>학교</th>
                                         <th>전화상담가</th>
                                         <th>방문상담가</th>
-                                        <th>이 달 수강료</th>
                                         <th>납입액</th>
                                         <th>전화 온 날</th>
                                         <th>방문 상담일</th>
@@ -139,28 +138,34 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>퇴원</td>
-                                        <td>수학</td>
-                                        <td>3</td>
-                                        <td>대전광역시 둔산동</td>
-                                        <td>피카츄</td>
-                                        <td>라이츄</td>
-                                        <td>원내그룹</td>
-                                        <td>1000000</td>
-                                        <td>2017-05-24</td>
-                                        <td>중학교</td>
-                                        <td>꼬부기</td>
-                                        <td>파이리</td>
-                                        <td>100000</td>
-                                        <td>1400000</td>
-                                        <td>2017-01-01</td>
-                                        <td>2017-01-04</td>
-                                        <td>2017-01-07</td>
-                                        <td>개인적인 사유로 인한 퇴원</td>
-                                        <td class="center"><button>수정</button></td>
-                                    </tr>
+                                  <% for(let i = 0; i<student.length; i++){%>
+                                      <tr>
+                                          <td><%=i+1%></td>
+                                          <% if(student.attendance===1) { %>
+                                            <td>첫 수업 후 퇴원</td>
+                                          <% } else { %>
+                                            <td>퇴원</td>
+                                          <% } %>
+                                          <td><%=student[i].subject%></td>
+                                          <td><%=student[i].grade%></td>
+                                          <td><%=student[i].address%></td>
+                                          <td><%=student[i].student_name%></td>
+                                          <td><%=student[i].teacher_name%></td>
+                                          <td><%=student[i].class_form%></td>
+                                          <td><%=student[i].fee%></td>
+                                          <td><%=student[i].deposit_day%></td>
+                                          <td><%=student[i].school_name%></td>
+                                          <td><%=student[i].called_consultant%></td>
+                                          <td><%=student[i].visited_consultant%></td>
+                                          <td><%=student[i].deposit_fee%></td>
+                                          <td><%=student[i].calling_day%></td>
+                                          <td><%=student[i].visiting_day%></td>
+                                          <td><%=student[i].first_date%></td>
+                                          <td><%=student[i].fail_reason%></td>
+                                          <td class="center"><button onclick="location.href='/student/'+<%=student[i].student_id%>+'/'+<%=student[i].expect_id%>">수정</button></td>
+                                      </tr>
+                                  <% } %>
+                                </tbody>    
                             </table>
                             <!-- /.table-responsive -->
                         </div>
