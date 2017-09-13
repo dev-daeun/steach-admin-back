@@ -1,6 +1,5 @@
 var express = require('express');
 var path = require('path');
-var http = require('http');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -34,5 +33,4 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500).send(err.message);
 });
 
-var server = http.createServer(app);
-server.listen(3006);
+module.exports = app;
