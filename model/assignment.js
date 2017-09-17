@@ -15,11 +15,12 @@ Assign.getStudents = function(){
                connection.query(
                 `select * from 
                 (select s.id as s_id, e.id as e_id, s.name, s.gender, s.school_name, s.grade, concat(s.address1, ' ', s.address2) as address, e.subject, e.class_form, e.student_memo, e.first_date, e.regular_date, e.book
-                from student s, expectation e
+                from student s, assignment e
                 where s.id = e.student_id and e.assign_status = 2) as STU
                 left join
-                (select count(teacher_id) as requested, expectation_id from assignment where status = 1 group by expectation_id) as AST
-                on STU.e_id = AST.expectation_id`,
+                (select count(teacher_id) as requested, assignment_id from apply where status = 1 group by assignment_id) as AST
+                on STU.e_id = AST.assignment_id
+                order by STU.s_id desc`,
                  function(err, result){
                      connection.release();
                      if(err) reject(err);
@@ -46,7 +47,7 @@ Assign.getOneStudent = function(id){
             return new Promise(function(resolve, reject){
                connection.query(
                 `select s.id as s_id, e.id as e_id, s.name, s.gender, s.address1, s.address2, s.address3, s.school_name, s.grade, e.subject, e.class_form, e.student_memo, e.first_date, e.regular_date, e.book
-                from student s, expectation e
+                from student s, assignment e
                 where s.id = e.student_id and e.id = ?`, id, 
                  function(err, result){
                      connection.release();
@@ -74,8 +75,8 @@ Assign.getTeachers = function(id){
             return new Promise(function(resolve, reject){
                connection.query(
                 `select teacher.id, name, gender, age, university, grade, univ_status, phone, available, status 
-                from teacher, assignment 
-                where assignment.teacher_id = teacher.id and assignment.expectation_id = ? `, id, 
+                from teacher, apply
+                where apply.teacher_id = teacher.id and apply.assignment_id = ? `, id, 
                  function(err, result){
                      connection.release();
                      if(err) reject(err);
@@ -111,11 +112,14 @@ Assign.unmatch = function(t_id, e_id){
             });
         
         }).then(function(connection){
-
-        }).then(function([result, connection]){
+                connection.query('delete from apply where assignment_id = ? and teacher_id = ?', [e_id, t_id], function(err){
+                    if(err) reject([err, connection]);
+                    else resolve(connection);
+                })
+        }).then(function(connection){
             return new Promise(function(resolve, reject){
                 /* 수업 삭제 */
-                connection.query('delete from course where expectation_id = ? and teacher_id = ?', [e_id, t_id], function(err){
+                connection.query('delete from course where assignment_id = ? and teacher_id = ?', [e_id, t_id], function(err){
                     if(err) reject([err, connection]);
                     else resolve(connection);
                 });
@@ -144,7 +148,7 @@ Assign.deleteByStudentTeacherExpectId = function(connection, s_id, t_id, e_id){
         console.log("S : ", s_id);
         console.log("T : ", t_id);
         console.log("E : ", e_id);
-        connection.query('delete from assignment where student_id = ? and teacher_id = ? and expectation_id = ?',
+        connection.query('delete from apply where student_id = ? and teacher_id = ? and assignment_id = ?',
         [s_id, t_id, e_id], (err) => {
             if(err) reject([err, connection]);
             else resolve(connection);
@@ -173,7 +177,7 @@ Assign.match = function(t_id, e_id){
         }).then(function(connection){
             return new Promise(function(resolve, reject){
                     /* assignment 상태를 배정완료로 수정 */
-                connection.query(`update assignment set status = 2 where teacher_id = ? and expectation_id = ?`,[t_id, e_id], function(err){
+                connection.query(`update apply set status = 2 where teacher_id = ? and assignment_id = ?`,[t_id, e_id], function(err){
                     if(err) reject([err,connection]);
                     else resolve(connection);
                 }); 
@@ -181,14 +185,14 @@ Assign.match = function(t_id, e_id){
         }).then(function(connection){
             return new Promise(function(resolve, reject){
                 /* 매칭대기정보 상태를 대기중(선생님은 배정되었지만 첫 수업은 시작하지 않은 상태)으로 수정 */
-                connection.query('update expectation set assign_status = 3 where id = ?', e_id, function(err){
+                connection.query('update assignment set assign_status = 3 where id = ?', e_id, function(err){
                     if(err) reject([err,connection]);
                     else resolve(connection);
                 });
             });
         }).then(function(connection){ /* course 테이블에 들어갈 수업정보 */
             return new Promise(function(resolve, reject){
-                connection.query('select student_id, first_date, subject from expectation where id = ?', e_id, function(err, result){
+                connection.query('select student_id, first_date, subject from assignment where id = ?', e_id, function(err, result){
                     if(err) reject([err, connection]);
                     else resolve([result[0], connection]);
                 });
@@ -196,7 +200,7 @@ Assign.match = function(t_id, e_id){
         }).then(function([result, connection]){
             return new Promise(function(resolve, reject){
                 var record = {
-                    expectation_id: e_id,
+                    assignment_id: e_id,
                     student_id: result.student_id,
                     teacher_id: t_id,
                     next_date: result.first_date,
@@ -216,6 +220,7 @@ Assign.match = function(t_id, e_id){
                 });
             });
         }).then(function(connection){
+            console.log('match done');
             connection.commit(function(err){
                 if(err) {
                     connection.rollback(function(){ connection.release(); });

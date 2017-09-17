@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
     supervisorId: {
       type: DataTypes.INTEGER,
       field: "supervisor_id",
-      allowNull: false
+      allowNull: true
     },
     name: {
       type: DataTypes.STRING,
@@ -29,11 +29,11 @@ module.exports = function(sequelize, DataTypes) {
     },
     address1: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     address2: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     phone: {
       type: DataTypes.STRING

@@ -51,7 +51,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-            <a class="navbar-brand" href="index.html">스티치 기업용 관리자 페이지</a>
+            <a class="navbar-brand" href="/">스티치 기업용 관리자 페이지</a>
           </div>
           <!-- /.navbar-header -->
 
@@ -119,7 +119,7 @@
                   <form role="form">
                     <div class="form-group col-lg-4">
                       <label>이름</label>
-                      <input class="form-control" value=<%=student.name%> disabled>
+                      <input class="form-control" value="<%=student.name%>" disabled>
                     </div>
                     <div class="form-group col-lg-4 col-lg-offset-4 col-lg-pull-2">
                       <label>성별</label>
@@ -144,11 +144,11 @@
 
                     <div class="form-group col-lg-8">
                       <label>상세 주소</label>
-                      <input class="form-control" value=<%=student.address3%> disabled>
+                      <input class="form-control" value="<%=student.address3%>" disabled>
                     </div>
                     <div class="form-group col-lg-4">
                       <label>학교</label>
-                      <input class="form-control" value=<%=student.school_name%> disabled>
+                      <input class="form-control" value="<%=student.school_name%>" disabled>
                     </div>
                     <div class="form-group col-lg-2 col-lg-offset-6 col-lg-pull-6">
                       <label>학년</label>
@@ -173,7 +173,7 @@
 
                     <div class="form-group col-lg-12">
                       <label>학생 성향</label>
-                      <input type="textarea" class="form-control" value=<%=student.student_memo%> disabled>
+                      <input type="textarea" class="form-control" value="<%=student.student_memo%>" disabled>
                     </div>
 
                     <div name="schedules" id="schedules">
@@ -185,12 +185,12 @@
 
                     <div class="form-group col-lg-4">
                       <label>첫 수업 희망일</label>
-                      <input type="text" class="form-control" value=<%=student.first_date%> disabled>
+                      <input type="text" class="form-control" value="<%=student.first_date%>" disabled>
                     </div>
 
                     <div class="form-group col-lg-4 col-lg-offset-4 col-lg-pull-4">
                       <label>희망 교재</label>
-                      <input type= "text" class="form-control" value=<%=student.book%> disabled>
+                      <input type= "text" class="form-control" value="<%=student.book%>" disabled>
                     </div>
                   </form>
                 </div>
@@ -246,7 +246,7 @@
                         <td><%=teachers[i].univ_status%></td>
                         <td><%=teachers[i].phone%></td>
                         <td><%=teachers[i].available%></td>
-                        <td class="center"><button class="matchButton" value=<%=teachers[i].id%>><%=teachers[i].status%></button></td>
+                        <td class="center"><button class="matchButton" value="<%=teachers[i].id%>"><%=teachers[i].status%></button></td>
                       </tr>
                     </tbody>
                   <% }%>
@@ -296,10 +296,10 @@
               dataType: 'json',
               data: JSON.stringify({ 
                 teacher_id: val, 
-                expect_id: location.href.slice(location.href.indexOf('?')+1).split('&')[0].split('=')[1]
+                expect_id: <%=expect_id%>
               }), 
               success: function(data){
-                location.href = '/student';
+                location.href = '/student/joined';
               }
             });
           } 

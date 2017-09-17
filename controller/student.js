@@ -1,11 +1,11 @@
-const StudentService = require('../service/student');
+const StudentService = require('../services/studentService');
 const StudentModel = require('../model/student');
 const Teacher = require('../model/teacher');
 const Course = require('../model/course');
+
 const express = require('express');
 const router  = express.Router();
 const ejs = require('ejs');
-const fs = require('fs');
 const moment = require('moment');
 
 const CustomError = require('../libs/customError');
@@ -66,7 +66,7 @@ router.put('/:student/:expectation', function(req, res, next){
     let expectId = req.params.expectation;
     let teacherId = req.body.teacher_id;
     if(!student.name || !student.school_name) {
-        next(new CustomError(400, '학생 이름 및 학생명을 입력하세요.'));
+        next(new CustomError(400, '학생 이름 및 학교명을 입력하세요.'));
         return;
     }
     StudentService.editStudentInfo(expectation, student, matched, studentId, expectId, teacherId)
@@ -81,7 +81,6 @@ router.put('/:student/:expectation', function(req, res, next){
 router.get('/retired', function(req, res, next){
     StudentService.getRetiredStudents()
     .then(students => {
-        console.log('students : ',students[0]);
         students[0].forEach(element => {
             element.calling_day = moment(element.calling_day).format('YYYY-MM-DD');
             element.visiting_day = moment(element.visiting_day).format('YYYY-MM-DD');
@@ -106,61 +105,23 @@ router.get('/registration', function(req, res, next){
     });
 });
 
+
+
+
 router.post('/registration', function(req, res, next){
-    var regular_date='';
-    for(let i = 0; i<req.body.start_hour.length; i++){
-        regular_date += req.body["dayofweek"+i]+' '+ req.body.start_meridiem[i]+' '+req.body.start_hour[i]
-        +':'+req.body.start_minute[i]+'~'+req.body.end_meridiem[i]+req.body.end_hour[i]+':'+req.body.end_minute[i]+'\n';
+    let assignment = req.body.assignment;
+    let student = req.body.student;
+    if(!student.name || !student.schoolName) {
+        next(new CustomError(400, '학생 이름 및 학교명을 입력하세요.'));
+        return;
     }
-    var expectation = {
-        times_week: req.body.start_hour.length,
-        consult_status: req.body.consult_status,
-        assign_status: req.body.consult_status==3 ? 2 : 0,
-        subject: req.body.subject,
-        class_form: req.body.class_form,
-        teacher_gender: req.body.teacher_gender,
-        teacher_fee: req.body.teacher_fee,
-        known_path: req.body.known_path,
-        etc: req.body.etc,
-        teacher_age: req.body.teacher_age,
-        book: req.body.book,
-        fee: req.body.fee,
-        car_provided: req.body.car_provided,
-        first_date: req.body.first_date,
-        fail_reason: req.body.fail_reason,
-        deposit_day: req.body.deposit_day,
-        recommended: req.body.recommended,
-        student_memo: req.body.student_memo,
-        called_consultant: req.body.called_consultant,
-        visited_consultant: req.body.visited_consultant,
-        regular_date: regular_date,
-        prev_program: req.body.program,
-        prev_start_term: req.body.start_term || '2017-01-01',
-        prev_end_term: req.body.end_term || '2017-01-01',
-        prev_used_book: req.body.used_book,
-        prev_score: req.body.current_score,
-        prev_pros: req.body.pros,
-        prev_cons: req.body.cons
-    };
-    var student = {
-        name: req.body.name,
-        gender: req.body.gender,
-        school_name: req.body.school_name,
-        school: req.body.school,
-        grade: req.body.grade,
-        address1: req.body.address1,
-        address2: req.body.address2,
-        address3: req.body.address3,
-        phone: req.body.phone,
-        father_phone: req.body.father_phone,
-        mother_phone: req.body.mother_phone
-    };
 
-
-   StudentModel.insertStudent(student, expectation)
-   .then(function(){
-        res.status(201).redirect('/student/joined');
-   })
+    
+    
+    StudentService.registerStudent(student, assignment)
+    .then(() => {
+        res.status(201).send(true);
+    })
    .catch(function(err){
         next(new CustomError(500, err.message || err));
    });
