@@ -17,7 +17,7 @@ module.exports = function(sequelize, DataTypes) {
     timesWeek: {
       field: "times_week",
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     classForm: {
       field: "class_form",
@@ -32,25 +32,27 @@ module.exports = function(sequelize, DataTypes) {
     teacherFee: {
       field: "teacher_fee",
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true,
+      defaultValue: 0
     },
     knownPath: {
       field: "known_path",
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.TEXT,
+      allowNull: true
     },
     teacherAge: {
       field: "teacher_age",
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     book: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     fee: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true,
+      defaultValue: 0
     },
     carProvided: {
       field: "car_provided",
@@ -60,16 +62,17 @@ module.exports = function(sequelize, DataTypes) {
     firstDate: {
       field: "first_date",
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: true
     },
     regularDate: {
       field: "regular_date",
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     assignStatus: {
       field: "assign_status",
       type: DataTypes.INTEGER,
+      defaultValue: 2,
       allowNull: false
     },
     consultStatus: {
@@ -80,12 +83,12 @@ module.exports = function(sequelize, DataTypes) {
     failReason: {
       field: "fail_reason",
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     },
     payDay: {
       field: "pay_day",
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: true
     },
     depositFee: {
       field: "deposit_fee",
@@ -96,71 +99,71 @@ module.exports = function(sequelize, DataTypes) {
     depositDay: {
       field: "deposit_day",
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: true
     },
     recommended: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     studentMemo: {
       field: "student_memo",
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     callingDay: {
       field: "calling_day",
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: true
     },
     visitingDay: {
       field: "visiting_day",
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: true
     },
     calledConsultant: {
       field: "called_consultant",
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     visitedConsultant: {
       field: "visited_consultant",
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     prevProgram: {
       field: "prev_program",
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     prevStartTerm: {
       field: "prev_start_term",
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: true
     },
     prevEndTerm: {
       field: "prev_end_term",
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: true
     },
     prevUsedBook: {
       field: "prev_used_book",
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     prevScore: {
       field: "prev_score",
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     prevPros: {
       field: "prev_pros",
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     prevCons: {
       field: "prev_cons",
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     }
   }, {
     underscored: true,

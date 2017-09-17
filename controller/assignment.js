@@ -1,11 +1,12 @@
+
+const Assign = require('../model/assignment');
+const Teacher = require('../model/teacher');
+
 const express = require('express');
 const router  = express.Router();
 const ejs = require('ejs');
-const fs = require('fs');
 const moment = require('moment');
-const Assign = require('../model/assignment');
 
-const Teacher = require('../model/teacher');
 const pushMessage = require('../utils/push').pushMessage;
 const CustomError = require('../libs/customError');
 
@@ -34,7 +35,8 @@ router.get('/:expectation', function(req, res, next){
             });
             ejs.renderFile('view/admin/matching.ejs', {
                 student: student[0],
-                teachers: teachers
+                teachers: teachers,
+                expect_id: req.params.expectation
             }, function(err, view){
                 if(err) throw err;
                 else res.status(200).send(view);
