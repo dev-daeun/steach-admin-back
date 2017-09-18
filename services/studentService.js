@@ -45,7 +45,7 @@ class StudentService{
         return new Promise((resolve, reject) => {
             Mysql.getConn()
             .then(connection => {
-                return Student.selectById(connection, s_id)
+                return Student.selectById(connection, s_id, e_id)
             })
             .then(([student, connection]) => {
                 Teacher.selectByStudent(connection, s_id, e_id)

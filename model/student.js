@@ -63,7 +63,7 @@ Student.getAll = function(){
     });
 };
 
-Student.selectById = function(connection, id){
+Student.selectById = function(connection, s_id, e_id){
     return new Promise(function(resolve, reject){
         connection.query(
         `SELECT prev_start_term AS start_term, 
@@ -95,7 +95,7 @@ Student.selectById = function(connection, id){
                 e.id            AS e_id
         FROM   student s, assignment e 
         WHERE  s.id = e.student_id 
-                AND s.id = ? `, [id], (err, result) => {
+                AND s.id = ? and e.id = ?`, [s_id, e_id], (err, result) => {
             if(err) reject([err, connection]);
             else resolve([result, connection]);
         });
