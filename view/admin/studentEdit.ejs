@@ -139,7 +139,7 @@
                                             <select name="known_path" onchange="openTextbox(this);" class="form-control">
                                                 <% if(info.known_path.includes(student.known_path)) { %>
                                                 <%  for(let option in info.known_path) {              %>
-                                                <%      if(option==student.known_path) {              %> 
+                                                <%      if(info.known_path[option]==student.known_path) {              %> 
                                                             <option value="<%=info.known_path[option]%>" selected><%=info.known_path[option]%></option>
                                                 <%      } else {                                      %>  
                                                             <option value="<%=info.known_path[option]%>"><%=info.known_path[option]%></option> 
@@ -236,9 +236,9 @@
                                             <label>희망과목</label>
                                             <select name="subject" onchange="openTextbox(this);" class="form-control">
                                                     <% if(info.subject.includes(student.subject)) { %>
-                                                        <%  for(let option in info.subject) {              %>
-                                                        <%      if(option==student.subject) {              %> 
-                                                                    <option value="<%=info.subject[option]%>" selected><%=info.subject[option]%></option>
+                                                        <%  for(let option = 0; option<info.subject.length; option++) {              %>
+                                                        <%      if(info.subject[option]==student.subject) {              %> 
+                                                                    <option value="<%=info.subject[option]%>" selected><%=student.subject%></option>
                                                         <%      } else {                                      %>  
                                                                     <option value="<%=info.subject[option]%>"><%=info.subject[option]%></option> 
                                                         <%      }                                             %>
@@ -534,7 +534,7 @@
                                             <select name="program"  onchange="openTextbox(this);" class="form-control">
                                                     <% if(info.program.includes(student.program)) { %>
                                                         <%  for(let option in info.program) {              %>
-                                                        <%      if(option==student.program) {              %> 
+                                                        <%      if(info.program[option]==student.program) {              %> 
                                                                     <option value="<%=info.program[option]%>" selected><%=info.program[option]%></option>
                                                         <%      } else {                                      %>  
                                                                     <option value="<%=info.program[option]%>"><%=info.program[option]%></option> 
