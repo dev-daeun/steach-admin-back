@@ -10,6 +10,16 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    studentName: {
+      field: "student_name",
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    teacher_id: {
+      field: "teacher_id",
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
     subject: {
       type: DataTypes.STRING,
       allowNull: false
@@ -182,6 +192,13 @@ module.exports = function(sequelize, DataTypes) {
     Assignment.belongsTo(models.Student, {
       as:'student',
       foreignKey: "student_id",
+      targetKey: "id",
+      onDelete: "cascade",
+      onUpdate: "cascade"
+    });
+    Assignment.belongsTo(models.Teacher, {
+      as:'teacher',
+      foreignKey: "teacher_id",
       targetKey: "id",
       onDelete: "cascade",
       onUpdate: "cascade"
