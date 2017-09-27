@@ -137,18 +137,26 @@
                                         <div class="form-group col-lg-4">
                                             <label>알게된 경로</label>
                                             <select name="known_path" onchange="openTextbox(this);" class="form-control">
-                                                    <% for(let i = 0; i<info.known_path.length; i++) { %>
-                                                            <% if(i==student.known_path) { %> 
-                                                                <option value="<%=i%>" selected><%=info.known_path[i]%></option>
-                                                            <% } else { %>  
-                                                                <option value="<%=i%>"><%=info.known_path[i]%></option> 
-                                                            <% } %>
-                                                        <% } %>
+                                                <% if(info.known_path.includes(student.known_path)) { %>
+                                                <%  for(let option in info.known_path) {              %>
+                                                <%      if(info.known_path[option]==student.known_path) {              %> 
+                                                            <option value="<%=info.known_path[option]%>" selected><%=info.known_path[option]%></option>
+                                                <%      } else {                                      %>  
+                                                            <option value="<%=info.known_path[option]%>"><%=info.known_path[option]%></option> 
+                                                <%      }                                             %>
+                                                <%  }                                                 %>
+                                                    <option value="기타경로">기타경로</option>
+                                                <% } else {                                           %>                  
+                                                    <option value='명함'>명함</option>
+                                                    <option value='소개'>소개</option>
+                                                    <option value='인터넷'>인터넷</option>
+                                                    <option value='기타경로' selected>기타</option> 
+                                                <% } %>
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label style="visibility:hidden">아파트명/기타</label>
-                                            <input type="text" class="form-control" name="apartOrEtc" value="<%=student.etc%>" id="apartOrEtc" style="visibility:hidden"/>
+                                            <input type="text" class="form-control" name="knownPathEtc" value="<%=student.known_path%>" id="knownPathEtc" style="visibility:hidden"/>
                                             </div> 
                                         <div class="form-group col-lg-4">
                                             <label>이름</label>
@@ -224,19 +232,33 @@
                                             <label>어머니 연락처</label>
                                             <input name="mother_phone" placeholder="000-0000-0000" value="<%=student.mother_phone%>" class="form-control phone-number">
                                         </div>
-                                        <div class="form-group col-lg-4">
+                                        <div class="form-group col-lg-3">
                                             <label>희망과목</label>
-                                            <select name="subject" class="form-control">
-                                                    <% for(let i in info.subject) { %>
-                                                        <% if(i==student.subject) { %> 
-                                                            <option value="<%=i%>" selected><%=i%></option>
-                                                        <% } else { %>  
-                                                            <option value="<%=i%>"><%=i%></option>
+                                            <select name="subject" onchange="openTextbox(this);" class="form-control">
+                                                    <% if(info.subject.includes(student.subject)) { %>
+                                                        <%  for(let option = 0; option<info.subject.length; option++) {              %>
+                                                        <%      if(info.subject[option]==student.subject) {              %> 
+                                                                    <option value="<%=info.subject[option]%>" selected><%=student.subject%></option>
+                                                        <%      } else {                                      %>  
+                                                                    <option value="<%=info.subject[option]%>"><%=info.subject[option]%></option> 
+                                                        <%      }                                             %>
+                                                        <%  }                                                 %>
+                                                            <option value="기타과목">기타</option>
+                                                        <% } else {                                           %>                  
+                                                            <option value="국어" >국어</option>
+                                                            <option value="영어">영어</option>
+                                                            <option value="수학">수학</option>
+                                                            <option value="사회">사회</option>
+                                                            <option value="과학">과학</option>
+                                                            <option value="기타과목" selected>기타</option>
                                                         <% } %>
-                                                <% } %>  
                                             </select>
                                         </div>
-                                        <div class="form-group col-lg-4">
+                                        <div class="form-group col-lg-3">
+                                                <label style="visibility:hidden">기타 과목명</label>
+                                                <input type="text" class="form-control"  value="<%=student.subject%>" name="subjectEtc" id="subjectEtc" style="visibility:hidden;"/>
+                                            </div>
+                                        <div class="form-group col-lg-3">
                                             <label>수업형태</label>
                                             <select name= "class_form" class="form-control">
                                                 <% if('원내그룹'==student.subject) { %> 
@@ -248,7 +270,7 @@
                                                 <% } %>
                                             </select>
                                         </div>
-                                        <div class="form-group col-lg-4">
+                                        <div class="form-group col-lg-3">
                                             <label>차량 지원</label>
                                             <div class="form-group">
                                                 <% if(1==student.car_provided) { %>
@@ -486,7 +508,6 @@
                                                     <tbody>
                                                         <% for(let i = 0; i<grade.length; i++) { %>
                                                         <td><%=grade[i].year%></td>
-                                                        <td><%=grade[i].test_form1%> <%=grade[i].test_form2%></td>
                                                         <td><%=grade[i].score%></td>
                                                         <td><%=grade[i].rating%></td>
                                                         <% } %>
@@ -508,19 +529,32 @@
                                                 <% } %>
                                             </select>
                                         </div>
-                                        <div class="form-group col-lg-4 col-lg-offset-8 col-lg-pull-8">
+                                        <div class="form-group col-lg-4">
                                             <label>수강했던 프로그램</label>
-                                            <select name="program" value="<%=student.program%>" class="form-control">
-                                                <% for(let i in info.program) { %>
-                                                    <% if(i==student.program) { %>
-                                                        <option value="<%=i%>" selected><%=i%></option>
-                                                    <% } else { %>
-                                                        <option value="<%=i%>"><%=i%></option>
-                                                    <% } %>
-                                                <% } %>
+                                            <select name="program"  onchange="openTextbox(this);" class="form-control">
+                                                    <% if(info.program.includes(student.program)) { %>
+                                                        <%  for(let option in info.program) {              %>
+                                                        <%      if(info.program[option]==student.program) {              %> 
+                                                                    <option value="<%=info.program[option]%>" selected><%=info.program[option]%></option>
+                                                        <%      } else {                                      %>  
+                                                                    <option value="<%=info.program[option]%>"><%=info.program[option]%></option> 
+                                                        <%      }                                             %>
+                                                        <%  }                                                 %>
+                                                            <option value="기타프로그램">기타프로그램</option>
+                                                        <% } else {                                           %>                  
+                                                            <option value='학원'>학원</option>
+                                                            <option value='과외'>과외</option>
+                                                            <option value='인강'>인강</option>
+                                                            <option value='독학'>독학</option>
+                                                            <option value='기타프로그램' selected>기타</option> 
+                                                        <% } %>
                                             </select>
                                         </div>
-                                        <div class="form-group col-lg-6">
+                                        <div class="form-group col-lg-4">
+                                                <label style="visibility:hidden">기타 프로그램명</label>
+                                                <input type="text" class="form-control" value="<%=student.program%>" name="preProgramEtc" id="preProgramEtc" style="visibility:hidden;"/>
+                                            </div>
+                                        <div class="form-group col-lg-4">
                                             <label>기간</label>
                                           <div class="form-inline">
                                             <input type="date" name="start_term"  value="<%=student.start_term%>" class="form-control">
@@ -543,7 +577,7 @@
                                               <input type="text" name="cons" value="<%=student.cons%>" class="form-control"></textarea>
                                         </div>
                                         <div class="form-group col-lg-12">
-                                              <button type="submit" id="editButton" class="center-block">등록</button>
+                                              <button type="submit" id="editButton" class="center-block">수정</button>
                                               <span value="<%=teacher.teacher_id%>" id="teacher_id"></span>
                                               <span value=true id="matched"></span>
                                         </div>
@@ -583,18 +617,31 @@
 
     
         function openTextbox(selection){
-            var element = document.getElementById('apartOrEtc');
-            if(selection.value==3){
-                element.style.visibility = 'visible';
-                element.placeholder = "아파트 이름";
+            //TODO : 기타로 빠졌다가 다시 바꾸면 텍스트박스 안 사라짐
+            let element;
+            switch(selection.value){
+                case "기타경로": {
+                    element = document.getElementById('knownPathEtc');
+                    element.style.visibility = 'visible';
+                    element.placeholder = "기타경로";
+                    break;
+                }
+                case "기타프로그램": {
+                    element = document.getElementById('preProgramEtc');
+                    element.style.visibility = 'visible';
+                    element.placeholder = "기타 프로그램명";
+                    break;
+                }
+                case "기타과목": {
+                    element = document.getElementById('subjectEtc');
+                    element.style.visibility = 'visible';
+                    element.placeholder = "기타 과목명"; 
+                    break;
+                }
+               
             }
-            else if(selection.value==4){
-                element.style.visibility = 'visible';
-                element.placeholder = "기타";
-            }
-            else element.style.visibility = 'hidden';
-        }
 
+        }
     </script>
     <!-- jQuery -->
     <script src="../vendor/jquery/jquery.min.js"></script>
@@ -614,10 +661,7 @@
                 let parameters = location.href.slice(location.href.indexOf('/')+1).split('/');
                 var student_name = document.getElementsByName('name')[0].value;
                 var school_name = document.getElementsByName('school_name')[0].value;
-                // if(!student_name || !school_name) {
-                //     alert('학생 이름 및 학교명을 입력하세요.');
-                //     return;
-                // }
+
                 $.ajax({ 
                     url: '/student/'+parameters[3]+'/'+parameters[4],
                     processData: false,
@@ -632,7 +676,6 @@
                         called_consultant: document.getElementsByName('called_consultant')[0].value,
                         visited_consultant: document.getElementsByName('visited_consultant')[0].value,
                         known_path: document.getElementsByName('known_path')[0].value,
-                        etc: document.getElementsByName('apartOrEtc')[0].value,
                         subject: document.getElementsByName('subject')[0].value,
                         class_form: document.getElementsByName('class_form')[0].value,
                         car_provided: document.getElementsByName('car_provided')[0].value,

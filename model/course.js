@@ -31,7 +31,7 @@ Course.selectByStudentTeacherId = function(connection, s_id, e_id, t_id){
             FROM    course, turn 
             WHERE   course.id = turn.course_id 
                     AND student_id = ?
-                    AND expectation_id = ?
+                    AND assignment_id = ?
                     AND teacher_id = ? 
         ) AS crs 
         ON crs.id = lsn.course_id
@@ -53,7 +53,7 @@ Course.getScheduleByCourseId = function(connection, id){
 
 Course.getGradeByCourseId = function(connection, id){
     return new Promise(function(resolve, reject){
-        connection.query('select test_form1, test_form2, score, rating, year from grade where course_id = ? order by id desc', [id], function(err, result){
+        connection.query('select score, rating, year from grade where course_id = ? order by id desc', [id], function(err, result){
             if(err) reject(err);
             else resolve([result, connection]);
         });
@@ -62,7 +62,7 @@ Course.getGradeByCourseId = function(connection, id){
 
 Course.deleteByStudentTeacherExpectId = function(connection, s_id, t_id, e_id){
     return new Promise((resolve, reject) => {
-        connection.query('delete from course where student_id = ? and teacher_id = ? and expectation_id = ?', [s_id, t_id, e_id], (err) => {
+        connection.query('delete from course where student_id = ? and teacher_id = ? and assignment_id = ?', [s_id, t_id, e_id], (err) => {
             if(err) reject([err, connection]);
             else resolve(connection);
         });

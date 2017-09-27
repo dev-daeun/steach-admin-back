@@ -26,7 +26,7 @@ app.use('/', require('./controller/index'));
 app.use('/teacher', require('./controller/teacher'));
 app.use('/student', require('./controller/student'));
 app.use('/assignment', require('./controller/assignment'));
-
+app.use('/dashboard', require('./controller/dashboard'));
 
 app.use(function(err, req, res, next) {
   console.log(err);

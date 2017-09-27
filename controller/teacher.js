@@ -1,10 +1,11 @@
 const Teacher = require('../model/teacher');
+
 const express = require('express');
 const router  = express.Router();
 const ejs = require('ejs');
-const fs = require('fs');
 const moment = require('moment');
 const Coolsms = require('coolsms-rest-sdk');
+
 const adminName = require('../config.json').admin_name;
 const coolsmsConfig = require('../config.json').coolsms;
 const pushMessage = require('../utils/push').pushMessage;
@@ -22,6 +23,18 @@ router.get('/joined', function(req, res, next){
             switch(element.gender){
                 case 0: element.gender = '남'; break;
                 case 1: element.gender = '여';
+            }
+            switch(element.univ_status){
+                case 1: element.univ_status = '재학'; break;
+                case 2: element.univ_status = '휴학'; break;
+                case 3: element.univ_status = '수료'; break;
+                case 4: element.univ_status = '졸업'; break;
+            }
+            switch(element.employed){
+                case 0: element.employed = '퇴직'; break;
+                case 1: element.employed = '재직'; break;
+                case 2: element.employed = '만강'; break;
+                case 3: element.employed = '대기'; break;
             }
             element.payday.forEach(function(micro){
                 micro.pay_day = moment(micro.pay_day).format("MM-DD");
@@ -44,6 +57,18 @@ router.get('/waiting', function(req, res, next){
             switch(element.gender){
                 case 0: element.gender = '남'; break;
                 case 1: element.gender = '여';
+            }
+            switch(element.univ_status){
+                case 1: element.univ_status = '재학'; break;
+                case 2: element.univ_status = '휴학'; break;
+                case 3: element.univ_status = '수료'; break;
+                case 4: element.univ_status = '졸업'; break;
+            }
+            switch(element.employed){
+                case 0: element.employed = '퇴직'; break;
+                case 1: element.employed = '재직'; break;
+                case 2: element.employed = '만강'; break;
+                case 3: element.employed = '대기'; break;
             }
         });
         ejs.renderFile('view/admin/waitTeacherList.ejs', {teacher: teachers}, (err, view) => {

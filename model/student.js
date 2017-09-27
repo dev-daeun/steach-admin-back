@@ -38,12 +38,12 @@ Student.getAll = function(){
                                e.visiting_day, 
                                e.first_date 
                         FROM   student s, 
-                               expectation e 
+                               assignment e 
                         WHERE  s.id = e.student_id 
                         ORDER  BY s.id DESC) AS STU 
                        LEFT OUTER JOIN (SELECT t.NAME           AS t_name, 
-                                               a.expectation_id AS e_id 
-                                        FROM   assignment a, 
+                                               a.assignment_id AS e_id 
+                                        FROM   apply a, 
                                                teacher t 
                                         WHERE  a.teacher_id = t.id and a.status = 2) AS TEA 
                                     ON STU.e_id = TEA.e_id 
@@ -63,7 +63,7 @@ Student.getAll = function(){
     });
 };
 
-Student.selectById = function(connection, id){
+Student.selectById = function(connection, s_id, e_id){
     return new Promise(function(resolve, reject){
         connection.query(
         `SELECT prev_start_term AS start_term, 
@@ -75,7 +75,6 @@ Student.selectById = function(connection, id){
                 prev_cons       AS cons, 
                 called_consultant,
                 visited_consultant,
-                etc,
                 known_path,
                 car_provided,
                 student_memo,
@@ -94,65 +93,11 @@ Student.selectById = function(connection, id){
                 school, 
                 s.id            AS s_id, 
                 e.id            AS e_id
-        FROM   student s, expectation e 
+        FROM   student s, assignment e 
         WHERE  s.id = e.student_id 
-                AND s.id = ? `, [id], (err, result) => {
+                AND s.id = ? and e.id = ?`, [s_id, e_id], (err, result) => {
             if(err) reject([err, connection]);
             else resolve([result, connection]);
-        });
-    });
-};
-
-Student.insertStudent = function(student, expectation){
-    return new Promise(function(resolve, reject){
-        Student.getConn()
-        .then(function(connection){
-            return new Promise(function(resolve, reject){
-                connection.beginTransaction(function(err){
-                    if(err) {
-                        connection.release();
-                        reject(err);
-                    }
-                    else resolve(connection); //에러 없으면 커낵션 객체 resolve(다음 then으로 넘어감)
-                });
-            });
-        }).then(function(connection){
-            return new Promise(function(resolve, reject){
-                connection.query('insert into student set ?', student, function(err, result){
-                    if(err) reject([err, connection]);
-                    else resolve([connection, result.insertId]);
-                });
-            });
-        }).then(function([connection, id]){
-            return new Promise(function(resolve, reject){
-                expectation.student_id = id;
-                connection.query('insert into expectation set ? ', expectation, function(err){
-                    if(err) reject([err, connection]);
-                    else  {
-                        connection.commit(function(err){
-                            if(err){
-                                connection.rollback(function(){
-                                    connection.release();
-                                });
-                            }
-                            else {
-                                connection.release();
-                                resolve();
-                            }
-                        });
-                    }
-                });
-            });
-        })
-        .then(function(){ resolve(); })
-        .catch(function([err,connection]){
-            if(connection){
-                connection.rollback(function(){
-                    connection.release();
-                    reject(err);
-                });
-            }
-            else reject(err);
         });
     });
 };
