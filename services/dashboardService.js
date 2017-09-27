@@ -19,6 +19,9 @@ class DashboardService{
                 },
                 {
                     consult_status: status
+                },
+                {
+                    deleted_at: null
                 }
             ]
         });
@@ -46,6 +49,9 @@ class DashboardService{
                 }, 
                 {
                     consult_status: status
+                },
+                {
+                    deleted_at: null
                 }
             ]
         });
@@ -56,21 +62,113 @@ class DashboardService{
         let subjectArray = ["국어", "수학", "영어", "사회", "과학"];
         if(subjectArray.includes(subject)){
             return Assignment.findAndCountAll({
-                where: {
-                    subject: subject
-                }            
+                where: [
+                    {
+                        subject: subject
+                    },
+                    {
+                        deleted_at: null
+                    }
+                ]      
             });
         }
         else{
             return Assignment.findAndCountAll({
-                where: {
-                    subject: {
-                        $notIn: subjectArray
+                where: [
+                    {
+                        subject: {
+                            $notIn: subjectArray
+                        }
+                    },
+                    {
+                        deleted_at: null
                     }
-                }
+                ]
             });
         }
 
+    }
+
+    //대기매출 
+    static getExpectedProfit(){
+        // return Assignment.findAndCountAll({
+        //     attributes: [
+        //        sequelize.literal('sum(fee - teacher_fee) as total')
+        //     ],
+        //     where: [
+        //         {
+        //             assign_status: {
+        //                 $in: [2, 3]
+        //             }
+        //         },
+        //         {
+        //             deleted_at: null
+        //         }
+        //     ]
+        // });
+
+        return Promise.all([
+            Assignment.sum('fee', {
+                where: [
+                    {
+                        assign_status: {
+                            $in: [2, 3]
+                        }
+                    },
+                    {
+                        deleted_at: null
+                    }
+                ] 
+            }),
+            Assignment.sum('teacher_fee', {
+                where: [
+                    {
+                        assign_status: {
+                            $in: [2, 3]
+                        }
+                    },
+                    {
+                        deleted_at: null
+                    }
+                ] 
+            })
+        ]);
+    }
+
+    static getPaidProfit(){
+        return Promise.all([
+            Assignment.sum('deposit_fee', {
+                where: [
+                    {
+                        assign_status: {
+                            $in: [2, 3]
+                        }
+                    },
+                    {
+                        deleted_at: null
+                    }
+                ] 
+            }),
+            Assignment.sum('teacher_fee', {
+                where: [
+                    {
+                        assign_status: {
+                            $in: [2, 3]
+                        }
+                    },
+                    {
+                        deleted_at: null
+                    }
+                ] 
+            })
+        ]);
+    }
+
+    static getTeachersBySubject(subject){
+     //employed in [1,2,3]
+     //join status 1
+     //group by subject
+     //select count(teacher_id) from apply group by 
     }
 }
 
