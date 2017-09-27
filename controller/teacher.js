@@ -91,17 +91,17 @@ router.post('/waiting', function(req, res, next){
             .then(function(phone){
                 text = adminName + '으로부터 가입요청 승인되었습니다.';
                 console.log(text);
-            coolsmsClient.sms.send({
-                to: phone[0].phone,
-                type: "SMS",
-                from: coolsmsConfig.from,
-                text: text
-            }, function(err, result){
-                if(err) {
-                    console.log(err);
-                    res.sendStatus(500);
-                }
-            });
+            // coolsmsClient.sms.send({
+            //     to: phone[0].phone,
+            //     type: "SMS",
+            //     from: coolsmsConfig.from,
+            //     text: text
+            // }, function(err, result){
+            //     if(err) {
+            //         console.log(err);
+            //         res.sendStatus(500);
+            //     }
+            // });
             console.log(phone[0].fcm_token);
             pushMessage('가입요청 승인여부', text, phone[0].fcm_token); 
                 res.status(200).send(true);   
@@ -116,15 +116,15 @@ router.post('/waiting', function(req, res, next){
             return new Promise(function(resolve, reject){
                 text = '승인이 거절되어 가입에 실패하였습니다.';
                 console.log(text);
-                coolsmsClient.sms.send({
-                    to: phone[0].phone,
-                    type: "SMS",
-                    from: coolsmsConfig.from,
-                    text: text
-                }, function(err, result){
-                    if(err) reject(err);
-                    else resolve();
-                });
+                // coolsmsClient.sms.send({
+                //     to: phone[0].phone,
+                //     type: "SMS",
+                //     from: coolsmsConfig.from,
+                //     text: text
+                // }, function(err, result){
+                //     if(err) reject(err);
+                //     else resolve();
+                // });
                 pushMessage('가입요청 승인여부', text, phone[0].fcm_token, "assigned"); 
                 resolve();
             });
