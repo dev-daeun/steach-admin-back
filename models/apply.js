@@ -45,6 +45,13 @@ module.exports = function(sequelize, DataTypes) {
       onDelete: "cascade",
       onUpdate: "cascade"
     });
+    Apply.belongsTo(models.Teacher, {
+      as:'teacher',
+      foreignKey: "teacher_id",
+      targetKey: "id",
+      onDelete: "cascade",
+      onUpdate: "cascade"
+    });
   };
   return Apply;
 };

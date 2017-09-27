@@ -4,76 +4,82 @@ const Teacher = require('../models').Teacher;
 const Assignment = require('../models').Assignment;
 const Apply = require('../models').Apply;
 const Student = require('../models').Student;
+const sequelize = require('../models').sequelize;
+
+class TeacherService {
+    /* 가입승인된 선생님 목록 */
+    static getJoinedTeachers(){
+        return Teacher.findAll({
+            include: [{
+                model: Assignment,
+                required: false,
+                where: { 
+                    teacher_id: Teacher.id, 
+                    teacher_id: {
+                        $not: null
+                    }
+                }  
+            }], 
+            where: {
+                employed: {
+                    $ne: 0
+                }
+            },
+            order: [
+                ['id', 'desc']
+            ]
+        });
+    }
+
+    /* 가입 미승인된 선생님 목록 */
+    static getUnjoinedTeachers(){
+        return Teacher.findAll({
+            attributes: ['id', 
+                        'employed', 
+                        'address1', 
+                        'age', 
+                        'name', 
+                        'gender', 
+                        'university', 
+                        'grade'
+            ],
+            where: {
+                employed: 0
+            },
+            order: [
+                ['id', 'desc']
+            ]
+        });
+    }
+
+    static setTeacherJoined(teacherId){
+        return Teacher.update({
+            employed: 1
+            },{
+                where: {
+                    id: teacherId
+            }
+        });
+    }
+
+    static getTeacherById(teacherId){
+        return Teacher.findOne({
+            where: {
+                id: teacherId
+            }
+        });
+    }
+
+    static deleteTeacherById(teacherId){
+        return Teacher.destroy({
+            where: {
+                id: teacherId
+            }
+        });
+    }
+}
 
 
-// class TeacherService {
-//     static getJoinedTeachers(){
-//         Teacher.query()
-//         Teacher.findAll({
-//             attributes: ['id', 
-//                         'employed', 
-//                         'address1', 
-//                         'age', 
-//                         'name', 
-//                         'gender', 
-//                         'university', 
-//                         'grade'
-//             ],
-//             where: {
-//                 join_status: 1
-//             },
-//             order: [
-//                 ['id', 'desc']
-//             ]
-//         })
-//         .then(teachers => {
-            
-//         })
-//     }
-// }
-
-
-// // // /* 가입된 선생님 목록 조회 */
-// Teacher.getJoinedTeachers = function(){
-//     return new Promise(function(resolve, reject){
-//         async.waterfall([
-//             function(callback){
-//                 pool.getConnection(function(err, connection){
-//                     if(err) callback(err);
-//                     else callback(null, connection);
-//                 });
-//             },
-//             function(connection, callback){
-//                 connection.query(`select id as t_id , employed, address1, age, name, gender, university, grade, 
-//                 (select sum(fee) from expectation, assignment where expectation.id = assignment.expectation_id and assignment.teacher_id = t_id) as profit, 
-//                 univ_status, account_number from teacher where join_status = 1 order by id desc`, function(err, teachers){
-//                     if(err) callback(err);
-//                     else callback(null, teachers, connection);
-//                 });
-//             },
-//             function(teachers, connection, callback){
-//                 async.each(teachers, function(element, done){
-//                     connection.query(`select pay_day, subject, name from expectation as e, assignment as a, student as s 
-//                     where e.id = a.expectation_id and a.student_id = s.id and a.teacher_id = ? and a.status = 5`, element.t_id, function(err, result){
-//                         if(err) done(err);
-//                         else {
-//                             element.payday = result;
-//                             done();
-//                         }
-//                     });
-//                 }, function(err){
-//                     if(err) callback(err);
-//                     else callback(null, teachers, connection);
-//                 });
-//             }
-//         ], 
-//         function(err, teachers, connection){
-//             if(connection)connection.release();
-//             if(err) reject(err);
-//             else resolve(teachers);
-//         });
-//     });
-// }
 
 
 

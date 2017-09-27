@@ -128,17 +128,17 @@
                 <tbody>
                   <tr>
                     <td><%=i+1%></td>
-                    <td><%=teacher[i].employed%></td>
-                    <td><%=teacher[i].address1%></td>
-                    <td><%=teacher[i].age%></td>
-                    <td><%=teacher[i].name%></td>
-                    <td><%=teacher[i].gender%></td>
-                    <td><%=teacher[i].university%></td>
-                    <td><%=teacher[i].grade%></td>
-                    <td><%=teacher[i].univ_status%></td>
+                    <td><%=teacher[i].dataValues.employed%></td>
+                    <td><%=teacher[i].dataValues.address1%></td>
+                    <td><%=teacher[i].dataValues.age%></td>
+                    <td><%=teacher[i].dataValues.name%></td>
+                    <td><%=teacher[i].dataValues.gender%></td>
+                    <td><%=teacher[i].dataValues.university%></td>
+                    <td><%=teacher[i].dataValues.grade%></td>
+                    <td><%=teacher[i].dataValues.univStatus%></td>
                     <td>
-                      <button type = 'submit' value = <%=teacher[i].id%> class = "permitButton">승인</button>
-                      <button type = 'submit' value = <%=teacher[i].id%> class = "denyButton">거절</button>                  
+                      <button type = 'submit' value = <%=teacher[i].dataValues.id%> class = "permitButton">승인</button>
+                      <button type = 'submit' value = <%=teacher[i].dataValues.id%> class = "denyButton">거절</button>                  
                     </td>                       
                   </tr>
                 </tbody>
@@ -188,9 +188,12 @@
            cache: false, 
            contentType: 'application/json; charset=utf-8',
            dataType: 'json',
-           data: JSON.stringify({ teacher_id: val, permitted: true }), 
+           data: JSON.stringify({ teacherId: val, permitted: true }), 
            success: function(data){
              window.location.href = '/teacher/joined';
+           },
+           error: function(xhr, status, error){
+                    alert(xhr.responseText);
            }
           });
         }
@@ -207,9 +210,12 @@
            cache: false, 
            contentType: 'application/json; charset=utf-8',
            dataType: 'json',
-           data: JSON.stringify({ teacher_id: val, permitted: false }), 
+           data: JSON.stringify({ teacherId: val, permitted: false }), 
            success: function(data){
               window.location.href = '/teacher/waiting';
+           },
+           error: function(xhr, status, error){
+                    alert(xhr.responseText);
            }
           });
         } 

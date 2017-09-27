@@ -49,10 +49,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false
     },
-    major: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
     grade: {
       type: DataTypes.INTEGER,
       allowNull: false
@@ -79,12 +75,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false
     },
-    joinStatus: {
-      field: "join_status",
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
-    },
     available: {
       type: DataTypes.TEXT,
       allowNull: false
@@ -98,6 +88,18 @@ module.exports = function(sequelize, DataTypes) {
   
   Teacher.associate = (models) => {
     Teacher.hasMany(models.Course, {
+      foreignKey: "teacher_id",
+      targetKey: "id",
+      onDelete: "cascade",
+      onUpdate: "cascade"
+    });
+    Teacher.hasMany(models.Apply, {
+      foreignKey: "teacher_id",
+      targetKey: "id",
+      onDelete: "cascade",
+      onUpdate: "cascade"
+    });
+    Teacher.hasMany(models.Assignment, {
       foreignKey: "teacher_id",
       targetKey: "id",
       onDelete: "cascade",

@@ -140,23 +140,23 @@
                 <% for(let i = 0; i<teacher.length; i++){ %>
                   <tbody>
                     <tr>
-                      <td><%=teacher[i].t_id%></td>
-                      <td><%=teacher[i].employed%></td>
-                      <td><%=teacher[i].address1%></td>
-                      <td><%=teacher[i].age%></td>
-                      <td><%=teacher[i].name%></td>
-                      <td><%=teacher[i].gender%></td>
-                      <td><%=teacher[i].university%></td>
-                      <td><%=teacher[i].grade%></td>
-                      <td><%=teacher[i].univ_status%></td>
-                      <td><%=teacher[i].profit%></td>
+                      <td><%=i+1%></td>
+                      <td><%=teacher[i].dataValues.employed%></td>
+                      <td><%=teacher[i].dataValues.address1%></td>
+                      <td><%=teacher[i].dataValues.age%></td>
+                      <td><%=teacher[i].dataValues.name%></td>
+                      <td><%=teacher[i].dataValues.gender%></td>
+                      <td><%=teacher[i].dataValues.university%></td>
+                      <td><%=teacher[i].dataValues.grade%></td>
+                      <td><%=teacher[i].dataValues.univStatus%></td>
+                      <td><%=teacher[i].totalProfit%></td>
                       <td>
-                          <% for(let j = 0; j<teacher[i].payday.length; j++) { %>
-                            [<%=teacher[i].payday[j].name%>,<%=teacher[i].payday[j].subject%>]-<%=teacher[i].payday[j].pay_day%>
+                          <% for(let j = 0; j<teacher[i].Assignments.length; j++) { %>
+                            <%=teacher[i].Assignments[j].dataValues.studentName%> - <%=teacher[i].Assignments[j].dataValues.payDay%>
                             <br>
                             <%}%>
                       </td>
-                      <td><%=teacher[i].account_number%></td>
+                      <td><%=teacher[i].dataValues.accountNumber%></td>
                     </tr>
                   </tbody>
                 <% }%>
@@ -194,6 +194,7 @@
 
   <!-- Page-Level Demo Scripts - Tables - Use for reference -->
   <script>  
+  
   $(document).ready(function() {
     $('#dataTables-example').DataTable({
       responsive: true,
@@ -203,7 +204,6 @@
     $('#filterTest').append("<option value=''>전체보기</option>");
     $('#filterTest').append("<option value='재직'>재직</option>");
     $('#filterTest').append("<option value='만강'>만강</option>");
-    $('#filterTest').append("<option value='퇴직'>퇴직</option>");
     $('#filterTest').append("<option value='대기'>대기</option>");
     $('#filterTest').on('change', function () {
       var table = $('#dataTables-example').DataTable();
