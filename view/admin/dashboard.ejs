@@ -165,7 +165,7 @@
                                           <td class="col-lg-4" style="text-align:center"><%=monthly.cancel%></td>
                                       </tr>
                                       <tr>
-                                        <td class="col-lg-4" style="text-align:center">당일 전화 퇴원 수</td>
+                                        <td class="col-lg-4" style="text-align:center">당월 전화 퇴원 수</td>
                                         <td class="col-lg-4" style="text-align:center"><%=monthly.retired%></td>
                                     </tr>
                                       <tr>
@@ -247,7 +247,7 @@
                                   </thead>
                                   <tbody>
                                       <tr>
-                                          <td class="col-lg-2"  style="text-align:center">배정중인 학생 수</td>
+                                          <td class="col-lg-2"  style="text-align:center">아직 배정중인 학생 수</td>
                                           <td class="col-lg-1" style="text-align:center"><%=assign.korean.assigning%></td>
                                           <td class="col-lg-1" style="text-align:center"><%=assign.math.assigning%></td>
                                           <td class="col-lg-1" style="text-align:center"><%=assign.english.assigning%></td>
@@ -257,15 +257,15 @@
                                       </tr>
                                       <tr>
                                           <td class="col-lg-2" style="text-align:center">배정완료 된 학생 수</td>
-                                          <td class="col-lg-1" style="text-align:center"><%=assign.korean.assigning+assign.korean.attending%></td>
-                                          <td class="col-lg-1" style="text-align:center"><%=assign.math.assigning+assign.math.attending%></td>
-                                          <td class="col-lg-1" style="text-align:center"><%=assign.english.assigning+assign.english.attending%></td>
-                                          <td class="col-lg-1" style="text-align:center"><%=assign.society.assigning+assign.society.attending%></td>
-                                          <td class="col-lg-1" style="text-align:center"><%=assign.science.assigning+assign.science.attending%></td>
-                                          <td class="col-lg-1" style="text-align:center"><%=assign.etc.assigning+assign.etc.attending%></td>
+                                          <td class="col-lg-1" style="text-align:center"><%=assign.korean.waiting+assign.korean.attending%></td>
+                                          <td class="col-lg-1" style="text-align:center"><%=assign.math.waiting+assign.math.attending%></td>
+                                          <td class="col-lg-1" style="text-align:center"><%=assign.english.waiting+assign.english.attending%></td>
+                                          <td class="col-lg-1" style="text-align:center"><%=assign.society.waiting+assign.society.attending%></td>
+                                          <td class="col-lg-1" style="text-align:center"><%=assign.science.waiting+assign.science.attending%></td>
+                                          <td class="col-lg-1" style="text-align:center"><%=assign.etc.waiting+assign.etc.attending%></td>
                                       </tr>
                                       <tr>
-                                          <td class="col-lg-2" style="text-align:center">대기중인 학생 수</td>
+                                          <td class="col-lg-2" style="text-align:center">수업대기중인 학생 수</td>
                                           <td class="col-lg-1" style="text-align:center"><%=assign.korean.waiting%></td>
                                           <td class="col-lg-1" style="text-align:center"><%=assign.math.waiting%></td>
                                           <td class="col-lg-1" style="text-align:center"><%=assign.english.waiting%></td>
@@ -293,15 +293,15 @@
                                   <tbody>
                                       <tr>
                                           <td class="col-lg-6" style="text-align:center">이 달 매출</td>
-                                          <td class="col-lg-6" style="text-align:center">130000000</td>
+                                          <td class="col-lg-6" style="text-align:center"><%=profit.expected%></td>
                                       </tr>
                                       <tr>
                                           <td class="col-lg-6" style="text-align:center">대기 매출</td>
-                                          <td class="col-lg-6" style="text-align:center">52000000</td>
+                                          <td class="col-lg-6" style="text-align:center"><%=profit.paid%></td>
                                       </tr>
                                       <tr>
                                           <td class="col-lg-6" style="text-align:center">총 매출</td>
-                                          <td class="col-lg-6" style="text-align:center">1720000000</td>
+                                          <td class="col-lg-6" style="text-align:center"><%=profit.total%></td>
                                       </tr>
                                   </tbody>
                               </table>
@@ -363,6 +363,7 @@
     <!-- Custom Theme JavaScript -->
     <script src="../dist/js/sb-admin-2.js"></script>
 
+    
 </body>
 
 </html>
