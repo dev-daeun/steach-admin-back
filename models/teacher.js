@@ -1,4 +1,3 @@
-const sequelize = require('sequelize');
 
 module.exports = function(sequelize, DataTypes) {
   let Teacher = sequelize.define("Teacher", {

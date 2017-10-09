@@ -81,11 +81,6 @@ router.get('/waiting', function(req, res, next){
                 case 3: teacher.dataValues.univStatus = '수료'; break;
                 case 4: teacher.dataValues.univStatus = '졸업'; break;
             }
-            switch(teacher.dataValues.employed){
-                case 1: teacher.dataValues.employed = '재직'; break;
-                case 2: teacher.dataValues.employed = '만강'; break;
-                case 3: teacher.dataValues.employed = '대기'; break;
-            }
         });
         ejs.renderFile('view/admin/waitTeacherList.ejs', {teacher: results}, (err, view) => {
             if(err) throw err;
@@ -101,7 +96,6 @@ router.get('/waiting', function(req, res, next){
 
 /* 가입승인/거절*/
 router.post('/waiting', function(req, res, next){
-    var text;
     var teacherId = req.body.teacherId;
     if(!teacherId) next(new CustomError(400, '승인/거절에 필요한 선생님 고유번호가 없습니다.'));
     else{
@@ -109,30 +103,28 @@ router.post('/waiting', function(req, res, next){
         .then( teacher => {
             if(!teacher) next(new CustomError(404, '선생님 정보를 찾을 수 없습니다.'));
             else if(req.body.permitted){
-                Teacher.givePermission(teacherId)
+                Teacher.setTeacherJoined(teacherId)
                 .then(() => {
-                    text = adminName + '으로부터 가입요청 승인되었습니다.';
-                    console.log(text);
-                    console.log(teacher.dataValues.fcm_token);
-                    pushMessage('가입요청 승인여부', text, teacher.dataValues.fcm_token);  
+                    let text = adminName + '으로부터 가입요청 승인되었습니다.';
+                    pushMessage('가입요청 승인여부', text, teacher.dataValues.fcmToken);  
                 });
             }else{
                 Teacher.deleteTeacherById(teacherId)
                 .then(() => {
-                    text = '승인이 거절되어 가입에 실패하였습니다.';
-                    console.log(text);
-                    pushMessage('가입요청 승인여부', text, teacher.dataValues.fcm_token, "assigned"); 
+                    let text = '승인이 거절되어 가입에 실패하였습니다.';
+                    pushMessage('가입요청 승인여부', text, teacher.dataValues.fcmToken, "assigned"); 
                 })
             }
-            coolsmsClient.sms.send({
-                to: teacher.dataValues.phone,
-                type: "SMS",
-                from: coolsmsConfig.from,
-                text: text
-            }, function(err, result){
-                if(err) throw err;
-                else res.status(200).send(true); 
-            });
+            console.log(teacher.dataValues.fcmToken);
+            // coolsmsClient.sms.send({
+            //     to: teacher.dataValues.phone,
+            //     type: "SMS",
+            //     from: coolsmsConfig.from,
+            //     text: text
+            // }, function(err, result){
+            //     if(err) throw err;
+            // });
+            res.status(200).send(true); 
         }).catch(function(err){
             next(new CustomError(500, err.message || err));
         });

@@ -11,57 +11,7 @@ Student.getConn = function(){
     });
 };
 
-Student.getAll = function(){
-    return new Promise(function(resolve, reject){
-        Student.getConn()
-        .then(function(connection){ 
-            return new Promise(function(resolve, reject){
-                let query = `
-                SELECT STU.*, TEA.t_name 
-                FROM   (SELECT e.id                                AS e_id, 
-                               e.assign_status, 
-                               e.deposit_fee, 
-                               e.subject, 
-                               s.id                                AS s_id, 
-                               s.school_name, 
-                               s.grade, 
-                               Concat(s.address1, ' ', s.address2) AS address, 
-                               s.NAME                              AS s_name, 
-                               s.mother_phone, 
-                               s.father_phone, 
-                               e.class_form, 
-                               e.fee, 
-                               e.deposit_day, 
-                               e.called_consultant, 
-                               e.visited_consultant, 
-                               e.calling_day, 
-                               e.visiting_day, 
-                               e.first_date 
-                        FROM   student s, 
-                               assignment e 
-                        WHERE  s.id = e.student_id 
-                        ORDER  BY s.id DESC) AS STU 
-                       LEFT OUTER JOIN (SELECT t.NAME           AS t_name, 
-                                               a.assignment_id AS e_id 
-                                        FROM   apply a, 
-                                               teacher t 
-                                        WHERE  a.teacher_id = t.id and a.status = 2) AS TEA 
-                                    ON STU.e_id = TEA.e_id 
-                ORDER  BY STU.e_id DESC 
-                `;
-                connection.query(query, function(err, result){
-                    connection.release();
-                    if(err) reject(err);
-                    else resolve(result);
-                });
-            });
-        }).then(function(result){
-            resolve(result);
-        }).catch(function(err){
-            reject(err);
-        });
-    });
-};
+
 
 Student.selectById = function(connection, s_id, e_id){
     return new Promise(function(resolve, reject){

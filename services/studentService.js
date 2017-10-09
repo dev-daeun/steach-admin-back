@@ -1,9 +1,9 @@
 const TeacherModel = require('../models').Teacher;
-const AssignmentModel = require('../models').Assignment;
+const Assignment = require('../models').Assignment;
 const Apply = require('../models').Apply;
 const StudentModel = require('../models').Student;
 const Model = require('../models');
-
+const sequelize = require('../models/index').sequelize;
 
 /* 이전 서비스에 필요한 모듈 */
 const Student = require('../model/student');
@@ -14,8 +14,8 @@ const Assign = require('../model/assignment');
 const Mysql = require('../utils/mysql');
 const express = require('express');
 const router  = express.Router();
-const bookshelf = require('../utils/bookshelf').bookshelf;
-const knex = bookshelf.knex;
+// const bookshelf = require('../utils/bookshelf').bookshelf;
+// const knex = bookshelf.knex;
 const ejs = require('ejs');
 const fs = require('fs');
 const moment = require('moment');
@@ -154,45 +154,55 @@ class StudentService{
     }
 
 
+
+    static getJoinedStudents(){
+        return StudentModel.findAll({   
+            include: [{
+                model: Assignment,
+                as: 'assignment',
+                required: true,
+                where: { 
+                    assignStatus: {
+                        $not: 0
+                    },
+                    student_id: Student.id,
+                    student_id: {
+                        $not: null
+                    }
+                },
+                order: [
+                    ['assignment', 'id', 'desc']  
+                ]
+            }],
+            order: [
+                ['id', 'desc']
+            ]
+        });
+    }
+
+
     static getRetiredStudents(){
-        //
-        return knex.raw(`
-        SELECT ATD.attendance, INF.* 
-        FROM   ((SELECT attendance, 
-                        course_id 
-                 FROM   lesson) AS ATD 
-                RIGHT JOIN (SELECT TC.teacher_name, 
-                                   TC.course_id, 
-                                   STU.* 
-                            FROM   (SELECT c.student_id, 
-                                           c.id   AS course_id, 
-                                           t.NAME AS teacher_name 
-                                    FROM   teacher t, 
-                                           course c 
-                                    WHERE  c.teacher_id = t.id) AS TC 
-                                    RIGHT JOIN (SELECT s.id AS student_id, 
-                                                       e.id AS expect_id, 
-                                                       assign_status, 
-                                                       fail_reason, 
-                                                       subject, 
-                                                       school_name, 
-                                                       grade, 
-                                                       concat(address1, ' ', address2) AS address, 
-                                                       NAME AS student_name, 
-                                                       called_consultant, 
-                                                       visited_consultant, 
-                                                       class_form, 
-                                                       fee, 
-                                                       deposit_day,
-                                                       deposit_fee,
-                                                       calling_day, 
-                                                       visiting_day, 
-                                                       first_date 
-                                    FROM   student s, assignment e 
-                                    WHERE  s.id = e.student_id 
-                                           AND e.assign_status = 0) AS STU 
-                                    ON STU.student_id = TC.student_id) AS INF 
-                  ON ATD.course_id = INF.course_id )`);
+        return StudentModel.findAll({
+            include: [{
+                model: Assignment,
+                as: 'assignment',
+                required: true,
+                where: {
+                    assignStatus: 0,
+                    student_id: Student.id,
+                    student_id: {
+                        $not: null
+                    }
+                },
+                order: [
+                    ['assignment', 'id', 'desc']
+                ]
+            }],
+            order: [
+                ['id', 'desc']
+            ]
+        });
+     
     }
 }
 

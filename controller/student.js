@@ -32,26 +32,30 @@ router.get('/:student/:expectation', function(req, res, next){
 
 /* 학생 목록 조회 */
 router.get('/joined', function(req, res, next){
-    StudentModel.getAll()
-    .then(function(students){
-        students.forEach(function(element){
-            element.deposit_day = moment(element.first_date).add(28, 'days').format("MM-DD");
-            element.calling_day = moment(element.calling_day).format("YYYY-MM-DD");
-            element.visiting_day = moment(element.visiting_day).format("YYYY-MM-DD");
-            element.first_date = moment(element.first_date).format("YYYY-MM-DD");
-                switch(element.assign_status){
-                    case 0: element.assign_status = '실패'; break;
-                    case 1: element.assign_status = '배정실패'; break;
-                    case 2: element.assign_status = '배정중'; break;
-                    case 3: element.assign_status = '대기중'; break;
-                    case 4: element.assign_status = '재원중'
-                }
-            });
-            ejs.renderFile('view/admin/studentList.ejs', { student: students }, function(err, view){
-                if(err) throw err;
-                else res.status(200).send(view);
-            }); 
-    }).catch(function(err){
+    StudentService.getJoinedStudents()
+    .then(results => {
+        let total = 0;
+        results.forEach( student => {
+            student.dataValues.assignment.forEach( assign => {
+                total += 1;
+                assign.dataValues.depositDay = moment(assign.dataValues.depositDay).format("MM-DD");
+                console.log("day : ", assign.dataValues.depositDay);
+                assign.dataValues.callingDay = moment(assign.dataValues.callingDay).format("YYYY-MM-DD");
+                assign.dataValues.visitingDay = moment(assign.dataValues.visitingDay).format("YYYY-MM-DD");
+                assign.dataValues.firstDate = moment(assign.dataValues.firstDate).format("YYYY-MM-DD");
+                    switch(assign.dataValues.assignStatus){
+                        case 1: assign.dataValues.assignStatus = '배정실패'; break;
+                        case 2: assign.dataValues.assignStatus = '배정중'; break;
+                        case 3: assign.dataValues.assignStatus = '대기중'; break;
+                        case 4: assign.dataValues.assignStatus = '재원중'
+                    }
+            });       
+        });
+        ejs.renderFile('view/admin/studentList.ejs', { student: results, total: total }, (err, view) => {
+            if(err) throw err;
+            else res.status(200).send(view);
+        }); 
+    }).catch(err => {
         next(new CustomError(500, err.message || err));
     });    
 });
@@ -78,15 +82,22 @@ router.put('/:student/:expectation', function(req, res, next){
     });
 });
 
+
+/* 퇴원학생 조회*/
 router.get('/retired', function(req, res, next){
     StudentService.getRetiredStudents()
-    .then(students => {
-        students[0].forEach(element => {
-            element.calling_day = moment(element.calling_day).format('YYYY-MM-DD');
-            element.visiting_day = moment(element.visiting_day).format('YYYY-MM-DD');
-            element.first_date = moment(element.first_date).format('YYYY-MM-DD');
+    .then(results => {
+        console.log(results);
+        let total = 0;
+        results.forEach(student => {
+            student.dataValues.assignment.forEach( assign => {
+                total += 1;
+                assign.dataValues.callingDay = moment(assign.dataValues.callingDay).format('YYYY-MM-DD');
+                assign.dataValues.visitingDay = moment(assign.dataValues.visitingDay).format('YYYY-MM-DD');
+                assign.dataValues.firstDate = moment(assign.dataValues.firstDate).format('YYYY-MM-DD');
+            });
         });
-        ejs.renderFile('view/admin/leaveStudentList.ejs', { student: students[0] }, (err, view) => {
+        ejs.renderFile('view/admin/leaveStudentList.ejs', { student: results, total: total }, (err, view) => {
             if(err) throw err;
             else res.status(200).send(ejs.render(view));
         })
