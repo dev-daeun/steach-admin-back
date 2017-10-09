@@ -15,10 +15,20 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: true
     },
-    teacher_id: {
+    teacherId: {
       field: "teacher_id",
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    teacherName: {
+      field: "teacher_name",
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    attendance: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false
     },
     subject: {
       type: DataTypes.STRING,

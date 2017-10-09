@@ -47,61 +47,7 @@
 
     <div id="wrapper">
 
-      <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-            <a class="navbar-brand" href="/">스티치 기업용 관리자 페이지</a>
-          </div>
-          <!-- /.navbar-header -->
-
-          <div class="navbar-default sidebar" role="navigation">
-            <div class="sidebar-nav navbar-collapse">
-              <ul class="nav" id="side-menu">
-                <li>
-                  <a href="/dashboard">대쉬보드</a>
-                </li>
-                <li>
-                  <a href="#">학생 관리<span class="fa arrow"></span></a>
-                  <ul class="nav nav-second-level">
-                    <li>
-                      <a href="/student/joined">학생 목록</a>
-                    </li>
-                    <li>
-                      <a href="/student/registration">신규 학생 등록</a>
-                    </li>
-                    <li>
-                      <a href="/student/retired">퇴원 학생 관리</a>
-                    </li>
-                  </ul>
-                  <!-- /.nav-second-level -->
-                </li>
-                <li>
-                  <a href="/assignment">매칭 관리</a>
-                </li>
-                <li>
-                  <a href="#">선생님 관리<span class="fa arrow"></span></a>
-                  <ul class="nav nav-second-level">
-                    <li>
-                      <a href="/teacher/joined">선생님 목록</a>
-                    </li>
-                    <li>
-                      <a href="/teacher/waiting">승인대기중 선생님</a>
-                    </li>
-                  </ul>
-                  <!-- /.nav-second-level -->
-                </li>
-              </ul>
-            </div>
-            <!-- /.sidebar-collapse -->
-          </div>
-          <!-- /.navbar-static-side -->
-        </nav>
+      <% include ./navigation.ejs %>
 
         <div id="page-wrapper">
 
@@ -145,28 +91,31 @@
                                 </thead>
                                 <tbody>
                                    <% for(let i = 0; i<student.length; i++){ %>
-                                    <tr>
-                                        <td><%=i+1%></td>
-                                        <td><%=student[i].assign_status%></td>
-                                        <td><%=student[i].subject %></td>
-                                        <td><%=student[i].grade %></td>
-                                        <td><%=student[i].address %></td>
-                                        <td><%=student[i].s_name %></td>
-                                        <td><%=student[i].mother_phone %></td>
-                                        <td><%=student[i].father_phone %></td>                                        
-                                        <td><%=student[i].t_name %></td>
-                                        <td><%=student[i].class_form %></td>
-                                        <td><%=student[i].school_name %></td>
-                                        <td><%=student[i].called_consultant %></td>
-                                        <td><%=student[i].visited_consultant %></td>
-                                        <td><%=student[i].fee %></td>
-                                        <td><%=student[i].deposit_day %></td>
-                                        <td><%=student[i].deposit_fee %></td>
-                                        <td><%=student[i].calling_day %></td>
-                                        <td><%=student[i].visiting_day %></td>
-                                        <td><%=student[i].first_date %></td>
-                                        <td><button onclick="location.href='/student/'+<%=student[i].s_id%>+'/'+<%=student[i].e_id%>">수정</button></td>
-                                    </tr>
+                                     <% for(let j = 0; j<student[i].dataValues.assignment.length; j++){ %>
+                                      <tr>
+                                        <td><%=total%></td>
+                                        <td><%=student[i].dataValues.assignment[j].assignStatus%></td>
+                                        <td><%=student[i].dataValues.assignment[j].subject %></td>
+                                        <td><%=student[i].dataValues.grade %></td>
+                                        <td><%=student[i].dataValues.address1 %></td>
+                                        <td><%=student[i].dataValues.name %></td>
+                                        <td><%=student[i].dataValues.motherPhone %></td>
+                                        <td><%=student[i].dataValues.fatherPhone %></td>                                        
+                                        <td><%=student[i].dataValues.assignment[j].teacherName %></td>
+                                        <td><%=student[i].dataValues.assignment[j].classForm %></td>
+                                        <td><%=student[i].dataValues.schoolName %></td>
+                                        <td><%=student[i].dataValues.assignment[j].calledConsultant %></td>
+                                        <td><%=student[i].dataValues.assignment[j].visitedConsultant %></td>
+                                        <td><%=student[i].dataValues.assignment[j].fee %></td>
+                                        <td><%=student[i].dataValues.assignment[j].depositDay %></td>
+                                        <td><%=student[i].dataValues.assignment[j].depositFee %></td>
+                                        <td><%=student[i].dataValues.assignment[j].callingDay %></td>
+                                        <td><%=student[i].dataValues.assignment[j].visitingDay %></td>
+                                        <td><%=student[i].dataValues.assignment[j].firstDate %></td>
+                                        <td><button onclick="location.href='/student/'+<%=student[i].dataValues.id%>+'/'+<%=student[i].dataValues.assignment[j].id%>">수정</button></td>
+                                      </tr>
+                                      <%= total -= 1%>
+                                     <% } %>
                                    <% } %>
                                 </tbody>
                             </table>
@@ -213,6 +162,8 @@
       $('#filterTest').append("<option value=''>전체보기</option>");
       $('#filterTest').append("<option value='배정중'>배정중</option>");
       $('#filterTest').append("<option value='대기중'>대기중</option>");
+      $('#filterTest').append("<option value='배정실패'>배정실패</option>");
+      $('#filterTest').append("<option value='재원중'>재원중</option>");
       $('#filterTest').on('change', function () {
         var table = $('#dataTables-example').DataTable();
         table.columns(1).search(this.value).draw();

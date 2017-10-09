@@ -41,7 +41,8 @@ class TeacherService {
                         'name', 
                         'gender', 
                         'university', 
-                        'grade'
+                        'grade',
+                        'univStatus'
             ],
             where: {
                 employed: 0
