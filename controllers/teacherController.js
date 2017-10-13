@@ -20,7 +20,7 @@ const coolsmsClient = new Coolsms({
 });
 
 router.use(function(req, res, next){
-    if(!req.session.passport.user) res.redirect('/sign');
+    if(!req.session.passport) res.redirect('/sign');
     else next(); 
 })
 

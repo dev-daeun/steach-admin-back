@@ -58,10 +58,6 @@ app.use('/assignment', require('./controllers/assignController'));
 app.use('/dashboard', require('./controllers/dashController'));
 app.use('/', require('./controllers/indexController'));
 
-// app.use('/teacher', require('./controller/teacher'));
-// app.use('/student', require('./controller/student'));
-// app.use('/assignment', require('./controller/assignment'));
-// app.use('/dashboard', require('./controller/dashboard'));
 
 app.use(function(err, req, res, next) {
   console.log(err);

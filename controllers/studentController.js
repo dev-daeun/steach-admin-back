@@ -13,7 +13,7 @@ const adminName = require('../config.json').admin_name;
 const info = require('../libs/info');
 
 router.use(function(req, res, next){
-    if(!req.session.passport.user) res.redirect('/sign');
+    if(!req.session.passport) res.redirect('/sign');
     else next(); 
 })
 
