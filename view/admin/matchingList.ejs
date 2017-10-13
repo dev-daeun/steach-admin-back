@@ -32,7 +32,7 @@
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js">
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
@@ -73,30 +73,30 @@
                                         <th>희망요일/시간</th>
                                         <th>첫 수업 희망일</th>
                                         <th>희망교재</th>
-                                        <th>신청 수</th>
-                                        <th>배정하기</th>
+                                        <th>매칭신청 수</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <% for(let i = 0; i<match.length; i++){%> 
-                                      <tr>
-                                        <td><%=i+1%></td>
-                                        <td><%=match[i].name%></td>
-                                        <td><%=match[i].gender%></td>
-                                        <td><%=match[i].subject%></td>
-                                        <td><%=match[i].school_name%></td>
-                                        <td><%=match[i].grade%></td>
-                                        <td><%=match[i].address%></td>
-                                        <td><%=match[i].class_form%></td>
-                                        <td><%=match[i].student_memo%></td>
-                                        <td><%=match[i].regular_date%></td>
-                                        <td><%=match[i].first_date%></td>
-                                        <td><%=match[i].book%></td>
-                                        <td><%=match[i].requested%></td>
-                                        <td class="center"><button onclick="location.href='/assignment/'+<%=match[i].e_id%>">선생님 배정</a></button></td>
-                                      </tr>
-                                    <%}%>
-                                    </tbody>
+                                    <% for(let i = 0; i<assign.length; i++) { %>
+                                        <tr>
+                                            <td><%=i+1%></td>
+                                            <td><%=assign[i].name%></td>
+                                            <td><%=assign[i].gender%></td>
+                                            <td><%=assign[i].subject%></td>
+                                            <td><%=assign[i].schoolName%></td>
+                                            <td><%=assign[i].grade%></td>
+                                            <td><%=assign[i].address%></td>
+                                            <td><%=assign[i].classForm%></td>
+                                            <td><%=assign[i].studentMemo%></td>
+                                            <td><%=assign[i].regularDate%></td>
+                                            <td><%=assign[i].firstDate%></td>
+                                            <td><%=assign[i].book%></td>
+                                            <td><%=assign[i].requested%></td>
+                                            <td class="center"><button onclick="location.href='/assignment/'+<%=assign[i].id%>">선생님 배정</a></button></td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
                             </table>
                             <!-- /.table-responsive -->
                         </divmatching.html>

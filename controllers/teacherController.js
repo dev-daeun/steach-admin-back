@@ -7,6 +7,7 @@ const moment = require('moment');
 const Coolsms = require('coolsms-rest-sdk');
 const cryto = require('crypto');
 
+const Encryption = require('../libs/encryption');
 const setComma = require('../libs/commaConverter').setComma;
 const adminName = require('../config.json').admin_name;
 const coolsmsConfig = require('../config.json').coolsms;
@@ -18,16 +19,17 @@ const coolsmsClient = new Coolsms({
     secret: coolsmsConfig.secret
 });
 
+router.use(function(req, res, next){
+    if(!req.session.passport.user) res.redirect('/sign');
+    else next(); 
+})
+
 /* 가입승인된 선생님들 목록 조회 */
 router.get('/joined', function(req, res, next){
     Teacher.getJoinedTeachers()
     .then(results => {
         for(let teacher of results){
-            // if (teacher.dataValues.accountNumber) {
-            //     let decipher = crypto.createDecipher(cryptoConfig.algorithm, cryptoConfig.secret);
-            //     decipher.update(teacher.dataValues.accountNumber, 'base64', 'utf-8');
-            //     teacher.dataValues.accountNumber = cipher.final('utf-8');
-            // }
+            // if (teacher.dataValues.accountNumber) teacher.dataValues.accountNumber = Encryption.decrypt(teacher.dataValues.accountNumber);
             teacher.totalProfit = 0;
             if(teacher.Assignments.length>0){
                 teacher.Assignments.forEach(assign => {

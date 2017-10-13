@@ -94,7 +94,7 @@
                     </div>
                     <div class="form-group col-lg-4">
                       <label>학교</label>
-                      <input class="form-control" value="<%=student.school_name%>" disabled>
+                      <input class="form-control" value="<%=student.schoolName%>" disabled>
                     </div>
                     <div class="form-group col-lg-2 col-lg-offset-6 col-lg-pull-6">
                       <label>학년</label>
@@ -113,25 +113,25 @@
                     <div class="form-group col-lg-4">
                       <label>수업형태</label>
                       <select class="form-control" disabled>
-                        <option><%=student.class_form%></option>
+                        <option><%=student.classForm%></option>
                       </select>
                     </div>
 
                     <div class="form-group col-lg-12">
                       <label>학생 성향</label>
-                      <input type="textarea" class="form-control" value="<%=student.student_memo%>" disabled>
+                      <input type="textarea" class="form-control" value="<%=student.studentMemo%>" disabled>
                     </div>
 
                     <div name="schedules" id="schedules">
                       <div class="form-group col-lg-12">
                           <label>희망 요일 및 시간</label> 
-                          <div><h4><%=student.regular_date%></h4></div>                         
+                          <div><h4><%=student.regularDate%></h4></div>                         
                         </div>
                     </div>
 
                     <div class="form-group col-lg-4">
                       <label>첫 수업 희망일</label>
-                      <input type="text" class="form-control" value="<%=student.first_date%>" disabled>
+                      <input type="text" class="form-control" value="<%=student.firstDate%>" disabled>
                     </div>
 
                     <div class="form-group col-lg-4 col-lg-offset-4 col-lg-pull-4">
@@ -187,12 +187,12 @@
                         <td><%=teachers[i].name%></td>
                         <td><%=teachers[i].gender%></td>
                         <td><%=teachers[i].age%></td>
-                        <td><%=teachers[i].university%></td>
+                        <td><%=teachers[i].univ%></td>
                         <td><%=teachers[i].grade%></td>
-                        <td><%=teachers[i].univ_status%></td>
+                        <td><%=teachers[i].status%></td>
                         <td><%=teachers[i].phone%></td>
                         <td><%=teachers[i].available%></td>
-                        <td class="center"><button class="matchButton" value="<%=teachers[i].id%>"><%=teachers[i].status%></button></td>
+                        <td class="center"><button class="matchButton" value="<%=teachers[i].applyId%>">배정하기</button></td>
                       </tr>
                     </tbody>
                   <% }%>
@@ -241,8 +241,7 @@
               contentType: 'application/json; charset=utf-8',
               dataType: 'json',
               data: JSON.stringify({ 
-                teacher_id: val, 
-                expect_id: <%=expect_id%>
+                applyId: this.val
               }), 
               success: function(data){
                 location.href = '/student/joined';

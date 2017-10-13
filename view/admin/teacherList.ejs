@@ -87,8 +87,8 @@
                     <th>계좌번호</th>
                   </tr>
                 </thead>
-                <% for(let i = 0; i<teacher.length; i++){ %>
-                  <tbody>
+                <tbody>
+                  <% for(let i = 0; i<teacher.length; i++){ %>
                     <tr>
                       <td><%=i+1%></td>
                       <td><%=teacher[i].dataValues.employed%></td>
@@ -108,8 +108,8 @@
                       </td>
                       <td><%=teacher[i].dataValues.accountNumber%></td>
                     </tr>
-                  </tbody>
-                <% }%>
+                  <% }%>
+              </tbody>
               </table>
               <!-- /.table-responsive -->
             </div>
