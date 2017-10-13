@@ -23,6 +23,8 @@ const adminName = require('../config.json').admin_name;
 const info = require('../libs/info');
 
 class StudentService{
+
+    
     static registerStudent(student, assignment){
         return Model.sequelize.transaction(t => {
             return StudentModel.create(
@@ -41,7 +43,7 @@ class StudentService{
 
 
     //학생정보 수정 할 때 이전 정보 조회
-    static showStudentInfoBeforeEdit(s_id, e_id){
+    static getStudentInfoBeforeEdit(s_id, e_id){
         return new Promise((resolve, reject) => {
             Mysql.getConn()
             .then(connection => {

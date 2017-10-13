@@ -12,10 +12,14 @@ const CustomError = require('../libs/customError');
 const adminName = require('../config.json').admin_name;
 const info = require('../libs/info');
 
+router.use(function(req, res, next){
+    if(!req.session.passport.user) res.redirect('/sign');
+    else next(); 
+})
 
 /* 학생수정 전 이전정보 조회 */
 router.get('/:student/:expectation', function(req, res, next){
-    StudentService.showStudentInfoBeforeEdit(req.params.student, req.params.expectation)
+    StudentService.getStudentInfoBeforeEdit(req.params.student, req.params.expectation)
     .then( result => {
         if(!result.student) next(new CustomError(404, '학생정보를 찾을 수 없습니다.'));
         result.student.start_term = moment(result.student.start_term).format("YYYY-MM-DD");
@@ -30,7 +34,7 @@ router.get('/:student/:expectation', function(req, res, next){
 });
 
 
-/* 학생 목록 조회 */
+/* 학생 목록 조회 DONE */
 router.get('/joined', function(req, res, next){
     StudentService.getJoinedStudents()
     .then(results => {
@@ -39,7 +43,6 @@ router.get('/joined', function(req, res, next){
             student.dataValues.assignment.forEach( assign => {
                 total += 1;
                 assign.dataValues.depositDay = moment(assign.dataValues.depositDay).format("MM-DD");
-                console.log("day : ", assign.dataValues.depositDay);
                 assign.dataValues.callingDay = moment(assign.dataValues.callingDay).format("YYYY-MM-DD");
                 assign.dataValues.visitingDay = moment(assign.dataValues.visitingDay).format("YYYY-MM-DD");
                 assign.dataValues.firstDate = moment(assign.dataValues.firstDate).format("YYYY-MM-DD");
@@ -83,11 +86,10 @@ router.put('/:student/:expectation', function(req, res, next){
 });
 
 
-/* 퇴원학생 조회*/
+/* 퇴원학생 조회 DONE */
 router.get('/retired', function(req, res, next){
     StudentService.getRetiredStudents()
     .then(results => {
-        console.log(results);
         let total = 0;
         results.forEach(student => {
             student.dataValues.assignment.forEach( assign => {
@@ -118,7 +120,7 @@ router.get('/registration', function(req, res, next){
 
 
 
-
+/* 학생 등록 DONE */
 router.post('/registration', function(req, res, next){
     let assignment = req.body.assignment;
     let student = req.body.student;

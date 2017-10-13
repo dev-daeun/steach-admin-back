@@ -70,9 +70,9 @@
                     <th>승인</th>
                   </tr>
                 </thead>
-                <% for(let i = 0; i<teacher.length; i++){%> 
                 <tbody>
-                  <tr>
+                  <% for(let i = 0; i<teacher.length; i++){%> 
+                   <tr>
                     <td><%=i+1%></td>
                     <td><%=teacher[i].dataValues.address1%></td>
                     <td><%=teacher[i].dataValues.age%></td>
@@ -85,9 +85,9 @@
                       <button type = 'submit' value = <%=teacher[i].dataValues.id%> class = "permitButton">승인</button>
                       <button type = 'submit' value = <%=teacher[i].dataValues.id%> class = "denyButton">거절</button>                  
                     </td>                       
-                  </tr>
+                    </tr>
+                  <%}%>
                 </tbody>
-                <%}%>
               </table>
               <!-- /.table-responsive -->
             </div>
@@ -123,7 +123,8 @@
   <!-- Page-Level Demo Scripts - Tables - Use for reference -->
   <script>
         
-    $(document).on('click', '.permitButton', function() {
+    $(() => {
+      $('.permitButton').click(() => {
         var val = $(this).val();
         if(window.confirm('정말 승인하시겠습니까?')) {
           $.ajax({ 
@@ -143,9 +144,11 @@
           });
         }
         else return;
+      });
     });
     
-    $(document).on('click', '.denyButton', function() {
+    $(() => {
+      $('.permitButton').click(() => {
       var val = $(this).val();
       if(window.confirm('정말 거절하시겠습니까?')){
           $.ajax({ 
@@ -166,6 +169,7 @@
         } 
         else return;
     });
+  });
     $(document).ready(function() {
       $('#dataTables-example').children('thead').children('tr').children('th').css('white-space', 'nowrap')
       $('#dataTables-example').children('thead').children('tr').children('th').css('text-align', 'center')

@@ -5,6 +5,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const app = express();
+const ejsLint = require('ejs-lint');
 
 const passport = require('./libs/passport');
 const redisCfg = require('./config.json').redis;
@@ -15,6 +16,7 @@ const client = redis.createClient({
 });
 
 app.set('view engine', 'ejs');
+app.set(ejsLint('view engine'));
 app.set('views', __dirname + '/views');
 
 app.use('/', express.static(path.join(__dirname, 'public')));
@@ -50,16 +52,16 @@ app.get('/favicon.ico', function(req, res) {
 });
 
 app.use('/sign', require('./controllers/signController'));
-// app.use('/teacher', require('./controllers/teacherController'));
-// app.use('/student', require('./controllers/studentController'));
-// app.use('/assignment', require('./controllers/assignController'));
-// app.use('/dashboard', require('./controllers/dashController'));
+app.use('/teacher', require('./controllers/teacherController'));
+app.use('/student', require('./controllers/studentController'));
+app.use('/assignment', require('./controllers/assignController'));
+app.use('/dashboard', require('./controllers/dashController'));
 app.use('/', require('./controllers/indexController'));
 
-app.use('/teacher', require('./controller/teacher'));
-app.use('/student', require('./controller/student'));
-app.use('/assignment', require('./controller/assignment'));
-app.use('/dashboard', require('./controller/dashboard'));
+// app.use('/teacher', require('./controller/teacher'));
+// app.use('/student', require('./controller/student'));
+// app.use('/assignment', require('./controller/assignment'));
+// app.use('/dashboard', require('./controller/dashboard'));
 
 app.use(function(err, req, res, next) {
   console.log(err);
