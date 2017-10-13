@@ -12,7 +12,7 @@ const pushMessage = require('../utils/push').pushMessage;
 const CustomError = require('../libs/customError');
 
 router.use(function(req, res, next){
-    if(!req.session.passport.user) res.redirect('/sign');
+    if(!req.session.passport) res.redirect('/sign');
     else next(); 
 })
 
