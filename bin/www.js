@@ -5,14 +5,10 @@
  */
 
 const app = require('../app');
-const debug = require('debug')('company-api:server');
-const https = require('https');
-const fs = require('fs');
+const debug = require('debug')('admin-web:server');
+const http = require('http');
 const models = require("../models");
-const options = {  
-  key: fs.readFileSync('key.pem'),
-  cert: fs.readFileSync('cert.pem')
-};
+
 
 
 /**
@@ -22,11 +18,8 @@ const options = {
 const port = normalizePort(process.env.PORT || '3006');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
 
-const server = https.createServer(app);
+const server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
