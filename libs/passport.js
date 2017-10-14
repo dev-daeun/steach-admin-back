@@ -5,12 +5,18 @@ const Encryption = require('./encryption');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
-passport.serializeUser((userId, done) => {
-    done(null, userId);
+passport.serializeUser((user, done) => {
+    done(null, user);
 });
 
-passport.deserializeUser((userId, done) => {
-    done(null, userId);
+passport.deserializeUser((user, done) => {
+    Supervisor.findById(user.id)
+    .then((result) => { 
+        if(result) done(null, user);
+        else done(null, false) 
+    }).catch(err => {
+        done(err);
+    });
 });
 
 passport.use(new LocalStrategy({ // local 전략을 세움
@@ -25,7 +31,7 @@ passport.use(new LocalStrategy({ // local 전략을 세움
             return Encryption.compare(password, result.password)
             .then(correct => {
                 if(!correct) return done(null, false, '잘못된 패스워드입니다.' ); 
-                return done(null, result.id);
+                return done(null, {user: result.id});
             });
       }).catch(findError => {
           return done(findError);

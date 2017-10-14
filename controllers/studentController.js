@@ -12,10 +12,6 @@ const CustomError = require('../libs/customError');
 const adminName = require('../config.json').admin_name;
 const info = require('../libs/info');
 
-router.use(function(req, res, next){
-    if(!req.session.passport) res.redirect('/sign');
-    else next(); 
-})
 
 /* 학생수정 전 이전정보 조회 */
 router.get('/:student/:expectation', function(req, res, next){

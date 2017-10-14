@@ -10,6 +10,15 @@ class SupervisorService{
             }
         });
     }
+
+    static findById(id){
+        return Supervisor.findOne({
+            raw: true,
+            where: {
+                id: id
+            }
+        });
+    }
 }
 
 module.exports = SupervisorService;

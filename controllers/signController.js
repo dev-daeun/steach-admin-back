@@ -5,11 +5,9 @@ const fs = require('fs');
 
 const passport = require('../libs/passport');
 const CustomError = require('../libs/customError');
-const SupervisorService = require('../services/supervisorService');
-const AuthService = require('../services/authService');
 
 /*로그인 화면 */
-router.get('/', function(req, res, next){
+router.get('/in', function(req, res, next){
     return new Promise((resolve, reject) => {
         ejs.renderFile('view/admin/login.ejs', function(err, view){
             if(err) throw err;
@@ -24,7 +22,10 @@ router.get('/', function(req, res, next){
 
 /* 로그인 */
 router.post('/in', function(req, res, next){
-    passport.authenticate('local', (err, user, info) => {
+    passport.authenticate('local', { 
+        successRedirect: '/dashboard',
+        failureRedirect: '/sign/in',
+        failureFlash: true },(err, user, info) => {
         if(err) return next(new CustomError(status || 500, err.message || err));
         if(!user) return next(new CustomError(401, info));
         res.status(200).send(true);
