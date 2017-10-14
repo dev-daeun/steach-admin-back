@@ -180,11 +180,12 @@
                     <th>배정</th>
                   </tr>
                 </thead>                
-                <% for(let i = 0; i<teachers.length; i++){ %>
-                    <tbody>
+                <tbody>
+                  <% for(let i = 0; i<teachers.length; i++){ %>
                       <tr>
                         <td><%=i+1%></td>
-                        <td><%=teachers[i].name%></td>
+                        <td id="teacherId" style="display:none;"><%=teachers[i].teacherId%></td>
+                        <td id="teacherName"><%=teachers[i].name%></td>
                         <td><%=teachers[i].gender%></td>
                         <td><%=teachers[i].age%></td>
                         <td><%=teachers[i].univ%></td>
@@ -192,10 +193,10 @@
                         <td><%=teachers[i].status%></td>
                         <td><%=teachers[i].phone%></td>
                         <td><%=teachers[i].available%></td>
-                        <td class="center"><button class="matchButton" value="<%=teachers[i].applyId%>">배정하기</button></td>
+                        <td class="center"><button  class="matchButton" value="<%=teachers[i].applyId%>">배정하기</button></td>
                       </tr>
-                    </tbody>
-                  <% }%>
+                    <% }%>    
+                  </tbody>
               </table>
               <!-- /.table-responsive -->
             </div>
@@ -230,9 +231,9 @@
 
   <!-- Page-Level Demo Scripts - Tables - Use for reference -->
   <script>
-        $(document).on('click', '.matchButton', function(){
-          var val = $(this).val();
-          if(window.confirm('정말로 매칭하시겠습니까?')){
+    $(() => {
+      $('.matchButton').click((evt) => {
+       if(window.confirm('정말로 매칭하시겠습니까?')){
             $.ajax({ 
               url: '/assignment',
               processData: false,
@@ -241,15 +242,23 @@
               contentType: 'application/json; charset=utf-8',
               dataType: 'json',
               data: JSON.stringify({ 
-                applyId: this.val
+                applyId: $(evt.target).val(),
+                assignId: <%=assignId%>,
+                teacherName: $(evt.target).parent().siblings("#teacherName").text(),
+                teacherId: parseInt($(evt.target).parent().siblings("#teacherId").text())
               }), 
-              success: function(data){
+              success: (data) => {
+                window.alert('매칭완료 되었습니다.');
                 location.href = '/student/joined';
+              },
+              error: (xhr, status, error) => {
+                  window.alert(xhr.responseText);
               }
             });
           } 
-          else return;
-        });
+        
+      });
+    });
 
     $(document).ready(function() {
       $('#dataTables-example').children('thead').children('tr').children('th').css('white-space', 'nowrap')
@@ -259,6 +268,7 @@
       $('#dataTables-example').DataTable({
         responsive: true
       });
+  
     });
   </script>
 

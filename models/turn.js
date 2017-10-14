@@ -8,17 +8,17 @@ module.exports = function(sequelize, DataTypes) {
     nextCount: {
       field: "next_count",
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     totalCount: {
       field: "total_count",
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     courseCount: {
       field: "course_count",
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     }
   }, {
     underscored: true,

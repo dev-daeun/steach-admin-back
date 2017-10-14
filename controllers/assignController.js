@@ -12,9 +12,9 @@ const pushMessage = require('../utils/push').pushMessage;
 const CustomError = require('../libs/customError');
 
 
-/* 특정 학생정보 및 붙은 선생님 조회 - DONE*/
+/* 특정 학생정보 및 붙은 선생님 조회 DONE*/
 router.get('/:id', function(req, res, next){
-    AssignService.getOne(req.params.id)//학생 조회
+    AssignService.getOneById(req.params.id)//학생 조회
     .then(results => {
         let teachers = new Array();
         if(results.length==0) next(new CustomError(404, 'student not found'));
@@ -35,6 +35,8 @@ router.get('/:id', function(req, res, next){
                 case 4: element.univStatus = '졸업';
             }
             teachers.push({
+                teacherId: element.teacherId,
+                applyId: element.applyId,
                 gender: element.teacherGender,
                 name: element.teacherName,
                 age: element.age,
@@ -45,8 +47,8 @@ router.get('/:id', function(req, res, next){
                 available: element.available
             });    
         });
-       
         ejs.renderFile('view/admin/matching.ejs', {
+            assignId: results[0].assignmentId,
             student: {
                 name: results[0].studentName,
                 gender: results[0].studentGender,
@@ -61,20 +63,19 @@ router.get('/:id', function(req, res, next){
                 regularDate: results[0].regularDate,
                 firstDate: results[0].firstDate,
                 book: results[0].book
-                },
+            },
             teachers: teachers
         }, (err, view) => {
             if(err) throw err;
             else res.status(200).send(view);
         });
-            console.log(student);
     }).catch((err) => {
         next(new CustomError(500, err.message || err));
     });
 });
     
 
-/* 매칭대기중인 학생 전체 조회 -DONE, ejs에서 오류*/
+/* 매칭대기중인 학생 전체 조회 DONE */
 router.get('/', function(req, res, next){
     AssignService.getAll()
     .then(results => {
@@ -96,7 +97,6 @@ router.get('/', function(req, res, next){
             delete asn.student;
             array.push(asn);
         });
-        console.log(array);
         ejs.renderFile('view/admin/matchingList.ejs', { assign: array}, (err, view) => {
             if(err) throw err;        
             else res.status(200).send(view);
@@ -111,26 +111,24 @@ router.get('/', function(req, res, next){
 
 /* 배정대기중인 선생님에게 학생 매칭하기( assign의 status : 배정하기 -> (선생님으로부터) 승인대기중*/
 router.post('/', function(req, res, next){
-    var t_id = req.body.teacher_id;
-    var e_id = req.body.expect_id;
-    Assign.match(t_id, e_id)
-    .then(function(){ 
-        Promise.all([Assign.getOneStudent(e_id), Teacher.selectPhone(t_id)])
-        .then(function([student, teacher]){
-            var text = student[0].name + '학생의 '+student[0].subject+'수업에 최종배정 되었습니다.';
-            console.log(text);
-                        // coolsmsClient.sms.send({
-                        //     to: teacher[0].phone,
-                        //     type: "SMS",
-                        //     from: coolsmsConfig.from,
-                        //     text: text
-                        // }, function(err, result){
-                        //         if(err) reject(err);
-                        //         else resolve();
-                        // });
-            pushMessage('매칭요청 승인여부', text, teacher[0].fcm_token, "match");
-            res.status(200).send(true); 
-        });
+    AssignService.match(req.body.applyId, 
+                        req.body.assignId, 
+                        req.body.teacherName, 
+                        req.body.teacherId)
+    .then(([student, teacher]) => {
+        let text = student.name + '학생의 '+ student.subject +'수업에 최종배정 되었습니다.';
+        console.log(text);
+        coolsmsClient.sms.send({
+            to: teacher.phone,
+            type: "SMS",
+            from: coolsmsConfig.from,
+            text: text
+        }, function(err, result){
+                if(err) reject(err);
+                else resolve();
+        });                
+        pushMessage('매칭요청 승인여부', text, teacher.fcmToken, "match");
+        res.status(200).send(true); 
     })
     .catch(function(err){
         next(new CustomError(500, err.message || err));

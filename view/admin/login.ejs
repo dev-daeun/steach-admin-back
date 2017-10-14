@@ -97,12 +97,6 @@
                 return;
             }
     
-            // $.post('/sign/in', { user: user, password: password })
-            // .then(() => {window.location.href = '/dashboard'})
-            // .catch((xhr, status, error) => {
-            //     window.alert(error);
-            //     window.location.href = '/sign';
-            // });
             $.ajax({ 
                 url: '/sign/in', 
                 processData: false,

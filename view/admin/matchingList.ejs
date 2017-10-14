@@ -74,7 +74,7 @@
                                         <th>첫 수업 희망일</th>
                                         <th>희망교재</th>
                                         <th>매칭신청 수</th>
-                                        <th></th>
+                                        <th>선생님 배정</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -93,7 +93,11 @@
                                             <td><%=assign[i].firstDate%></td>
                                             <td><%=assign[i].book%></td>
                                             <td><%=assign[i].requested%></td>
-                                            <td class="center"><button onclick="location.href='/assignment/'+<%=assign[i].id%>">선생님 배정</a></button></td>
+                                            <%if(assign[i].requested > 0) {%>
+                                                <td class="center"><button onclick="location.href='/assignment/'+<%=assign[i].id%>">선생님 배정</a></button></td>
+                                            <% } else { %>
+                                                <td></td>
+                                            <% } %>
                                         </tr>
                                     <% } %>
                                 </tbody>

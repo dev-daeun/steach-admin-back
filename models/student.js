@@ -1,3 +1,4 @@
+const sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   let Student = sequelize.define("Student", {
     id: {
