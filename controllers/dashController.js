@@ -16,10 +16,6 @@ const info = require('../libs/info');
 const setComma = require('../libs/commaConverter').setComma;
 
 
-router.use(function(req, res, next){
-    if(!req.session.passport) res.redirect('/sign');
-    else next(); 
-})
 
 router.get('/', function(req, res, next){
     let callArray = [],

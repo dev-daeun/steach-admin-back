@@ -11,10 +11,6 @@ const moment = require('moment');
 const pushMessage = require('../utils/push').pushMessage;
 const CustomError = require('../libs/customError');
 
-router.use(function(req, res, next){
-    if(!req.session.passport) res.redirect('/sign');
-    else next(); 
-})
 
 /* 특정 학생정보 및 붙은 선생님 조회 - DONE*/
 router.get('/:id', function(req, res, next){
