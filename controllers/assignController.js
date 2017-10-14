@@ -7,63 +7,76 @@ const express = require('express');
 const router  = express.Router();
 const ejs = require('ejs');
 const moment = require('moment');
+const Coolsms = require('coolsms-rest-sdk');
 
+
+const coolsmsConfig = require('../config.json').coolsms;
 const pushMessage = require('../utils/push').pushMessage;
 const CustomError = require('../libs/customError');
+const coolsmsClient = new Coolsms({
+    key: coolsmsConfig.key,
+    secret: coolsmsConfig.secret
+});
 
 
 /* 특정 학생정보 및 붙은 선생님 조회 DONE*/
 router.get('/:id', function(req, res, next){
     AssignService.getOneById(req.params.id)//학생 조회
     .then(results => {
+        if(results.length==0) return next(new CustomError(404, 'student not found'));
+        
         let teachers = new Array();
-        if(results.length==0) next(new CustomError(404, 'student not found'));
-        switch(results[0].gender){
-            case 0: results[0].gender = '남'; break;
-            case 1: results[0].gender = '여';
+
+        switch(results[0].studentGender){
+            case 0: results[0].studentGender = '남'; break;
+            case 1: results[0].studentGender = '여';
         }
         results[0].firstDate = moment(results[0].firstDate).format("YY.MM.DD");
-        results.forEach(element => {
-            switch(element.teacherGender){
-                case 0: element.teacherGender = '남'; break;
-                case 1: element.teacherGender = '여';
-            }
-            switch(element.univStatus){
-                case 1: element.univStatus = '재학';
-                case 2: element.univStatus = '휴학';
-                case 3: element.univStatus = '수료';
-                case 4: element.univStatus = '졸업';
-            }
-            teachers.push({
-                teacherId: element.teacherId,
-                applyId: element.applyId,
-                gender: element.teacherGender,
-                name: element.teacherName,
-                age: element.age,
-                univ: element.university,
-                grade: element.teacherGrade,
-                status: element.univStatus,
-                phone: element.phone,
-                available: element.available
-            });    
-        });
+        let student = {
+            name: results[0].studentName,
+            gender: results[0].studentGender,
+            address1: results[0].address1,
+            address2: results[0].address2,
+            address3: results[0].address3,
+            schoolName: results[0].schoolName,
+            grade: results[0].studentGrade,
+            subject: results[0].subject,
+            classForm: results[0].classForm,
+            studentMemo: results[0].studentMemo,
+            regularDate: results[0].regularDate,
+            firstDate: results[0].firstDate,
+            book: results[0].book
+        };
+        if(results.length>1) {
+            results.forEach(element => {
+                switch(element.teacherGender){
+                    case 0: element.teacherGender = '남'; break;
+                    case 1: element.teacherGender = '여';
+                }
+                switch(element.univStatus){
+                    case 1: element.univStatus = '재학';
+                    case 2: element.univStatus = '휴학';
+                    case 3: element.univStatus = '수료';
+                    case 4: element.univStatus = '졸업';
+                }
+                teachers.push({
+                    teacherId: element.teacherId,
+                    applyId: element.applyId,
+                    gender: element.teacherGender,
+                    name: element.teacherName,
+                    age: element.age,
+                    univ: element.university,
+                    grade: element.teacherGrade,
+                    status: element.univStatus,
+                    phone: element.phone,
+                    available: element.available
+                });    
+            });
+        }
+        
         ejs.renderFile('view/admin/matching.ejs', {
             assignId: results[0].assignmentId,
-            student: {
-                name: results[0].studentName,
-                gender: results[0].studentGender,
-                address1: results[0].address1,
-                address2: results[0].address2,
-                address3: results[0].address3,
-                schoolName: results[0].schoolName,
-                grade: results[0].studentGrade,
-                subject: results[0].subject,
-                classForm: results[0].classForm,
-                studentMemo: results[0].studentMemo,
-                regularDate: results[0].regularDate,
-                firstDate: results[0].firstDate,
-                book: results[0].book
-            },
+            student: student,
             teachers: teachers
         }, (err, view) => {
             if(err) throw err;
