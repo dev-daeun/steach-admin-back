@@ -19,10 +19,6 @@ const coolsmsClient = new Coolsms({
     secret: coolsmsConfig.secret
 });
 
-router.use(function(req, res, next){
-    if(!req.session.passport.user) res.redirect('/sign');
-    else next(); 
-})
 
 /* 가입승인된 선생님들 목록 조회 */
 router.get('/joined', function(req, res, next){
