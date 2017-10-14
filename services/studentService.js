@@ -25,7 +25,7 @@ const info = require('../libs/info');
 class StudentService{
 
     
-    static registerStudent(student, assignment){
+    static register(student, assignment){
         return Model.sequelize.transaction(t => {
             return StudentModel.create(
                 student, {
@@ -33,7 +33,7 @@ class StudentService{
             })
             .then(newStudent => {
                 assignment.studentId = newStudent.dataValues.id;
-                return AssignmentModel.create(
+                return Assignment.create(
                     assignment, {
                     transaction: t
                 });
@@ -173,12 +173,9 @@ class StudentService{
                     }
                 },
                 order: [
-                    ['assignment', 'id', 'desc']  
+                    ['assignment', 'updated_at', 'desc']  
                 ]
-            }],
-            order: [
-                ['id', 'desc']
-            ]
+            }]
         });
     }
 

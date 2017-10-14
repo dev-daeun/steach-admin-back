@@ -184,6 +184,11 @@ module.exports = function(sequelize, DataTypes) {
       field: "prev_cons",
       type: DataTypes.STRING,
       allowNull: true
+    },
+    updatedAt: {
+      field: "updated_at",
+      type: DataTypes.DATE,
+      allowNull: true
     }
   }, {
     underscored: true,
