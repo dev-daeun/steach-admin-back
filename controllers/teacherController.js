@@ -25,8 +25,8 @@ router.get('/joined', function(req, res, next){
     TeacherService.getJoined()
     .then(results => {
         for(let teacher of results){
-            if (teacher.dataValues.accountNumber) 
-                teacher.dataValues.accountNumber = Encryption.decrypt(teacher.dataValues.accountNumber);
+            // if (teacher.dataValues.accountNumber) 
+            //     teacher.dataValues.accountNumber = Encryption.decrypt(teacher.dataValues.accountNumber);
             teacher.totalProfit = 0;
             if(teacher.Assignments.length>0){
                 teacher.Assignments.forEach(assign => {
@@ -101,21 +101,22 @@ router.post('/waiting', function(req, res, next){
     else{
         TeacherService.getOneById(teacherId)
         .then( teacher => {
+            var text;
             if(!teacher) next(new CustomError(404, '선생님 정보를 찾을 수 없습니다.'));
             else if(req.body.permitted){
                 TeacherService.setJoinedById(teacherId)
                 .then(() => {
-                    let text = adminName + '으로부터 가입요청 승인되었습니다.';
+                    text = adminName + '으로부터 가입요청 승인되었습니다.';
                     pushMessage('가입요청 승인여부', text, teacher.dataValues.fcmToken);  
                 });
             }else{
                 TeacherService.deleteById(teacherId)
                 .then(() => {
-                    let text = '승인이 거절되어 가입에 실패하였습니다.';
+                    text = '승인이 거절되어 가입에 실패하였습니다.';
                     pushMessage('가입요청 승인여부', text, teacher.dataValues.fcmToken, "assigned"); 
                 })
             }
-            console.log(teacher.dataValues.fcmToken);
+            console.log(text);
             coolsmsClient.sms.send({
                 to: teacher.dataValues.phone,
                 type: "SMS",
