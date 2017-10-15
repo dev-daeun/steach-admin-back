@@ -25,11 +25,13 @@ router.get('/joined', function(req, res, next){
     TeacherService.getJoined()
     .then(results => {
         for(let teacher of results){
-            // if (teacher.dataValues.accountNumber) teacher.dataValues.accountNumber = Encryption.decrypt(teacher.dataValues.accountNumber);
+            if (teacher.dataValues.accountNumber) 
+                teacher.dataValues.accountNumber = Encryption.decrypt(teacher.dataValues.accountNumber);
             teacher.totalProfit = 0;
             if(teacher.Assignments.length>0){
                 teacher.Assignments.forEach(assign => {
-                    assign.dataValues.payDay = moment(assign.dataValues.payDay).format('MM-DD'); //수업료 지급 날짜
+                    if(assign.dataValues.payDay)
+                        assign.dataValues.payDay = moment(assign.dataValues.payDay).format("MM-DD");//수업료 지급 날짜
                     teacher.totalProfit += assign.dataValues.fee; //영업이익
                 });
                 teacher.totalProfit = setComma(teacher.totalProfit);

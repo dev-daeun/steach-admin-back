@@ -78,7 +78,8 @@ router.get('/joined', function(req, res, next){
         results.forEach( student => {
             student.dataValues.assignment.forEach( assign => {
                 total += 1;
-                assign.dataValues.depositDay = moment(assign.dataValues.depositDay).format("MM-DD");
+                if(assign.dataValues.depositDay)
+                    assign.dataValues.depositDay = moment(assign.dataValues.depositDay).format("YYYY-MM-DD");
                 assign.dataValues.callingDay = moment(assign.dataValues.callingDay).format("YYYY-MM-DD");
                 assign.dataValues.visitingDay = moment(assign.dataValues.visitingDay).format("YYYY-MM-DD");
                 assign.dataValues.firstDate = moment(assign.dataValues.firstDate).format("YYYY-MM-DD");
@@ -88,6 +89,7 @@ router.get('/joined', function(req, res, next){
                         case 3: assign.dataValues.assignStatus = '대기중'; break;
                         case 4: assign.dataValues.assignStatus = '재원중'
                     }
+                    
             });       
         });
         ejs.renderFile('view/admin/studentList.ejs', { student: results, total: total }, (err, view) => {
@@ -107,10 +109,6 @@ router.put('/:studentId/:assignId', function(req, res, next){
     let studentId = req.params.studentId;
     let assignId = req.params.assignId;
     let teacherId = req.body.teacherId;
-    console.log("studentId : ", studentId);
-    console.log("assignId ; ", assignId);
-    console.log("student: ", student);
-    console.log("assign : ", assignment);
     if(!student.name || !student.schoolName) {
         next(new CustomError(400, '학생 이름 및 학교명을 입력하세요.'));
         return;
@@ -133,6 +131,8 @@ router.get('/retired', function(req, res, next){
         results.forEach(student => {
             student.dataValues.assignment.forEach( assign => {
                 total += 1;
+                if(assign.dataValues.depositDay)
+                    assign.dataValues.depositDay = moment(assign.dataValues.depositDay).format("YYYY-MM-DD");
                 assign.dataValues.callingDay = moment(assign.dataValues.callingDay).format('YYYY-MM-DD');
                 assign.dataValues.visitingDay = moment(assign.dataValues.visitingDay).format('YYYY-MM-DD');
                 assign.dataValues.firstDate = moment(assign.dataValues.firstDate).format('YYYY-MM-DD');

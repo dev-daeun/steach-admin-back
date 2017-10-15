@@ -10,7 +10,7 @@ class TeacherService {
                 model: Model.Assignment,
                 required: false,
                 where: { 
-                    teacher_id: Teacher.id, 
+                    teacher_id: Model.Teacher.id, 
                     teacher_id: {
                         $not: null
                     }
