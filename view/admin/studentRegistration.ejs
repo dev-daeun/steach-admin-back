@@ -116,12 +116,12 @@
                                         </div>
 
                                         <div class="form-group col-lg-2">
-                                              <label>주소(시/도)</label>
-                                                <input type="text" name="address1" class="form-control">
+                                            <label>주소(시/도)</label>
+                                            <input type="text" name="address1" class="form-control">
                                         </div>
                                          <div class="form-group col-lg-2">
-                                              <label>주소(군/구)</label>
-                                                <input type="text" name="address2" class="form-control">
+                                            <label>주소(군/구)</label>
+                                            <input type="text" name="address2" class="form-control">
                                         </div>
 
                                         <div class="form-group col-lg-12">
@@ -495,6 +495,7 @@
                     dataType: 'json',
                     data:  JSON.stringify({
                     assignment: {
+                        studentName: document.getElementsByName('name')[0].value,
                         callingDay: document.getElementsByName('calling_day')[0].value || new Date(),
                         visitingDay: document.getElementsByName('visiting_day')[0].value || new Date(),
                         consultStatus: document.getElementsByName('consult_status')[0].value,

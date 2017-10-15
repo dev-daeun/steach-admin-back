@@ -1,17 +1,13 @@
 
-/* 쿼리빌더 사용 */
-const Teacher = require('../models').Teacher;
-const Assignment = require('../models').Assignment;
-const Apply = require('../models').Apply;
-const Student = require('../models').Student;
+const Model = require('../models');
 const sequelize = require('../models').sequelize;
 
 class TeacherService {
     /* 가입승인된 선생님 목록 */
-    static getJoinedTeachers(){
-        return Teacher.findAll({
+    static getJoined(){
+        return Model.Teacher.findAll({
             include: [{
-                model: Assignment,
+                model: Model.Assignment,
                 required: false,
                 where: { 
                     teacher_id: Teacher.id, 
@@ -32,8 +28,8 @@ class TeacherService {
     }
 
     /* 가입 미승인된 선생님 목록 */
-    static getUnjoinedTeachers(){
-        return Teacher.findAll({
+    static getUnjoined(){
+        return Model.Teacher.findAll({
             attributes: ['id', 
                         'employed', 
                         'address1', 
@@ -53,8 +49,8 @@ class TeacherService {
         });
     }
 
-    static setTeacherJoined(teacherId){
-        return Teacher.update({
+    static setJoinedById(teacherId){
+        return Model.Teacher.update({
             employed: 1
             },{
                 where: {
@@ -63,16 +59,16 @@ class TeacherService {
         });
     }
 
-    static getTeacherById(teacherId){
-        return Teacher.findOne({
+    static getOneById(teacherId){
+        return Model.Teacher.findOne({
             where: {
                 id: teacherId
             }
         });
     }
 
-    static deleteTeacherById(teacherId){
-        return Teacher.destroy({
+    static deleteById(teacherId){
+        return Model.Teacher.destroy({
             where: {
                 id: teacherId
             }
