@@ -31,9 +31,9 @@ class Encryption{
 
     static decrypt(data){
         const decipher = crypto.createDecipher(cryptoCfg.algorithm, cryptoCfg.secret);
-        let decrypted = decipher.update(data, 'base64', 'utf8');
-        decrypted += decipher.final('utf8');
-        return decrypted;
+        const decrypted = decipher.update(data, 'base64', 'utf8');
+        const result = decipher.final('utf8');
+        return result;
     }
 }
 
