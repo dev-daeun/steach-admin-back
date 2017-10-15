@@ -124,8 +124,8 @@
   <script>
         
     $(() => {
-      $('.permitButton').click(() => {
-        var val = $(this).val();
+      $('.permitButton').click((ent) => {
+        var val = $(ent.target).val();
         if(window.confirm('정말 승인하시겠습니까?')) {
           $.ajax({ 
            url: '/teacher/waiting', 
@@ -149,7 +149,7 @@
     
     $(() => {
       $('.permitButton').click(() => {
-      var val = $(this).val();
+      var val = $(ent.target).val();
       if(window.confirm('정말 거절하시겠습니까?')){
           $.ajax({ 
            url: '/teacher/waiting',
