@@ -22,7 +22,7 @@ router.get('/:studentId/:assignId', function(req, res, next){
             nextDate: course[0].dataValues.nextDate
         } : {} ;
         let grade = course.length > 0 ? course[0].dataValues.grades : [] ;
-        let schedule = course.length > 0 ? course[0].dataValues.schedule : [] ;
+        let schedule = course.length > 0 ? course[0].dataValues.schedules : [] ;
         let assignment = student.dataValues.assignment[0].dataValues;
         let teacherInfo;
         if(teacher) {
@@ -100,23 +100,26 @@ router.get('/joined', function(req, res, next){
 });
 
 /* 학생정보수정 */
-router.put('/:student/:expectation', function(req, res, next){
-    //ORM 적용시 student, expectation id로 조회, 유무 예외처리 필요
+router.put('/:studentId/:assignId', function(req, res, next){
     let student = req.body.student;
-    let expectation = req.body.expectation;
+    let assignment = req.body.assignment;
     let matched = req.body.matched;
-    let studentId = req.params.student;
-    let expectId = req.params.expectation;
-    let teacherId = req.body.teacher_id;
-    if(!student.name || !student.school_name) {
+    let studentId = req.params.studentId;
+    let assignId = req.params.assignId;
+    let teacherId = req.body.teacherId;
+    console.log("studentId : ", studentId);
+    console.log("assignId ; ", assignId);
+    console.log("student: ", student);
+    console.log("assign : ", assignment);
+    if(!student.name || !student.schoolName) {
         next(new CustomError(400, '학생 이름 및 학교명을 입력하세요.'));
         return;
     }
-    StudentService.editStudentInfo(expectation, student, matched, studentId, expectId, teacherId)
-    .then(function(){
+    StudentService.edit(assignment, student, matched, studentId, assignId, teacherId)
+    .then(() => {
         res.status(200).send(true);
     })
-    .catch(function(err){
+    .catch((err) => {
         next(new CustomError(500, err.message || err));
     });
 });

@@ -54,16 +54,16 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                       <div class="form-group col-lg-12">
-                                        <h2>학생 기본정보</h2>
+                                        <h2 id="studentId" value="<%=student.id%>">학생 기본정보</h2>
                                       </div>
                                         <div class="form-group col-lg-4">
                                             <label>구분</label>
                                             <select name="consultStatus" id="consultStatus" class="form-control">
                                                 <% for(let i in info.consultStatus) { %>
                                                     <% if(i==assign.consultStatus) { %> 
-                                                        <option value="<%=info.consultStatus[i]%>" selected><%=info.consultStatus[i]%></option>
+                                                        <option value="<%=i%>" selected><%=info.consultStatus[i]%></option>
                                                     <% } else { %>  
-                                                        <option value="<%=info.consultStatus[i]%>"><%=info.consultStatus[i]%></option> 
+                                                        <option value="<%=i%>"><%=info.consultStatus[i]%></option> 
                                                     <% } %>
                                                 <% } %>
                                             </select>
@@ -110,7 +110,7 @@
                                         </div>
                                         <div class="form-group col-lg-2">
                                             <label>성별</label>
-                                            <div class="form-group">
+                                            <div class="form-group" id="gender">
                                                     <% for(let i in info.gender) { %>
                                                             <% if(i==student.gender) { %> 
                                                                 <label class="radio-inline">
@@ -243,7 +243,7 @@
                                         </div>
 
                                         <div class="form-group col-lg-12">
-                                          <h2>희망 사항</h2>
+                                          <h2 id="assignId" value="<%=assign.id%>">희망 사항</h2>
                                         </div>
 
                                         <div class="form-group col-lg-2">
@@ -260,7 +260,7 @@
                                         </div>
                                         <div class="form-group col-lg-2">
                                             <label>성별</label>
-                                            <div class="form-group">
+                                            <div class="form-group" id="teacherGender">
                                               <% if(assign.teacherGender==0) { %>
                                                 <label class="radio-inline"></label>
                                                     <input type="radio" name="teacherGender" value=0 checked>남
@@ -280,7 +280,7 @@
                                         </div>
                                         <div class="form-group col-lg-8">
                                             <label>희망하는 선생님 성향</label>
-                                            <input id="recommanded" value="<%=assign.recommended%>" class="form-control">
+                                            <input name="recommanded" value="<%=assign.recommended%>" class="form-control">
                                         </div>
                                           <div class="form-group col-lg-12">
                                             <label>희망 수업 시간</label>
@@ -305,7 +305,7 @@
 
 
                                         <div class="form-gourp col-lg-12">
-                                            <h2>배정된 선생님</h2>
+                                            <h2 id="teacherId" value="<%=teacher.id%>">배정된 선생님</h2>
                                         </div> 
 
                                         <div class="panel-body">
@@ -502,6 +502,13 @@
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script>
         $(() => {
+            let gender, teacherGender;
+            $('#gender').find('input').click((ent)=> {
+                gender = $(ent.target).val;
+            });
+            $('#teacherGender').find('input').click((ent)=> {
+                teacherGender = $(ent.target).val;
+            });
             $('#editButton').click(() => {
             if(window.confirm('정말 수정하시겠습니까?')){
                 let PhoneRegExp = /^\d{2,4}-\d{3,4}-\d{4}$/;
@@ -513,24 +520,25 @@
                         return;
                     }
                 }
-                let parameters = location.href.slice(location.href.indexOf('/')+1).split('/');
-                var studentName = document.getElementsByName('name')[0].value;
-                var schoolName = document.getElementsByName('schoolName')[0].value;
+                let studentId = $('#studentId').attr('value');
+                let assignId = $('#assignId').attr('value');
+                let teacherId = $('#teacherId').attr('value');
+   
 
                 $.ajax({ 
-                    url: '/student/'+parameters[3]+'/'+parameters[4],
+                    url: '/student/'+studentId+'/'+assignId,
                     processData: false,
                     type: 'PUT',
-                    cache: false, 
+                    cache: true, 
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
                     data:  JSON.stringify({
                     assignment: {
-                        teacherAge: document.getElementsByName('teacherAge'[0]).value,
-                        teacherGender: document.getElementsByName('teacherGender')[0].value,
-                        recommanded: document.getElementsByName('recommanded')[0].value,
-                        regularDate: document.getElementsByName('regularDate'[0]).value,
-                        firstDate: document.getElementsByName('firstDate')[0].value,
+                        teacherAge: document.getElementsByName('teacherAge')[0].value,
+                        teacherGender: teacherGender,
+                        recommended: document.getElementsByName('recommanded')[0].value,
+                        regularDate: document.getElementsByName('regularDate')[0].value,
+                        firstDate: document.getElementsByName('firstDate')[0].value || "2017-01-01",
                         teacherFee: document.getElementsByName('teacherFee')[0].value,
                         fee: document.getElementsByName('fee')[0].value,
                         book: document.getElementsByName('book')[0].value,
@@ -542,7 +550,7 @@
                         subject: document.getElementsByName('subject')[0].value,
                         classForm: document.getElementsByName('classForm')[0].value,
                         carProvided: document.getElementsByName('carProvided')[0].value,
-                        studentMemo: document.getElementsByName('studenMemo')[0].value,
+                        studentMemo: document.getElementsByName('studentMemo')[0].value,
                         prevProgram: document.getElementsByName('program')[0].value,
                         prevStartTerm: document.getElementsByName('startTerm')[0].value || "2017-01-01",
                         prevEndTerm: document.getElementsByName('endTerm')[0].value || "2017-01-01",
@@ -552,22 +560,23 @@
                         prevCons: document.getElementsByName('cons')[0].value     
                     },
                     student: {
-                        name: studentName,
-                        gender: document.getElementsByName('gender')[0].value,
+                        name: document.getElementsByName('name')[0].value,
+                        gender: gender,
                         address1: document.getElementsByName('address1')[0].value,
                         address2: document.getElementsByName('address2')[0].value,
                         address3: document.getElementsByName('address3')[0].value,
                         school: document.getElementsByName('school')[0].value,
-                        school_name: schoolName,
+                        schoolName: document.getElementsByName('schoolName')[0].value,
                         grade: document.getElementsByName('grade')[0].value,
                         phone: document.getElementsByName('phone')[0].value,
                         fatherPhone: document.getElementsByName('fatherPhone')[0].value,
                         motherPhone: document.getElementsByName('motherPhone')[0].value
                     },
                     matched: $('#matched').attr("value"),
-                    teacherId: $('#teacherId').attr("value")
+                    teacherId: teacherId
                 }), 
                 success: function(data){
+                    window.alert("수정완료 되었습니다.");
                     window.location.href = '/student/joined';
                 },
                 error: function(xhr, status, error){

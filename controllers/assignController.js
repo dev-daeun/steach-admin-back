@@ -45,7 +45,7 @@ router.get('/:id', function(req, res, next){
             firstDate: results[0].firstDate,
             book: results[0].book
         };
-        if(results.length>1) {
+        if(results.length>0) {
             results.forEach(element => {
                 switch(element.teacherGender){
                     case 0: element.teacherGender = '남'; break;

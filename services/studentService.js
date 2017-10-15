@@ -109,48 +109,41 @@ class StudentService{
         });
     }
     
-   
-    
-    
 
     // //학생 정보 수정(기본정보, 과외정보, 매칭된 선생님 배정취소)
-    static editStudentInfo(expectation, student, matched, s_id, e_id, t_id){
-        return new Promise((resolve, reject) => {
-            Mysql.getTransConn()
-            .then(connection => {
-                return Student.updateById(connection, student, s_id)
-            })
-            .then(connection => {
-                return Expect.updateById(connection, expectation, e_id)
-            })
-            .then(connection => {
-                if(matched){
-                    Mysql.commitTransConn(connection)
-                    .then(() => { resolve(); });
-                }
-                else { //배정된 선생님이 배정취소되면
-                    Assign.deleteByStudentTeacherExpectId(connection, s_id, t_id, e_id) //assignment에서 사라짐
-                    .then(connection => {
-                        return Expect.updateById(connection, {assign_status: 2}, e_id) //해당 괴외정보의 상태는 선생님 배정대기중으로 변경
-                    })
-                    .then(connection => {
-                            //  return Course.deleteByStudentTeacherExpectId(connection, s_id, t_id, e_id) //수업정보도 삭제  
-                        return Mysql.commitTransConn(connection)
+    static edit(assignment, student, matched, studentId, assignId, teacherId){
+        return Model.sequelize.transaction(t => {
+            return Model.Student.update(student, {
+                where: {
+                    id: studentId
+                    }
+                }, {
+                    transaction: t
+            }).then(() => {
+                    return Model.Assignment.update(assignment, {
+                        where: {
+                            id: assignId
+                        }
+                        }, {
+                            transaction: t
+                    }).then(() => {
+                        if(!matched) 
+                            return Model.Apply.destroy({
+                                where: {
+                                    studentId: studentId,
+                                    assignmentId: assignId,
+                                    teacherId: teacherId,
+                                    status: 2
+                                }
+                            }, {
+                                transaction: t
+                            });
+                        else return Promise.resolve();
+                    });
+                });
                     
-                    })
-                    .then(() => { resolve(); });
-                }
-            })
-            .catch(([err, connection]) => {
-                if(connection) {
-                    Mysql.rollbackTransConn(connection)
-                    .then(() => { reject(err); });
-                }
-                else reject(err);
-            });
-        }); 
+        });
     }
-
 
 
     static getJoined(){
