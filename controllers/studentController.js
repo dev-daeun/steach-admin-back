@@ -1,7 +1,4 @@
 const StudentService = require('../services/studentService');
-const StudentModel = require('../model/student');
-const Teacher = require('../model/teacher');
-const Course = require('../model/course');
 
 const express = require('express');
 const router  = express.Router();
@@ -10,17 +7,60 @@ const moment = require('moment');
 
 const CustomError = require('../libs/customError');
 const adminName = require('../config.json').admin_name;
-const info = require('../libs/info');
+const info = require('../view/info.json');
 
 
 /* 학생수정 전 이전정보 조회 */
-router.get('/:student/:expectation', function(req, res, next){
-    StudentService.getStudentInfoBeforeEdit(req.params.student, req.params.expectation)
-    .then( result => {
-        if(!result.student) next(new CustomError(404, '학생정보를 찾을 수 없습니다.'));
-        result.student.start_term = moment(result.student.start_term).format("YYYY-MM-DD");
-        result.student.end_term = moment(result.student.end_term).format("YYYY-MM-DD");
-        ejs.renderFile('view/admin/studentEdit.ejs', result, function(err, view){
+router.get('/:studentId/:assignId', function(req, res, next){
+    StudentService.getOneById(req.params.studentId, req.params.assignId)
+    .then(([student, teacher, course]) => {
+        if(!student) return next(new CustomError(404, '학생정보를 찾을 수 없습니다.'));
+
+        let turn = course.length > 0 ? {
+            nextCount: course[0].dataValues.turns[0].dataValues.nextCount,
+            totalCount: course[0].dataValues.turns[0].dataValues.totalCount,
+            nextDate: course[0].dataValues.nextDate
+        } : {} ;
+        let grade = course.length > 0 ? course[0].dataValues.grades : [] ;
+        let schedule = course.length > 0 ? course[0].dataValues.schedule : [] ;
+        let assignment = student.dataValues.assignment[0].dataValues;
+        let teacherInfo;
+        if(teacher) {
+            switch(teacher.dataValues.gender){
+                case 0: teacher.dataValues.gender = '남'; break;
+                case 1: teacher.dataValues.gender = '여';
+            }
+            switch(teacher.univStatus){
+                case 1: teacher.dataValues.univStatus = '재학'; break;
+                case 2: teacher.dataValues.univStatus = '휴학'; break;
+                case 3: teacher.dataValues.univStatus = '수료'; break;
+                case 4: teacher.dataValues.univStatus = '졸업'; break;
+            }
+            teacherInfo = teacher;
+        }
+        else teacherInfo = {};
+        assignment.firstDate = moment(assignment.firstDate).format("YYYY-MM-DD");
+        assignment.prevStartTerm = moment(assignment.prevStartTerm).format("YYYY-MM-DD");
+        assignment.prevEndTerm = moment(assignment.prevEndTerm).format("YYYY-MM-DD");
+
+        console.log({
+            student: student,
+            assign: assignment,
+            teacher: teacher ? teacher.dataValues : {},
+            info: info,
+            schedule: schedule,
+            grade : grade,
+            turn: turn 
+        });
+        ejs.renderFile('view/admin/studentEdit.ejs', {
+            student: student,
+            assign: assignment,
+            teacher: teacherInfo,
+            turn: turn,
+            grade: grade,
+            schedule: schedule,
+            info: info
+        }, (err, view) => {
             if(err) throw err;
             else res.status(200).send(view);
         }); 
@@ -32,7 +72,7 @@ router.get('/:student/:expectation', function(req, res, next){
 
 /* 학생 목록 조회 DONE */
 router.get('/joined', function(req, res, next){
-    StudentService.getJoinedStudents()
+    StudentService.getJoined()
     .then(results => {
         let total = 0;
         results.forEach( student => {
@@ -84,7 +124,7 @@ router.put('/:student/:expectation', function(req, res, next){
 
 /* 퇴원학생 조회 DONE */
 router.get('/retired', function(req, res, next){
-    StudentService.getRetiredStudents()
+    StudentService.getRetired()
     .then(results => {
         let total = 0;
         results.forEach(student => {
@@ -126,7 +166,7 @@ router.post('/registration', function(req, res, next){
     }
     for(let key in Object.keys(student)) if(student.key==='') student.key = null;
     for(let key in Object.keys(assignment)) if(assignment.key==='') assignment.key = null;
-    StudentService.registerStudent(student, assignment)
+    StudentService.register(student, assignment)
     .then(() => {
         res.status(201).send(true);
     })

@@ -1,39 +1,21 @@
-const TeacherModel = require('../models').Teacher;
-const Assignment = require('../models').Assignment;
-const Apply = require('../models').Apply;
-const StudentModel = require('../models').Student;
 const Model = require('../models');
 const sequelize = require('../models/index').sequelize;
 
-/* 이전 서비스에 필요한 모듈 */
-const Student = require('../model/student');
-const Teacher = require('../model/teacher');
-const Expect = require('../model/expectation');
-const Course = require('../model/course');
-const Assign = require('../model/assignment');
-const Mysql = require('../utils/mysql');
-const express = require('express');
-const router  = express.Router();
-// const bookshelf = require('../utils/bookshelf').bookshelf;
-// const knex = bookshelf.knex;
-const ejs = require('ejs');
-const fs = require('fs');
+
 const moment = require('moment');
-const adminName = require('../config.json').admin_name;
-const info = require('../libs/info');
 
 class StudentService{
 
     
     static register(student, assignment){
         return Model.sequelize.transaction(t => {
-            return StudentModel.create(
+            return Model.Student.create(
                 student, {
                 transaction: t
             })
             .then(newStudent => {
                 assignment.studentId = newStudent.dataValues.id;
-                return Assignment.create(
+                return Model.Assignment.create(
                     assignment, {
                     transaction: t
                 });
@@ -41,80 +23,94 @@ class StudentService{
         });
     }
 
-
     //학생정보 수정 할 때 이전 정보 조회
-    static getStudentInfoBeforeEdit(s_id, e_id){
-        return new Promise((resolve, reject) => {
-            Mysql.getConn()
-            .then(connection => {
-                return Student.selectById(connection, s_id, e_id)
-            })
-            .then(([student, connection]) => {
-                Teacher.selectByStudent(connection, s_id, e_id)
-                .then(([teacher, conenction]) => {
-                    if(teacher.length===0) { //배정된 선생님이 없으면
-                        Mysql.releaseConn(connection)
-                        .then(() => {
-                            resolve({
-                                student: student[0],
-                                teacher: {},
-                                course: {
-                                    next_count: 0,
-                                    next_date: '00-00-00',
-                                    total_count: 0,
-                                    first_date: ''
-                                },
-                                schedule: [],
-                                grade: [],
-                                info: info       
-                            });
-                        });
+    static getOneById(studentId, assignId){
+        return Promise.all([
+            Model.Student.findOne({ //학생, 희망정보 
+                include: [{
+                    model: Model.Assignment,
+                    as: 'assignment',
+                    required: true,
+                    where: {
+                        student_id: Model.Student.id,
+                        student_id: {
+                            $not: null
+                        },
+                        id: assignId
                     }
-                    else{
-                        Course.selectByStudentTeacherId(connection, s_id, e_id, teacher[0].teacher_id) //선생님이 있으면 학생이 듣는 수업 select
-                        .then(([course, connection]) => {
-                                 //select된 수업 id로 schdule, grade select
-                        Promise.all([
-                            Mysql.getConn()
-                            .then(connection => {
-                                return Course.getScheduleByCourseId(connection, course[0].id);
-                            })
-                            .then(([schedules, connection]) => {
-                                return Mysql.releaseConn(connection, schedules);
-                            }),
-                            Mysql.getConn()
-                            .then(connection => {
-                                return Course.getGradeByCourseId(connection, course[0].id); 
-                            })
-                            .then(([grades, connection]) => {
-                                return Mysql.releaseConn(connection, grades);
-                            }),
-                        ]).then(([schedules, grades]) => {
-                                course[0].next_date = moment(course[0].next_date).format('YYYY-MM-DD');
-                                resolve({
-                                    student: student[0],
-                                    teacher: teacher[0],
-                                    course: course[0],
-                                    schedule: schedules,
-                                    grade: grades,
-                                    info: info       
-                                });
-                            });
-                        });
-                    }
-                });
-            })
-            .catch(([err, connection])=> {
-                if(connection){
-                    Mysql.releaseConn(connection)
-                    .then(() => {
-                        reject(err);
-                    });
+                }],
+                where: {
+                    id: studentId
                 }
-                else reject(err);
-            });
+            }),
+            Model.Teacher.findOne({ //학생한테 배정된 선생님 정보
+                include: [{
+                    model: Model.Apply,
+                    required: true,
+                    where: {
+                        studentId: studentId,
+                        assignmentId: assignId,
+                        status: 2,
+                        deletedAt: null
+                    }
+                }],
+            }),
+            Model.Course.findAll({ //학생과 선생이 진행중인 수업
+                include: [{
+                    model: Model.Turn,
+                    as: 'turns',
+                    required: true,
+                    where: {
+                        courseCount: Model.Course.courseCount,
+                        courseCount: {
+                            $not: null
+                        },
+                        courseId: Model.Course.id,
+                        courseId: {
+                            $not: null
+                        },
+                        deletedAt: null
+                        
+                    },
+                },{
+                    model: Model.Grade, //학생이 수강하는 수업 성적?
+                    as: 'grades',
+                    required: false,
+                    where: {
+                        courseId: Model.Course.id,
+                        courseId: {
+                            $not: null
+                        },
+                        deletedAt: null
+                    }
+                },{
+                    model: Model.Schedule, //스케줄
+                    as: 'schedules',
+                    required: false,
+                    where: {
+                        courseId: Model.Course.id,
+                        courseId: {
+                            $not: null
+                        },
+                        deletedAt: null
+                    }
+                }],
+                where: {
+                    assignmentId: assignId,
+                    studentId: studentId
+                }
+            })
+        ], ([student, teacher, course]) => {
+            return Promise.resolve([
+                student, 
+                teacher, 
+                course
+            ]);
         });
     }
+    
+   
+    
     
 
     // //학생 정보 수정(기본정보, 과외정보, 매칭된 선생님 배정취소)
@@ -157,17 +153,17 @@ class StudentService{
 
 
 
-    static getJoinedStudents(){
-        return StudentModel.findAll({   
+    static getJoined(){
+        return Model.Student.findAll({   
             include: [{
-                model: Assignment,
+                model: Model.Assignment,
                 as: 'assignment',
                 required: true,
                 where: { 
                     assignStatus: {
                         $not: 0
                     },
-                    student_id: Student.id,
+                    student_id: Model.Student.id,
                     student_id: {
                         $not: null
                     }
@@ -180,15 +176,15 @@ class StudentService{
     }
 
 
-    static getRetiredStudents(){
-        return StudentModel.findAll({
+    static getRetired(){
+        return Model.Student.findAll({
             include: [{
-                model: Assignment,
+                model: Model.Assignment,
                 as: 'assignment',
                 required: true,
                 where: {
                     assignStatus: 0,
-                    student_id: Student.id,
+                    student_id: Model.Student.id,
                     student_id: {
                         $not: null
                     }

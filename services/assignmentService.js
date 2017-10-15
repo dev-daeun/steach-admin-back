@@ -1,17 +1,11 @@
-const Models = require('../models');
-const Assignment = require('../models').Assignment;
-const Apply = require('../models').Apply;
-const Student = require('../models').Student;
-const Teacher = require('../models').Teacher;
-const Course = require('../models').Course;
-const Turn = require('../models').Turn;
+const Model = require('../models');
 const sequelize = require('sequelize'); 
 const moment = require('moment');
 
 class AssignService{
 
     static getAll(){
-        return Assignment.findAll({
+        return Model.Assignment.findAll({
             attributes:[
                 'id',
                 'subject',
@@ -22,22 +16,22 @@ class AssignService{
                 'book'
             ],
             include: [{
-                model: Student,
+                model: Model.Student,
                 as: 'student',
                 required: true,
                 where: {
-                    id: Assignment.student_id,
+                    id: Model.Assignment.student_id,
                     id: {
                         $not: null
                     }
                 }
             },{
-                model: Apply,
+                model: Model.Apply,
                 as: 'applys',
                 required: false,
                 where: {
                     status: 1,
-                    assignment_id: Assignment.id,
+                    assignment_id: Model.Assignment.id,
                     assignment_id: {
                         $not: null
                     }
@@ -89,11 +83,11 @@ class AssignService{
                                           ON student.id = assignment.student_id 
                                              AND assignment.id = :assignId) AS STD 
                        ON STD.assignmentid = TCR.assignmentid  `;
-        return Models.sequelize.query(sql, {
+        return Model.sequelize.query(sql, {
             replacements: {
               assignId: assignId
             },
-            type: Models.sequelize.QueryTypes.SELECT
+            type: Model.sequelize.QueryTypes.SELECT
           });
     }
     //매칭 전 특정 학생정보 조회
@@ -102,8 +96,8 @@ class AssignService{
 
     static match(applyId, assignId, teacherName, teacherId){
         var studentInfo = new Object();
-        return Models.sequelize.transaction(t => {
-            return Apply.update( //
+        return Model.sequelize.transaction(t => {
+            return Model.Apply.update( //
                 {
                     status: 2
                 },{
@@ -113,7 +107,7 @@ class AssignService{
                 },{
                     transaction: t
             }).then((results) => {
-                return Assignment.update( //assignment에 배정된 선생님 정보 및 상태 업뎃
+                return Model.Assignment.update( //assignment에 배정된 선생님 정보 및 상태 업뎃
                     {
                         assignStatus: 3,
                         teacherId: teacherId,
@@ -125,7 +119,7 @@ class AssignService{
                     },{
                         transaction: t
                 }).then(() => {
-                    return Assignment.findOne({ //course 및 turn 테이블에 들어갈 것들
+                    return Model.Assignment.findOne({ //course 및 turn 테이블에 들어갈 것들
                         attributes: ['studentId', 'studentName', 'subject', 'firstDate'],
                         where: {
                             id: assignId
@@ -135,7 +129,7 @@ class AssignService{
                     }).then(assignment => {
                         studentInfo.name = assignment.dataValues.studentName;
                         studentInfo.subject = assignment.dataValues.subject;
-                        return Course.create({
+                        return Model.Course.create({
                             assignmentId: assignId,
                             studentId: assignment.dataValues.studentId,
                             teacherId: teacherId,
@@ -144,19 +138,19 @@ class AssignService{
                         }, {
                             transaction: t
                         }).then(result => {
-                            return Turn.create({
+                            return Model.Turn.create({
                                 courseId: result.dataValues.id
                             }, {
                                 transaction: t
                             }).then(() => {
-                                return Apply.destroy({ //배정된 선생님을 제외한 apply는 삭제
+                                return Model.Apply.destroy({ //배정된 선생님을 제외한 apply는 삭제
                                     where: {
                                         teacherId: {
                                             $not: teacherId
                                         }
                                     }
                                 }).then(() => {
-                                    return Teacher.findOne({ //푸시 및 문자 보낼 선생님 핸드폰 정보
+                                    return Model.Teacher.findOne({ //푸시 및 문자 보낼 선생님 핸드폰 정보
                                         attributes: ['phone', 'fcmToken'],
                                         where: {
                                             id: teacherId
@@ -164,7 +158,10 @@ class AssignService{
                                     }, {
                                         transaction: t
                                     }).then((teacher) => {
-                                            return Promise.resolve([studentInfo, {phone: teacher.dataValues.phone, fcmToken: teacher.dataValues.fcmToken}]);
+                                            return Promise.resolve([studentInfo, {
+                                                phone: teacher.dataValues.phone, 
+                                                fcmToken: teacher.dataValues.fcmToken
+                                            }]);
                                     });
                                 });
                             });

@@ -1,7 +1,5 @@
 
-const Assign = require('../model/assignment');
 const AssignService = require('../services/assignmentService');
-const Teacher = require('../model/teacher');
 
 const express = require('express');
 const router  = express.Router();
@@ -122,7 +120,7 @@ router.get('/', function(req, res, next){
 
 
 
-/* 배정대기중인 선생님에게 학생 매칭하기( assign의 status : 배정하기 -> (선생님으로부터) 승인대기중*/
+/* 배정대기중인 선생님에게 학생 매칭하기( assign의 status : 배정하기 -> (선생님으로부터) 승인대기중 DONE*/
 router.post('/', function(req, res, next){
     AssignService.match(req.body.applyId, 
                         req.body.assignId, 

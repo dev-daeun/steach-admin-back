@@ -1,4 +1,3 @@
-const StudentService = require('../service/student');
 const StudentModel = require('../models').Student;
 const Teacher = require('../models').Teacher;
 const Course = require('../models').Course;
@@ -12,7 +11,6 @@ const moment = require('moment');
 const studentCounter = require('../libs/studentCounter');
 const CustomError = require('../libs/customError');
 const adminName = require('../config.json').admin_name;
-const info = require('../libs/info');
 const setComma = require('../libs/commaConverter').setComma;
 
 
