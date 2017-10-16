@@ -167,8 +167,9 @@ router.post('/registration', function(req, res, next){
         next(new CustomError(400, '학생 이름 및 학교명을 입력하세요.'));
         return;
     }
-    for(let key in Object.keys(student)) if(student.key==='') student.key = null;
-    for(let key in Object.keys(assignment)) if(assignment.key==='') assignment.key = null;
+    // console.log('regularDATe111111111111111111111: ', student.regularDate);
+    // for(let key in Object.keys(student)) if(student.key==='') student.key = null;
+    // for(let key in Object.keys(assignment)) if(assignment.key==='') assignment.key = null;
     StudentService.register(student, assignment)
     .then(() => {
         res.status(201).send(true);

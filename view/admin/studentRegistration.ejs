@@ -263,11 +263,11 @@
                                                 <div class="form-group col-lg-6">
                                                   <label>희망 시간</label>
                                                   <div class="form-inline">
-                                                    <select name="start_meridiem" class="form-control">
+                                                    <select class="start_meridiem" name="start_meridiem" class="form-control">
                                                         <option value="오전" selected>오전</option>
                                                         <option value="오후">오후</option>
                                                     </select>
-                                                    <select name="start_hour" class="form-control">
+                                                    <select class="start_hour" name="start_hour" class="form-control">
                                                         <option value="01" selected>01</option>
                                                         <option value="02">02</option>
                                                         <option value="03">03</option>
@@ -282,7 +282,7 @@
                                                         <option value="12">12</option>
                                                     </select>
                                                     <label>시</label>
-                                                    <select name="start_minute" class="form-control">
+                                                    <select class="start_minute" name="start_minute" class="form-control">
                                                         <option value="00" selected>00</option>
                                                         <option value="10">10</option>
                                                         <option value="20">20</option>
@@ -292,11 +292,11 @@
                                                     </select>
                                                     <label>분</label>
                                                     <label>~</label>
-                                                    <select name="end_meridiem" class="form-control">
+                                                    <select class="end_meridiem" name="end_meridiem" class="form-control">
                                                         <option value="오전" selected>오전</option>
                                                         <option value="오후">오후</option>
                                                     </select>
-                                                    <select name="end_hour" class="form-control">
+                                                    <select class="end_hour" name="end_hour" class="form-control">
                                                         <option value="01" selected>01</option>
                                                         <option value="02">02</option>
                                                         <option value="03">03</option>
@@ -311,7 +311,7 @@
                                                         <option value="12">12</option>
                                                     </select>
                                                     <label>시</label>
-                                                    <select name="end_minute" class="form-control">
+                                                    <select class="end_minute" name="end_minute" class="form-control">
                                                         <option value="00" selected>00</option>
                                                         <option value="10">10</option>
                                                         <option value="20">20</option>
@@ -465,13 +465,13 @@
                 //희망 수업일/시간
                 let regularDate='';
                 for(let i = 0; i < $("#schedules").children().length; i++){
-                    regularDate += document.getElementsByName("dayofweek"+i)[0].value,
-                                    +' '+document.getElementsByName('start_meridiem')[i].value
-                                    +' '+document.getElementsByName('start_hour')[i].value
-                                    +':'+document.getElementsByName('start_minute')[i].value
-                                    +'~'+document.getElementsByName('end_meridiem')[i].value
-                                    +' '+document.getElementsByName('end_hour')[i].value
-                                    +':'+document.getElementsByName('end_minute')[i].value,
+                    regularDate += $("#dayofweek"+i).val,
+                                    +' '+$('.start_meridiem')[i].val
+                                    +' '+$('.start_hour')[i].val
+                                    +':'+$('.start_minute')[i].val
+                                    +'~'+$('.end_meridiem')[i].val
+                                    +' '+$('.end_hour')[i].val
+                                    +':'+$('.end_minute')[i].val
                                     +'\n';
                 }
 
@@ -581,11 +581,11 @@
                                                                                             <div class="form-group col-lg-6">
                                                   <label>희망 시간</label>
                                                   <div class="form-inline">
-                                                    <select name="start_meridiem" class="form-control">
+                                                    <select class="start_meridiem" name="start_meridiem" class="form-control">
                                                         <option value="오전" selected>오전</option>
                                                         <option value="오후">오후</option>
                                                     </select>
-                                                    <select name="start_hour" class="form-control">
+                                                    <select class="start_hour" name="start_hour" class="form-control">
                                                         <option value="01" selected>01</option>
                                                         <option value="02">02</option>
                                                         <option value="03">03</option>
@@ -600,7 +600,7 @@
                                                         <option value="12">12</option>
                                                     </select>
                                                     <label>시</label>
-                                                    <select name="start_minute" class="form-control">
+                                                    <select class="start_minute" name="start_minute" class="form-control">
                                                         <option value="00" selected>00</option>
                                                         <option value="10">10</option>
                                                         <option value="20">20</option>
@@ -610,11 +610,11 @@
                                                     </select>
                                                     <label>분</label>
                                                     <label>~</label>
-                                                    <select name="end_meridiem" class="form-control">
+                                                    <select class="end_meridiem" name="end_meridiem" class="form-control">
                                                         <option value="오전" selected>오전</option>
                                                         <option value="오후">오후</option>
                                                     </select>
-                                                    <select name="end_hour" class="form-control">
+                                                    <select class="end_hour" name="end_hour" class="form-control">
                                                         <option value="01" selected>01</option>
                                                         <option value="02">02</option>
                                                         <option value="03">03</option>
@@ -629,7 +629,7 @@
                                                         <option value="12">12</option>
                                                     </select>
                                                     <label>시</label>
-                                                    <select name="end_minute" class="form-control">
+                                                    <select class="end_minute" name="end_minute" class="form-control">
                                                         <option value="00" selected>00</option>
                                                         <option value="10">10</option>
                                                         <option value="20">20</option>
