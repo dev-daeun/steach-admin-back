@@ -232,7 +232,7 @@
   <!-- Page-Level Demo Scripts - Tables - Use for reference -->
   <script>
     $(() => {
-      $('.matchButton').click((evt) => {
+      $('.matchButton').change((evt) => {
        if(window.confirm('정말로 매칭하시겠습니까?')){
             $.ajax({ 
               url: '/assignment',

@@ -124,7 +124,7 @@
   <script>
         
     $(() => {
-      $('.permitButton').click((ent) => {
+      $('.permitButton').change((ent) => {
         var val = $(ent.target).val();
         if(window.confirm('정말 승인하시겠습니까?')) {
           $.ajax({ 
@@ -136,6 +136,7 @@
            dataType: 'json',
            data: JSON.stringify({ teacherId: val, permitted: true }), 
            success: function(data){
+             window.alert("승인 처리 되었습니다.");
              window.location.href = '/teacher/joined';
            },
            error: function(xhr, status, error){
@@ -148,7 +149,7 @@
     });
     
     $(() => {
-      $('.permitButton').click(() => {
+      $('.permitButton').change((ent) => {
       var val = $(ent.target).val();
       if(window.confirm('정말 거절하시겠습니까?')){
           $.ajax({ 
@@ -160,6 +161,7 @@
            dataType: 'json',
            data: JSON.stringify({ teacherId: val, permitted: false }), 
            success: function(data){
+              window.alert("거절 처리 되었습니다.");
               window.location.href = '/teacher/waiting';
            },
            error: function(xhr, status, error){
