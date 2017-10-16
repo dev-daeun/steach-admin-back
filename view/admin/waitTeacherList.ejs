@@ -143,12 +143,9 @@
            }
           });
         }
-        else return;
       });
-    });
-    
-    $(() => {
-      $('.permitButton').click(() => {
+
+      $('.denyButton').click(() => {
       var val = $(ent.target).val();
       if(window.confirm('정말 거절하시겠습니까?')){
           $.ajax({ 
@@ -167,8 +164,7 @@
            }
           });
         } 
-        else return;
-    });
+      });
   });
     $(document).ready(function() {
       $('#dataTables-example').children('thead').children('tr').children('th').css('white-space', 'nowrap')
