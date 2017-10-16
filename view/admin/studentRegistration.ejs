@@ -463,9 +463,9 @@
                     }
                 }
                 //희망 수업일/시간
-                let regular_date='';
+                let regularDate='';
                 for(let i = 0; i < $("#schedules").children().length; i++){
-                    regular_date += document.getElementsByName("dayofweek"+i)[0].value,
+                    regularDate += document.getElementsByName("dayofweek"+i)[0].value,
                                     +' '+document.getElementsByName('start_meridiem')[i].value
                                     +' '+document.getElementsByName('start_hour')[i].value
                                     +':'+document.getElementsByName('start_minute')[i].value
@@ -495,6 +495,7 @@
                     dataType: 'json',
                     data:  JSON.stringify({
                     assignment: {
+                        regularDate: regularDate,
                         studentName: document.getElementsByName('name')[0].value,
                         callingDay: document.getElementsByName('calling_day')[0].value || new Date(),
                         visitingDay: document.getElementsByName('visiting_day')[0].value || new Date(),
@@ -513,7 +514,7 @@
                         firstDate: document.getElementsByName('first_date')[0].value || new Date(),
                         book: document.getElementsByName('book')[0].value,
                         fee: document.getElementsByName('fee')[0].value || 0,
-                        teacherGee: document.getElementsByName('teacher_fee')[0].value || 0,
+                        teacherFee: document.getElementsByName('teacher_fee')[0].value || 0,
                         prevScore: document.getElementsByName('current_score')[0].value,
                         prevProgram: preProgramValue,
                         prevStartTerm: document.getElementsByName('start_term')[0].value || new Date(),
