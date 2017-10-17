@@ -184,8 +184,7 @@
                   <% for(let i = 0; i<teachers.length; i++){ %>
                       <tr>
                         <td><%=i+1%></td>
-                        <td id="teacherId" style="display:none;"><%=teachers[i].teacherId%></td>
-                        <td id="teacherName"><%=teachers[i].name%></td>
+                        <td class="teacherName"><%=teachers[i].name%></td>
                         <td><%=teachers[i].gender%></td>
                         <td><%=teachers[i].age%></td>
                         <td><%=teachers[i].univ%></td>
@@ -193,7 +192,10 @@
                         <td><%=teachers[i].status%></td>
                         <td><%=teachers[i].phone%></td>
                         <td><%=teachers[i].available%></td>
-                        <td class="center"><button  class="matchButton" value="<%=teachers[i].applyId%>">배정하기</button></td>
+                        <td class="center">
+                          <button class="teacherId" style="display:none;" value="<%=teachers[i].teacherId%>"></button>
+                          <button class="matchButton" value="<%=teachers[i].applyId%>">배정하기</button>
+                        </td>
                       </tr>
                     <% }%>    
                   </tbody>
@@ -232,8 +234,8 @@
   <!-- Page-Level Demo Scripts - Tables - Use for reference -->
   <script>
     $(() => {
-      $('.matchButton').change((evt) => {
-       if(window.confirm('정말로 매칭하시겠습니까?')){
+      $('body').on('click', '.matchButton', (ent) => {
+       if(confirm('정말로 매칭하시겠습니까?')){
             $.ajax({ 
               url: '/assignment',
               processData: false,
@@ -242,21 +244,20 @@
               contentType: 'application/json; charset=utf-8',
               dataType: 'json',
               data: JSON.stringify({ 
-                applyId: $(evt.target).val(),
+                applyId: $(ent.target).val(),
                 assignId: <%=assignId%>,
-                teacherName: $(evt.target).parent().siblings("#teacherName").text(),
-                teacherId: parseInt($(evt.target).parent().siblings("#teacherId").text())
+                teacherName: $(ent.target).parent().siblings(".teacherName").text(),
+                teacherId: parseInt($(ent.target).siblings('.teacherId').val())
               }), 
               success: (data) => {
-                window.alert('매칭완료 되었습니다.');
+                alert('매칭완료 되었습니다.');
                 location.href = '/student/joined';
               },
               error: (xhr, status, error) => {
-                  window.alert(xhr.responseText);
+                alert(xhr.responseText);
               }
             });
           } 
-        
       });
     });
 

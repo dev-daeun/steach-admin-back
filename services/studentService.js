@@ -137,6 +137,17 @@ class StudentService{
                                 }
                             }, {
                                 transaction: t
+                            }).then(()=> {
+                                return Model.Assignment.update({
+                                    teacherName: null,
+                                    teacherId: null
+                                },{
+                                    where: {
+                                        id: assignId
+                                    }
+                                },{
+                                    transaction: t
+                                });
                             });
                         else return Promise.resolve();
                     });

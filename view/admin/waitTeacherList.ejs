@@ -124,47 +124,47 @@
   <script>
         
     $(() => {
-      $('.permitButton').click((ent) => {
+      $('body').on('click', '.permitButton', (ent) => {
         var val = $(ent.target).val();
-        if(window.confirm('정말 승인하시겠습니까?')) {
+        if(confirm('정말 승인하시겠습니까?')) {
           $.ajax({ 
-           url: '/teacher/waiting', 
-           processData: false,
-           type: 'POST',
-           cache: false, 
-           contentType: 'application/json; charset=utf-8',
-           dataType: 'json',
-           data: JSON.stringify({ teacherId: val, permitted: true }), 
-           success: function(data){
-             window.alert("승인 처리 되었습니다.");
-             window.location.href = '/teacher/joined';
-           },
-           error: function(xhr, status, error){
-                    alert(xhr.responseText);
-           }
+            url: '/teacher/waiting', 
+            processData: false,
+            type: 'POST',
+            cache: false, 
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            data: JSON.stringify({ teacherId: val, permitted: true }), 
+            success: function(data){
+              alert("승인 처리 되었습니다.");
+              location.href = '/teacher/joined';
+            },
+            error: function(xhr, status, error){
+              alert(xhr.responseText);
+            }
           });
         }
       });
 
-      $('.denyButton').click((ent) => {
-      var val = $(ent.target).val();
-      if(window.confirm('정말 거절하시겠습니까?')){
-          $.ajax({ 
-           url: '/teacher/waiting',
-           processData: false,
-           type: 'POST',
-           cache: false, 
-           contentType: 'application/json; charset=utf-8',
-           dataType: 'json',
-           data: JSON.stringify({ teacherId: val, permitted: false }), 
-           success: function(data){
-              window.alert("거절 처리 되었습니다.");
-              window.location.href = '/teacher/waiting';
-           },
-           error: function(xhr, status, error){
-                    alert(xhr.responseText);
-           }
-          });
+      $('body').on('click', '.denyButton', (ent) => {
+        var val = $(ent.target).val();
+        if(window.confirm('정말 거절하시겠습니까?')){
+            $.ajax({ 
+              url: '/teacher/waiting',
+              processData: false,
+              type: 'POST',
+              cache: false, 
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'json',
+              data: JSON.stringify({ teacherId: val, permitted: false }), 
+              success: function(data){
+                  alert("거절 처리 되었습니다.");
+                  location.href = '/teacher/waiting';
+              },
+              error: function(xhr, status, error){
+                  alert(xhr.responseText);
+              }
+            });
         } 
       });
     });

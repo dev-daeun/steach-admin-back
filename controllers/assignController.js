@@ -134,9 +134,8 @@ router.post('/', function(req, res, next){
             type: "SMS",
             from: coolsmsConfig.from,
             text: text
-        }, function(err, result){
-                if(err) reject(err);
-                else resolve();
+        }, function(err){
+                if(err) throw err;
         });                
         pushMessage('매칭요청 승인여부', text, teacher.fcmToken, "match");
         res.status(200).send(true); 
