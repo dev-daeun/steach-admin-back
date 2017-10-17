@@ -9,8 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Bootstrap Admin Theme</title>
-
+    <% include ./title.ejs%>
     <!-- Bootstrap Core CSS -->
     <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -41,6 +40,7 @@
       text-align: center;
     }
     </style>
+
 </head>
 
 <body>
@@ -93,7 +93,7 @@
                                    <% for(let i = 0; i<student.length; i++){ %>
                                      <% for(let j = 0; j<student[i].dataValues.assignment.length; j++){ %>
                                       <tr>
-                                        <td><%=total%></td>
+                                        <td ><%=total%></td>
                                         <td><%=student[i].dataValues.assignment[j].assignStatus%></td>
                                         <td><%=student[i].dataValues.assignment[j].subject %></td>
                                         <td><%=student[i].dataValues.grade %></td>
@@ -114,7 +114,7 @@
                                         <td><%=student[i].dataValues.assignment[j].firstDate %></td>
                                         <td><button onclick="location.href='/student/'+<%=student[i].dataValues.id%>+'/'+<%=student[i].dataValues.assignment[j].id%>">수정</button></td>
                                       </tr>
-                                      <%= total -= 1%>
+                                      <%total = total - 1;%>
                                      <% } %>
                                    <% } %>
                                 </tbody>
@@ -152,8 +152,8 @@
 
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
     <script>
+    $(() => {
 
-    $(document).ready(function() {
       $('#dataTables-example').DataTable({
         responsive: true,
         sDom : '<"top"l<"#filterDiv">f>rt<"bottom"ip>'

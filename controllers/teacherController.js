@@ -9,7 +9,7 @@ const cryto = require('crypto');
 
 const Encryption = require('../libs/encryption');
 const setComma = require('../libs/commaConverter').setComma;
-const adminName = require('../config.json').admin_name;
+const adminName = require('../config.json').adminName;
 const coolsmsConfig = require('../config.json').coolsms;
 const pushMessage = require('../utils/push').pushMessage;
 const CustomError = require('../libs/customError');
@@ -25,13 +25,14 @@ router.get('/joined', function(req, res, next){
     TeacherService.getJoined()
     .then(results => {
         for(let teacher of results){
-            // if (teacher.dataValues.accountNumber) 
-            //     teacher.dataValues.accountNumber = Encryption.decrypt(teacher.dataValues.accountNumber);
+            if (teacher.dataValues.accountNumber) 
+                teacher.dataValues.accountNumber = Encryption.decrypt(teacher.dataValues.accountNumber);    
             teacher.totalProfit = 0;
             if(teacher.Assignments.length>0){
                 teacher.Assignments.forEach(assign => {
                     if(assign.dataValues.payDay)
-                        assign.dataValues.payDay = moment(assign.dataValues.payDay).format("MM-DD");//수업료 지급 날짜
+                        assign.dataValues.payDay = moment(assign.dataValues.payDay).format("MM-DD"); //수업료 지급 날짜
+                    else assign.dataValues.payDay = '00-00';
                     teacher.totalProfit += assign.dataValues.fee; //영업이익
                 });
                 teacher.totalProfit = setComma(teacher.totalProfit);
@@ -101,30 +102,40 @@ router.post('/waiting', function(req, res, next){
     else{
         TeacherService.getOneById(teacherId)
         .then( teacher => {
-            var text;
             if(!teacher) next(new CustomError(404, '선생님 정보를 찾을 수 없습니다.'));
             else if(req.body.permitted){
                 TeacherService.setJoinedById(teacherId)
                 .then(() => {
-                    text = adminName + '으로부터 가입요청 승인되었습니다.';
-                    pushMessage('가입요청 승인여부', text, teacher.dataValues.fcmToken);  
+                    let text = adminName + '으로부터 가입요청 승인되었습니다.';
+                    console.log(text);
+                    console.log(teacher.dataValues.phone);
+                    pushMessage('가입요청 승인여부', text, teacher.dataValues.fcmToken, "assigned");
+                    coolsmsClient.sms.send({
+                        to: teacher.dataValues.phone,
+                        type: "SMS",
+                        from: coolsmsConfig.from,
+                        text: text
+                    }, (err, result) => {
+                        if(err) throw err;
+                    });  
                 });
             }else{
                 TeacherService.deleteById(teacherId)
                 .then(() => {
-                    text = '승인이 거절되어 가입에 실패하였습니다.';
+                    let text = adminName + '으로부터 승인이 거절되어 가입에 실패하였습니다.';
+                    console.log(text);
+                    console.log(teacher.dataValues.phone);
                     pushMessage('가입요청 승인여부', text, teacher.dataValues.fcmToken, "assigned"); 
-                })
+                    coolsmsClient.sms.send({
+                        to: teacher.dataValues.phone,
+                        type: "SMS",
+                        from: coolsmsConfig.from,
+                        text: text
+                    }, (err, result) => {
+                        if(err) throw err;
+                    }); 
+                });
             }
-            console.log(text);
-            coolsmsClient.sms.send({
-                to: teacher.dataValues.phone,
-                type: "SMS",
-                from: coolsmsConfig.from,
-                text: text
-            }, function(err, result){
-                if(err) throw err;
-            });
             res.status(200).send(true); 
         }).catch(function(err){
             next(new CustomError(500, err.message || err));

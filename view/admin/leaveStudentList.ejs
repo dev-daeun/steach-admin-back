@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Bootstrap Admin Theme</title>
+    <% include ./title.ejs%>
 
     <!-- Bootstrap Core CSS -->
     <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -111,7 +111,7 @@
                                           <td><%=student[i].dataValues.assignment[j].failReason%></td>
                                           <td class="center"><button onclick="location.href='/student/'+<%=student[i].dataValues.id%>+'/'+<%=student[i].dataValues.assignment[j].id%>">수정</button></td>
                                       </tr>
-                                      <%= total -= 1%>
+                                      <% total -= 1%>
                                     <% } %>
                                   <% } %>
                                 </tbody>    
@@ -150,7 +150,7 @@
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
     <script>
 
-    $(document).ready(function() {
+    $(() => {
     $('#dataTables-example').children('thead').children('tr').children('th').css('white-space', 'nowrap')
     $('#dataTables-example').children('thead').children('tr').children('th').css('text-align', 'center')
     $('#dataTables-example').children('tbody').children('tr').children('td').css('white-space', 'nowrap')

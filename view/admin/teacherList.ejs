@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>SB Admin 2 - Bootstrap Admin Theme</title>
+  <% include ./title.ejs%>
 
   <!-- Bootstrap Core CSS -->
   <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -43,11 +43,6 @@
   }
   </style>
  <script src="../vendor/jquery/jquery.js"></script>
- <script>
-   $(function(){
-     $("#navigationBar").load("navigation.ejs");
-   });
-  </script>
 </head>
 
 <body>
@@ -100,9 +95,9 @@
                       <td><%=teacher[i].dataValues.grade%></td>
                       <td><%=teacher[i].dataValues.univStatus%></td>
                       <td><%=teacher[i].totalProfit%></td>
-                      <td>
+                      <td style="text-align: left">
                           <% for(let j = 0; j<teacher[i].Assignments.length; j++) { %>
-                            <%=teacher[i].Assignments[j].dataValues.studentName%> - <%=teacher[i].Assignments[j].dataValues.payDay%>
+                            <%=teacher[i].Assignments[j].dataValues.studentName%> <%=teacher[i].Assignments[j].dataValues.payDay%>
                             <br>
                             <%}%>
                       </td>
@@ -145,7 +140,7 @@
   <!-- Page-Level Demo Scripts - Tables - Use for reference -->
   <script>  
   
-  $(document).ready(function() {
+  $(() => {
     $('#dataTables-example').DataTable({
       responsive: true,
       sDom : '<"top"l<"#filterDiv">f>rt<"bottom"ip>'

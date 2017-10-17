@@ -8,7 +8,7 @@ const moment = require('moment');
 const CustomError = require('../libs/customError');
 const adminName = require('../config.json').admin_name;
 const info = require('../view/info.json');
-
+const setComma = require('../libs/commaConverter').setComma;
 
 /* 학생수정 전 이전정보 조회 */
 router.get('/:studentId/:assignId', function(req, res, next){
@@ -80,16 +80,20 @@ router.get('/joined', function(req, res, next){
                 total += 1;
                 if(assign.dataValues.depositDay)
                     assign.dataValues.depositDay = moment(assign.dataValues.depositDay).format("YYYY-MM-DD");
-                assign.dataValues.callingDay = moment(assign.dataValues.callingDay).format("YYYY-MM-DD");
-                assign.dataValues.visitingDay = moment(assign.dataValues.visitingDay).format("YYYY-MM-DD");
-                assign.dataValues.firstDate = moment(assign.dataValues.firstDate).format("YYYY-MM-DD");
-                    switch(assign.dataValues.assignStatus){
-                        case 1: assign.dataValues.assignStatus = '배정실패'; break;
-                        case 2: assign.dataValues.assignStatus = '배정중'; break;
-                        case 3: assign.dataValues.assignStatus = '대기중'; break;
-                        case 4: assign.dataValues.assignStatus = '재원중'
-                    }
-                    
+                if(assign.dataValues.callingDay)
+                    assign.dataValues.callingDay = moment(assign.dataValues.callingDay).format("YYYY-MM-DD");
+                if(assign.dataValues.visitingDay)
+                    assign.dataValues.visitingDay = moment(assign.dataValues.visitingDay).format("YYYY-MM-DD");
+                if(assign.dataValues.firstDate)
+                    assign.dataValues.firstDate = moment(assign.dataValues.firstDate).format("YYYY-MM-DD");
+                switch(assign.dataValues.assignStatus){
+                    case 1: assign.dataValues.assignStatus = '배정실패'; break;
+                    case 2: assign.dataValues.assignStatus = '배정중'; break;
+                    case 3: assign.dataValues.assignStatus = '대기중'; break;
+                    case 4: assign.dataValues.assignStatus = '재원중'
+                }
+                assign.dataValues.depositFee = setComma(assign.dataValues.depositFee);
+                assign.dataValues.fee = setComma(assign.dataValues.fee);    
             });       
         });
         ejs.renderFile('view/admin/studentList.ejs', { student: results, total: total }, (err, view) => {
@@ -133,9 +137,14 @@ router.get('/retired', function(req, res, next){
                 total += 1;
                 if(assign.dataValues.depositDay)
                     assign.dataValues.depositDay = moment(assign.dataValues.depositDay).format("YYYY-MM-DD");
-                assign.dataValues.callingDay = moment(assign.dataValues.callingDay).format('YYYY-MM-DD');
-                assign.dataValues.visitingDay = moment(assign.dataValues.visitingDay).format('YYYY-MM-DD');
-                assign.dataValues.firstDate = moment(assign.dataValues.firstDate).format('YYYY-MM-DD');
+                if(assign.dataValues.callingDay)
+                    assign.dataValues.callingDay = moment(assign.dataValues.callingDay).format('YYYY-MM-DD');
+                if(assign.dataValues.visitingDay)
+                    assign.dataValues.visitingDay = moment(assign.dataValues.visitingDay).format('YYYY-MM-DD');
+                if(assign.dataValues.firstDate)
+                    assign.dataValues.firstDate = moment(assign.dataValues.firstDate).format('YYYY-MM-DD');
+                assign.dataValues.depositFee = setComma(assign.dataValues.depositFee);
+                assign.dataValues.fee = setComma(assign.dataValues.fee);
             });
         });
         ejs.renderFile('view/admin/leaveStudentList.ejs', { student: results, total: total }, (err, view) => {
