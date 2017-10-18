@@ -97,15 +97,12 @@ class StudentService{
                 }],
                 where: {
                     assignmentId: assignId,
-                    studentId: studentId
+                    studentId: studentId,
+                    deletedAt: null
                 }
             })
         ], ([student, teacher, course]) => {
-            return Promise.resolve([
-                student, 
-                teacher, 
-                course
-            ]);
+                return Promise.resolve([student, teacher, course]);
         });
     }
     
@@ -127,7 +124,7 @@ class StudentService{
                         }, {
                             transaction: t
                     }).then(() => {
-                        if(!matched) 
+                        if(matched==="배정취소") 
                             return Model.Apply.destroy({
                                 where: {
                                     studentId: studentId,

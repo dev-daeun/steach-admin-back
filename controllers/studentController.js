@@ -39,6 +39,8 @@ router.get('/:studentId/:assignId', function(req, res, next){
             teacherInfo = teacher;
         }
         else teacherInfo = {};
+        assignment.callingDay = moment(assignment.callingDay).format("YYYY-MM-DD");
+        assignment.visitingDay = moment(assignment.visitingDay).format("YYYY-MM-DD");
         assignment.firstDate = moment(assignment.firstDate).format("YYYY-MM-DD");
         assignment.prevStartTerm = moment(assignment.prevStartTerm).format("YYYY-MM-DD");
         assignment.prevEndTerm = moment(assignment.prevEndTerm).format("YYYY-MM-DD");
@@ -113,6 +115,10 @@ router.put('/:studentId/:assignId', function(req, res, next){
     let studentId = req.params.studentId;
     let assignId = req.params.assignId;
     let teacherId = req.body.teacherId;
+    console.log(student);
+    console.log(assignment);
+    console.log(matched);
+    console.log(teacherId);
     if(!student.name || !student.schoolName) {
         next(new CustomError(400, '학생 이름 및 학교명을 입력하세요.'));
         return;

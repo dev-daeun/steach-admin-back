@@ -95,7 +95,7 @@
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-4">
-                                            <label style="visibility:hidden">아파트명/기타</label>
+                                            <label id="knownPathLabel" style="visibility:hidden">기타경로</label>
                                             <input type="text" class="form-control" name="knownPathEtc" id="knownPathEtc" style="visibility:hidden;"/>
                                         </div> 
                                         <div class="form-group col-lg-4">
@@ -152,15 +152,15 @@
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>학생 연락처</label>
-                                            <input name="phone" id="phone" class="form-control phone-number">
+                                            <input name="phone"  placeholder="000-0000-0000" id="phone" class="form-control phone-number">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>아버지 연락처</label>
-                                            <input name="fatherPhone" id="fatherPhone" class="form-control phone-number">
+                                            <input name="fatherPhone" placeholder="000-0000-0000" id="fatherPhone" class="form-control phone-number">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>어머니 연락처</label>
-                                            <input name="motherPhone" id="motherPhone" class="form-control phone-number">
+                                            <input name="motherPhone"  placeholder="000-0000-0000" id="motherPhone" class="form-control phone-number">
                                         </div>
                                         <div class="form-group col-lg-3">
                                             <label>희망과목</label>
@@ -174,7 +174,7 @@
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-3">
-                                            <label style="visibility:hidden">기타 과목명</label>
+                                            <label id="subjectLabel" style="visibility:hidden">기타 과목명</label>
                                             <input type="text" class="form-control" name="subjectEtc" id="subjectEtc" style="visibility:hidden;"/>
                                         </div>
                                         <div class="form-group col-lg-3">
@@ -237,25 +237,25 @@
                                                 <label>희망 요일</label>
                                                 <div class="form-group" id="dayofweek">
                                                   <label class="radio-inline">
-                                                      <input type="radio"  value="일" checked>일
+                                                      <input type="radio" name="day0" ￼value="일" checked>일
                                                   </label>
                                                   <label class="radio-inline">
-                                                      <input type="radio"  value="월">월
+                                                      <input type="radio" name="day0" value="월">월
                                                   </label>
                                                   <label class="radio-inline">
-                                                      <input type="radio"  value="화">화
+                                                      <input type="radio" name="day0" value="화">화
                                                   </label>
                                                   <label class="radio-inline">
-                                                      <input type="radio" value="수">수
+                                                      <input type="radio" name="day0" value="수">수
                                                   </label>
                                                   <label class="radio-inline">
-                                                      <input type="radio" value="목">목
+                                                      <input type="radio" name="day0" value="목">목
                                                   </label>
                                                   <label class="radio-inline">
-                                                      <input type="radio" value="금">금
+                                                      <input type="radio" name="day0" value="금">금
                                                   </label>
                                                   <label class="radio-inline">
-                                                      <input type="radio" value="토">토
+                                                      <input type="radio" name="day" value="토">토
                                                   </label>
                                                 </div>
                                             </div>
@@ -370,7 +370,7 @@
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-4">
-                                            <label style="visibility:hidden">기타 프로그램명</label>
+                                            <label id="prevProgramLabel" style="visibility:hidden">기타 프로그램명</label>
                                             <input type="text" class="form-control" name="preProgramEtc" id="preProgramEtc" style="visibility:hidden;"/>
                                         </div>
                                         <div class="form-group col-lg-4">
@@ -427,14 +427,14 @@
                 prevProgram = $("#prevProgram").find(":selected").prevObject[0].value;
             
                 $("#knownPath").change((ent) => {
-                    knownPath = $(ent.target).openTextBox($('#knownPathEtc'));
+                    knownPath = $(ent.target).openTextBox($('#knownPathEtc'), $("#knownPathLabel"));
                 });
                 $("#subject").change((ent) => {
-                    subject = $(ent.target).openTextBox($('#subjectEtc'));
+                    subject = $(ent.target).openTextBox($('#subjectEtc'), $("#subjectLabel"));
 
                 });
                 $("#prevProgram").change((ent) => {
-                    prevProgram = $(ent.target).openTextBox($('#prevProgramEtc'));
+                    prevProgram = $(ent.target).openTextBox($('#prevProgramEtc'), $("#prevProgramLabel"));
                 });
             $('#registerButton').click(() => {
             if(confirm('정말 등록하시겠습니까?')){
@@ -447,9 +447,9 @@
                     }
                 }
 
-                if(knownPath==='') knownPath = $('#knownPathEtc').val();
-                if(subject==='') subject = $('#subjectEtc').val();
-                if(prevProgram==='') prevProgram = $('#prevProgramEtc').val();
+                if(knownPath=='기타') knownPath = $('#knownPathEtc').val();
+                if(subject=='기타') subject = $('#subjectEtc').val();
+                if(prevProgram=='기타') prevProgram = $('#prevProgramEtc').val();
                 //희망 수업일/시간
                 let regularDate='';
                 for(let i = 0; i < $("#regularDate").children().length; i++){
@@ -534,25 +534,25 @@
                             <label>희망 요일</label>
                             <div class="form-group" id="dayofweek">
                             <label class="radio-inline">
-                                <input type="radio"  value="일" checked>일
+                                <input type="radio"  name="day"`+len+` value="일" checked>일
                             </label>
                             <label class="radio-inline">
-                                <input type="radio"  value="월">월
+                                <input type="radio"  name="day"`+len+` value="월">월
                             </label>
                             <label class="radio-inline">
-                                <input type="radio"  value="화">화
+                                <input type="radio"  name="day"`+len+` value="화">화
                             </label>
                             <label class="radio-inline">
-                                <input type="radio"  value="수">수
+                                <input type="radio"  name="day"`+len+` value="수">수
                             </label>
                             <label class="radio-inline">
-                                <input type="radio"  value="목">목
+                                <input type="radio"  name="day"`+len+` value="목">목
                             </label>
                             <label class="radio-inline">
-                                <input type="radio"  value="금">금
+                                <input type="radio"  name="day"`+len+` value="금">금
                             </label>
                             <label class="radio-inline">
-                                <input type="radio"  value="토">토
+                                <input type="radio"  name="day"`+len+` value="토">토
                             </label>
                             </div>
                         </div>

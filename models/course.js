@@ -37,6 +37,11 @@ module.exports = function(sequelize, DataTypes) {
       field: "next_date",
       type: DataTypes.DATEONLY,
       allowNull: true
+    },
+    deletedAt: {
+      field: "deleted_at",
+      type: DataTypes.DATE,
+      allowNull: true
     }
   }, {
     underscored: true,
