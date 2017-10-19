@@ -108,7 +108,7 @@ class StudentService{
     
 
     // //학생 정보 수정(기본정보, 과외정보, 매칭된 선생님 배정취소)
-    static edit(assignment, student, matched, studentId, assignId, teacherId){
+    static edit(assignment, student, matchCanceled, studentId, assignId, teacherId){
         return Model.sequelize.transaction(t => {
             return Model.Student.update(student, {
                 where: {
@@ -124,7 +124,7 @@ class StudentService{
                         }, {
                             transaction: t
                     }).then(() => {
-                        if(matched==="배정취소") 
+                        if(matchCanceled) 
                             return Model.Apply.destroy({
                                 where: {
                                     studentId: studentId,

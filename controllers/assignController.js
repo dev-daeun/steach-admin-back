@@ -7,7 +7,6 @@ const ejs = require('ejs');
 const moment = require('moment');
 const Coolsms = require('coolsms-rest-sdk');
 
-
 const coolsmsConfig = require('../config.json').coolsms;
 const pushMessage = require('../utils/push').pushMessage;
 const CustomError = require('../libs/customError');
@@ -47,16 +46,6 @@ router.get('/:id', function(req, res, next){
         };
         if(results.length>0) {
             results.forEach(element => {
-                switch(element.teacherGender){
-                    case 0: element.teacherGender = '남'; break;
-                    case 1: element.teacherGender = '여';
-                }
-                switch(element.univStatus){
-                    case 1: element.univStatus = '재학';
-                    case 2: element.univStatus = '휴학';
-                    case 3: element.univStatus = '수료';
-                    case 4: element.univStatus = '졸업';
-                }
                 teachers.push({
                     teacherId: element.teacherId,
                     applyId: element.applyId,
@@ -65,7 +54,7 @@ router.get('/:id', function(req, res, next){
                     age: element.age,
                     univ: element.university,
                     grade: element.teacherGrade,
-                    status: element.univStatus,
+                    univStatus: element.univStatus,
                     phone: element.phone,
                     available: element.available
                 });    
@@ -94,10 +83,6 @@ router.get('/', function(req, res, next){
         results.forEach( assign => {
             let asn = assign.dataValues;
             let student = assign.dataValues.student.dataValues;
-            switch(student.gender){
-                case 0: asn.gender = '남'; break;
-                case 1: asn.gender = '여';
-            }
             asn.firstDate = moment(asn.firstDate).format("YY-MM-DD");
             asn.requested = asn.applys.length; 
             asn.name = student.name;
@@ -122,21 +107,18 @@ router.get('/', function(req, res, next){
 
 /* 배정대기중인 선생님에게 학생 매칭하기( assign의 status : 배정하기 -> (선생님으로부터) 승인대기중 DONE*/
 router.post('/', function(req, res, next){
-    AssignService.match(req.body.applyId, 
-                        req.body.assignId, 
-                        req.body.teacherName, 
-                        req.body.teacherId)
+    AssignService.match(req.body.applyId, req.body.assignId, req.body.teacherName, req.body.teacherId)
     .then(([student, teacher]) => {
         let text = student.name + '학생의 '+ student.subject +'수업에 최종배정 되었습니다.';
-        console.log(text);
-        coolsmsClient.sms.send({
-            to: teacher.phone,
-            type: "SMS",
-            from: coolsmsConfig.from,
-            text: text
-        }, function(err){
-                if(err) throw err;
-        });                
+        // console.log(text);
+        // coolsmsClient.sms.send({
+        //     to: teacher.phone,
+        //     type: "SMS",
+        //     from: coolsmsConfig.from,
+        //     text: text
+        // }, function(err){
+        //         if(err) throw err;
+        // });                
         pushMessage('매칭요청 승인여부', text, teacher.fcmToken, "match");
         res.status(200).send(true); 
     })

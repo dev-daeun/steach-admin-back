@@ -91,28 +91,28 @@
                                 </thead>
                                 <tbody>
                                    <% for(let i = 0; i<student.length; i++){ %>
-                                     <% for(let j = 0; j<student[i].dataValues.assignment.length; j++){ %>
+                                     <% for(let j = 0; j<student[i].assignment.length; j++){ %>
                                       <tr>
                                         <td ><%=total%></td>
-                                        <td><%=student[i].dataValues.assignment[j].assignStatus%></td>
-                                        <td><%=student[i].dataValues.assignment[j].subject %></td>
-                                        <td><%=student[i].dataValues.grade %></td>
-                                        <td><%=student[i].dataValues.address1 %></td>
-                                        <td><%=student[i].dataValues.name %></td>
-                                        <td><%=student[i].dataValues.motherPhone %></td>
-                                        <td><%=student[i].dataValues.fatherPhone %></td>                                        
-                                        <td><%=student[i].dataValues.assignment[j].teacherName %></td>
-                                        <td><%=student[i].dataValues.assignment[j].classForm %></td>
-                                        <td><%=student[i].dataValues.schoolName %></td>
-                                        <td><%=student[i].dataValues.assignment[j].calledConsultant %></td>
-                                        <td><%=student[i].dataValues.assignment[j].visitedConsultant %></td>
-                                        <td><%=student[i].dataValues.assignment[j].fee %></td>
-                                        <td><%=student[i].dataValues.assignment[j].depositDay %></td>
-                                        <td><%=student[i].dataValues.assignment[j].depositFee %></td>
-                                        <td><%=student[i].dataValues.assignment[j].callingDay %></td>
-                                        <td><%=student[i].dataValues.assignment[j].visitingDay %></td>
-                                        <td><%=student[i].dataValues.assignment[j].firstDate %></td>
-                                        <td><button onclick="location.href='/student/'+<%=student[i].dataValues.id%>+'/'+<%=student[i].dataValues.assignment[j].id%>">수정</button></td>
+                                        <td class="assignStatus"><%=student[i].assignment[j].assignStatus%></td>
+                                        <td><%=student[i].assignment[j].subject %></td>
+                                        <td><%=student[i].grade %></td>
+                                        <td><%=student[i].address1 %></td>
+                                        <td><%=student[i].name %></td>
+                                        <td><%=student[i].motherPhone %></td>
+                                        <td><%=student[i].fatherPhone %></td>                                        
+                                        <td><%=student[i].assignment[j].teacherName %></td>
+                                        <td><%=student[i].assignment[j].classForm %></td>
+                                        <td><%=student[i].schoolName %></td>
+                                        <td><%=student[i].assignment[j].calledConsultant %></td>
+                                        <td><%=student[i].assignment[j].visitedConsultant %></td>
+                                        <td class="fee"><%=student[i].assignment[j].fee %></td>
+                                        <td><%=student[i].assignment[j].depositDay %></td>
+                                        <td class="depositFee"><%=student[i].assignment[j].depositFee %></td>
+                                        <td><%=student[i].assignment[j].callingDay %></td>
+                                        <td><%=student[i].assignment[j].visitingDay %></td>
+                                        <td><%=student[i].assignment[j].firstDate %></td>
+                                        <td><button onclick="location.href='/student/'+<%=student[i].id%>+'/'+<%=student[i].assignment[j].id%>">수정</button></td>
                                       </tr>
                                       <%total = total - 1;%>
                                      <% } %>
@@ -135,7 +135,7 @@
 
     <!-- jQuery -->
     <script src="../vendor/jquery/jquery.min.js"></script>
-
+    <script src="../vendor/jquery/custom.js"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
 
@@ -154,6 +154,9 @@
     <script>
     $(() => {
 
+        $('.fee').setComma();
+        $('.depositFee').setComma();
+        $('.assignStatus').convertAssignStatus();
       $('#dataTables-example').DataTable({
         responsive: true,
         sDom : '<"top"l<"#filterDiv">f>rt<"bottom"ip>'

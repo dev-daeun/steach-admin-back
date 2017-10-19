@@ -238,15 +238,15 @@
                                   <tbody>
                                       <tr>
                                           <td class="col-lg-6" style="text-align:center">이 달 매출</td>
-                                          <td class="col-lg-6" style="text-align:center"><%=profit.expected%></td>
+                                          <td class="col-lg-6 profit" style="text-align:center"><%=profit.expected%></td>
                                       </tr>
                                       <tr>
                                           <td class="col-lg-6" style="text-align:center">대기 매출</td>
-                                          <td class="col-lg-6" style="text-align:center"><%=profit.paid%></td>
+                                          <td class="col-lg-6 profit" style="text-align:center"><%=profit.paid%></td>
                                       </tr>
                                       <tr>
                                           <td class="col-lg-6" style="text-align:center">총 매출</td>
-                                          <td class="col-lg-6" style="text-align:center"><%=profit.total%></td>
+                                          <td class="col-lg-6 profit" style="text-align:center"><%=profit.total%></td>
                                       </tr>
                                   </tbody>
                               </table>
@@ -298,7 +298,12 @@
 
     <!-- jQuery -->
     <script src="../vendor/jquery/jquery.min.js"></script>
-
+    <script src="../vendor/jquery/custom.js"></script>
+    <script>
+        $(() => {
+            $('.profit').setComma();
+        })
+    </script>
     <!-- Bootstrap Core JavaScript -->
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
 

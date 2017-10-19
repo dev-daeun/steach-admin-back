@@ -74,16 +74,16 @@
                   <% for(let i = 0; i<teacher.length; i++){%> 
                    <tr>
                     <td><%=i+1%></td>
-                    <td><%=teacher[i].dataValues.address1%></td>
-                    <td><%=teacher[i].dataValues.age%></td>
-                    <td><%=teacher[i].dataValues.name%></td>
-                    <td class="gender"><%=teacher[i].dataValues.gender%></td>
-                    <td><%=teacher[i].dataValues.university%></td>
-                    <td><%=teacher[i].dataValues.grade%></td>
-                    <td class="univStatus"><%=teacher[i].dataValues.univStatus%></td>
+                    <td><%=teacher[i].address1%></td>
+                    <td><%=teacher[i].age%></td>
+                    <td><%=teacher[i].name%></td>
+                    <td class="gender"><%=teacher[i].gender%></td>
+                    <td><%=teacher[i].university%></td>
+                    <td><%=teacher[i].grade%></td>
+                    <td class="univStatus"><%=teacher[i].univStatus%></td>
                     <td>
-                      <button type = 'submit' value = <%=teacher[i].dataValues.id%> class = "permitButton">승인</button>
-                      <button type = 'submit' value = <%=teacher[i].dataValues.id%> class = "denyButton">거절</button>                  
+                      <button type = 'submit' value = <%=teacher[i].id%> class = "permitButton">승인</button>
+                      <button type = 'submit' value = <%=teacher[i].id%> class = "denyButton">거절</button>                  
                     </td>                       
                     </tr>
                   <%}%>
@@ -105,6 +105,7 @@
 
   <!-- jQuery -->
   <script src="../vendor/jquery/jquery.min.js"></script>
+  <script src="../vendor/jquery/custom.js"></script>
 
   <!-- Bootstrap Core JavaScript -->
   <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
@@ -124,6 +125,9 @@
   <script>
         
     $(() => {
+      $('.gender').convertGender();
+      $('.univStatus').convertUniv();
+
       $('body').on('click', '.permitButton', (ent) => {
         var val = $(ent.target).val();
         if(confirm('정말 승인하시겠습니까?')) {

@@ -82,7 +82,7 @@
                                         <tr>
                                             <td><%=i+1%></td>
                                             <td><%=assign[i].name%></td>
-                                            <td><%=assign[i].gender%></td>
+                                            <td class="gender"><%=assign[i].gender%></td>
                                             <td><%=assign[i].subject%></td>
                                             <td><%=assign[i].schoolName%></td>
                                             <td><%=assign[i].grade%></td>
@@ -118,6 +118,7 @@
 
     <!-- jQuery -->
     <script src="../vendor/jquery/jquery.min.js"></script>
+    <script src="../vendor/jquery/custom.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
@@ -137,14 +138,15 @@
     <script>
 
     $(() => {
-    $('#dataTables-example').children('thead').children('tr').children('th').css('white-space', 'nowrap')
-    $('#dataTables-example').children('thead').children('tr').children('th').css('text-align', 'center')
-    $('#dataTables-example').children('tbody').children('tr').children('td').css('white-space', 'nowrap')
-    $('#dataTables-example').children('tbody').children('tr').children('td').css('text-align', 'center')
-        $('#dataTables-example').DataTable({
-            responsive: true
+        $('.gender').convertGender();
+        $('#dataTables-example').children('thead').children('tr').children('th').css('white-space', 'nowrap')
+        $('#dataTables-example').children('thead').children('tr').children('th').css('text-align', 'center')
+        $('#dataTables-example').children('tbody').children('tr').children('td').css('white-space', 'nowrap')
+        $('#dataTables-example').children('tbody').children('tr').children('td').css('text-align', 'center')
+            $('#dataTables-example').DataTable({
+                responsive: true
+            });
         });
-    });
     </script>
 
 </body>

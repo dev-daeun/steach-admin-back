@@ -185,11 +185,11 @@
                       <tr>
                         <td><%=i+1%></td>
                         <td class="teacherName"><%=teachers[i].name%></td>
-                        <td><%=teachers[i].gender%></td>
+                        <td class="gender"><%=teachers[i].gender%></td>
                         <td><%=teachers[i].age%></td>
                         <td><%=teachers[i].univ%></td>
                         <td><%=teachers[i].grade%></td>
-                        <td><%=teachers[i].status%></td>
+                        <td class="univStatus"><%=teachers[i].univStatus%></td>
                         <td><%=teachers[i].phone%></td>
                         <td><%=teachers[i].available%></td>
                         <td class="center">
@@ -216,6 +216,7 @@
 
   <!-- jQuery -->
   <script src="../vendor/jquery/jquery.min.js"></script>
+  <script src="../vendor/jquery/custom.js"></script>
 
   <!-- Bootstrap Core JavaScript -->
   <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
@@ -234,6 +235,9 @@
   <!-- Page-Level Demo Scripts - Tables - Use for reference -->
   <script>
     $(() => {
+      $('.gender').convertGender();
+      $('.univStatus').convertUniv();
+
       $('body').on('click', '.matchButton', (ent) => {
        if(confirm('정말로 매칭하시겠습니까?')){
             $.ajax({ 

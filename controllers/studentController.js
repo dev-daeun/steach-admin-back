@@ -6,9 +6,6 @@ const ejs = require('ejs');
 const moment = require('moment');
 
 const CustomError = require('../libs/customError');
-const adminName = require('../config.json').admin_name;
-const info = require('../view/info.json');
-const setComma = require('../libs/commaConverter').setComma;
 
 /* 학생수정 전 이전정보 조회 */
 router.get('/:studentId/:assignId', function(req, res, next){
@@ -20,36 +17,32 @@ router.get('/:studentId/:assignId', function(req, res, next){
             nextCount: course[0].dataValues.turns[0].dataValues.nextCount,
             totalCount: course[0].dataValues.turns[0].dataValues.totalCount,
             nextDate: course[0].dataValues.nextDate
-        } : {} ;
+        } : {
+            nextCount: 0,
+            totalCount: 0,
+            nextDate: "0000-00-00"
+        } ;
         let grade = course.length > 0 ? course[0].dataValues.grades : [] ;
         let schedule = course.length > 0 ? course[0].dataValues.schedules : [] ;
         let assignment = student.dataValues.assignment[0].dataValues;
         let teacherInfo;
-        if(teacher) {
-            switch(teacher.dataValues.gender){
-                case 0: teacher.dataValues.gender = '남'; break;
-                case 1: teacher.dataValues.gender = '여';
-            }
-            switch(teacher.univStatus){
-                case 1: teacher.dataValues.univStatus = '재학'; break;
-                case 2: teacher.dataValues.univStatus = '휴학'; break;
-                case 3: teacher.dataValues.univStatus = '수료'; break;
-                case 4: teacher.dataValues.univStatus = '졸업'; break;
-            }
-            teacherInfo = teacher;
-        }
+        if(teacher) teacherInfo = teacher;
         else teacherInfo = {};
         assignment.callingDay = moment(assignment.callingDay).format("YYYY-MM-DD");
         assignment.visitingDay = moment(assignment.visitingDay).format("YYYY-MM-DD");
         assignment.firstDate = moment(assignment.firstDate).format("YYYY-MM-DD");
         assignment.prevStartTerm = moment(assignment.prevStartTerm).format("YYYY-MM-DD");
         assignment.prevEndTerm = moment(assignment.prevEndTerm).format("YYYY-MM-DD");
-
+        if(grade.length>0){
+            grade.forEach(e => {
+                let newYear = moment(e.year).format("YYYY");
+                e.stringYear = newYear;
+            });
+        }
         console.log({
             student: student,
             assign: assignment,
             teacher: teacher ? teacher.dataValues : {},
-            info: info,
             schedule: schedule,
             grade : grade,
             turn: turn 
@@ -60,8 +53,7 @@ router.get('/:studentId/:assignId', function(req, res, next){
             teacher: teacherInfo,
             turn: turn,
             grade: grade,
-            schedule: schedule,
-            info: info
+            schedule: schedule
         }, (err, view) => {
             if(err) throw err;
             else res.status(200).send(view);
@@ -76,8 +68,11 @@ router.get('/:studentId/:assignId', function(req, res, next){
 router.get('/joined', function(req, res, next){
     StudentService.getJoined()
     .then(results => {
-        let total = 0;
+        let total = 0,
+            studentArray = new Array();
+
         results.forEach( student => {
+            let assignArray = new Array();
             student.dataValues.assignment.forEach( assign => {
                 total += 1;
                 if(assign.dataValues.depositDay)
@@ -87,18 +82,13 @@ router.get('/joined', function(req, res, next){
                 if(assign.dataValues.visitingDay)
                     assign.dataValues.visitingDay = moment(assign.dataValues.visitingDay).format("YYYY-MM-DD");
                 if(assign.dataValues.firstDate)
-                    assign.dataValues.firstDate = moment(assign.dataValues.firstDate).format("YYYY-MM-DD");
-                switch(assign.dataValues.assignStatus){
-                    case 1: assign.dataValues.assignStatus = '배정실패'; break;
-                    case 2: assign.dataValues.assignStatus = '배정중'; break;
-                    case 3: assign.dataValues.assignStatus = '대기중'; break;
-                    case 4: assign.dataValues.assignStatus = '재원중'
-                }
-                assign.dataValues.depositFee = setComma(assign.dataValues.depositFee);
-                assign.dataValues.fee = setComma(assign.dataValues.fee);    
-            });       
+                    assign.dataValues.firstDate = moment(assign.dataValues.firstDate).format("YYYY-MM-DD"); 
+                assignArray.push(assign.dataValues);
+            });
+            student.dataValues.assignment = assignArray;
+            studentArray.push(student.dataValues);       
         });
-        ejs.renderFile('view/admin/studentList.ejs', { student: results, total: total }, (err, view) => {
+        ejs.renderFile('view/admin/studentList.ejs', { student: studentArray, total: total }, (err, view) => {
             if(err) throw err;
             else res.status(200).send(view);
         }); 
@@ -109,21 +99,21 @@ router.get('/joined', function(req, res, next){
 
 /* 학생정보수정 */
 router.put('/:studentId/:assignId', function(req, res, next){
-    let student = req.body.student;
-    let assignment = req.body.assignment;
-    let matched = req.body.matched;
-    let studentId = req.params.studentId;
-    let assignId = req.params.assignId;
-    let teacherId = req.body.teacherId;
-    console.log(student);
-    console.log(assignment);
-    console.log(matched);
-    console.log(teacherId);
+    let student = req.body.student,
+        assignment = req.body.assignment,
+        matchCanceled = req.body.matchCanceled,
+        studentId = req.params.studentId,
+        assignId = req.params.assignId,
+        teacherId = req.body.teacherId;
+        console.log(studentId);
+        console.log(assignId);
+        console.log(teacherId);
+        console.log(matchCanceled);
     if(!student.name || !student.schoolName) {
         next(new CustomError(400, '학생 이름 및 학교명을 입력하세요.'));
         return;
     }
-    StudentService.edit(assignment, student, matched, studentId, assignId, teacherId)
+    StudentService.edit(assignment, student, matchCanceled, studentId, assignId, teacherId)
     .then(() => {
         res.status(200).send(true);
     })
@@ -137,8 +127,10 @@ router.put('/:studentId/:assignId', function(req, res, next){
 router.get('/retired', function(req, res, next){
     StudentService.getRetired()
     .then(results => {
-        let total = 0;
+        let total = 0,
+            studentArray = new Array();
         results.forEach(student => {
+            let assignArray = new Array();
             student.dataValues.assignment.forEach( assign => {
                 total += 1;
                 if(assign.dataValues.depositDay)
@@ -149,14 +141,15 @@ router.get('/retired', function(req, res, next){
                     assign.dataValues.visitingDay = moment(assign.dataValues.visitingDay).format('YYYY-MM-DD');
                 if(assign.dataValues.firstDate)
                     assign.dataValues.firstDate = moment(assign.dataValues.firstDate).format('YYYY-MM-DD');
-                assign.dataValues.depositFee = setComma(assign.dataValues.depositFee);
-                assign.dataValues.fee = setComma(assign.dataValues.fee);
+                assignArray.push(assign);
             });
+            student.dataValues.assignment = assignArray;
+            studentArray.push(student.dataValues);
         });
-        ejs.renderFile('view/admin/leaveStudentList.ejs', { student: results, total: total }, (err, view) => {
+        ejs.renderFile('view/admin/leaveStudentList.ejs', { student: studentArray, total: total }, (err, view) => {
             if(err) throw err;
             else res.status(200).send(ejs.render(view));
-        })
+        });
     })
     .catch(err => {
         next(new CustomError(500, err.message || err));
@@ -182,9 +175,6 @@ router.post('/registration', function(req, res, next){
         next(new CustomError(400, '학생 이름 및 학교명을 입력하세요.'));
         return;
     }
-    // console.log('regularDATe111111111111111111111: ', student.regularDate);
-    // for(let key in Object.keys(student)) if(student.key==='') student.key = null;
-    // for(let key in Object.keys(assignment)) if(assignment.key==='') assignment.key = null;
     StudentService.register(student, assignment)
     .then(() => {
         res.status(201).send(true);

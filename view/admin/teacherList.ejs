@@ -86,22 +86,22 @@
                   <% for(let i = 0; i<teacher.length; i++){ %>
                     <tr>
                       <td><%=i+1%></td>
-                      <td><%=teacher[i].dataValues.employed%></td>
-                      <td><%=teacher[i].dataValues.address1%></td>
-                      <td><%=teacher[i].dataValues.age%></td>
-                      <td><%=teacher[i].dataValues.name%></td>
-                      <td><%=teacher[i].dataValues.gender%></td>
-                      <td><%=teacher[i].dataValues.university%></td>
-                      <td><%=teacher[i].dataValues.grade%></td>
-                      <td><%=teacher[i].dataValues.univStatus%></td>
-                      <td><%=teacher[i].totalProfit%></td>
+                      <td class="employed"><%=teacher[i].employed%></td>
+                      <td><%=teacher[i].address1%></td>
+                      <td><%=teacher[i].age%></td>
+                      <td><%=teacher[i].name%></td>
+                      <td class="gender"><%=teacher[i].gender%></td>
+                      <td><%=teacher[i].university%></td>
+                      <td><%=teacher[i].grade%></td>
+                      <td class="univStatus"><%=teacher[i].univStatus%></td>
+                      <td class="totalProfit"><%=teacher[i].totalProfit%></td>
                       <td style="text-align: left">
-                          <% for(let j = 0; j<teacher[i].Assignments.length; j++) { %>
-                            <%=teacher[i].Assignments[j].dataValues.studentName%> <%=teacher[i].Assignments[j].dataValues.payDay%>
+                          <% for(let j = 0; j<teacher[i].assignments.length; j++) { %>
+                            <%=teacher[i].assignments[j].studentName%> <%=teacher[i].assignments[j].payDay%>
                             <br>
-                            <%}%>
+                          <%}%>
                       </td>
-                      <td><%=teacher[i].dataValues.accountNumber%></td>
+                      <td><%=teacher[i].accountNumber%></td>
                     </tr>
                   <% }%>
               </tbody>
@@ -122,7 +122,7 @@
 
   <!-- jQuery -->
   <script src="../vendor/jquery/jquery.min.js"></script>
-
+  <script src="../vendor/jquery/custom.js"></script>
   <!-- Bootstrap Core JavaScript -->
   <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
 
@@ -141,6 +141,11 @@
   <script>  
   
   $(() => {
+    $('.gender').convertGender();
+    $('.univStatus').convertUniv();
+    $('.employed').convertEmployed();
+    $('.totalProfit').setComma();
+
     $('#dataTables-example').DataTable({
       responsive: true,
       sDom : '<"top"l<"#filterDiv">f>rt<"bottom"ip>'

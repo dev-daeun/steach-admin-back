@@ -274,10 +274,10 @@
                                                 <tbody>
                                                     <td><%=teacher.name%></td>
                                                     <td><%=teacher.age%></td>
-                                                    <td><%=teacher.gender%></td>
+                                                    <td class="matchedTeacherGender"><%=teacher.gender%></td>
                                                     <td><%=teacher.university%></td>
                                                     <td><%=teacher.grade%></td>
-                                                    <td><%=teacher.univStatus%></td>
+                                                    <td class="univStatus"><%=teacher.univStatus%></td>
                                                     <td><%=teacher.address%></td>
                                                     <td><input type="button" id="matchButton" value="배정취소"></td>   
                                                 </tbody>
@@ -290,7 +290,8 @@
                                                 <tbody>
                                                     <td>
                                                         <% for(let i = 0; i<schedule.length; i++) { %>
-                                                          <%=info.day[schedule[i].day]%> <%=schedule[i].startTime%>~<%=schedule[i].endTime%><br>
+                                                          <span class="dayOfSchedule"><%=schedule[i].day%></span> 
+                                                          <%=schedule[i].startTime%>~<%=schedule[i].endTime%><br>
                                                         <% } %>
                                                     </td>
                                                     <td> 앞으로 다가올 회차 : <%=turn.nextCount%>회 ( <%=turn.nextDate%> )<br> 총 회차 : <%=turn.totalCount%>회</td>
@@ -312,10 +313,12 @@
                                                     </thead>                                                
                                                     <tbody>
                                                         <% for(let i = 0; i<grade.length; i++) { %>
-                                                        <td><%=grade[i].year%></td>
-                                                        <td><%=grade[i].subject%></td>
-                                                        <td><%=grade[i].score%></td>
-                                                        <td><%=grade[i].rating%></td>
+                                                            <tr>
+                                                                <td><%=grade[i].stringYear%></td>
+                                                                <td><%=grade[i].subject%></td>
+                                                                <td><%=grade[i].score%></td>
+                                                                <td><%=grade[i].rating%></td>
+                                                            </tr>    
                                                         <% } %>
                                                     </tbody>
                                                 </table>
@@ -400,7 +403,7 @@
 
     <!-- jQuery -->
     <script src="../vendor/jquery/jquery.min.js"></script>
-    <script src="../vendor/jquery/textbox.js"></script>
+    <script src="../vendor/jquery/custom.js"></script>
     <script>
         let pathArray = ['명함', '소개', '인터넷'],
             subjectArray = ['영어', '수학','국어', '과학', '사회'],
@@ -418,7 +421,19 @@
             teacherAge = [20, 30, 40, 50, 60];
 
         $(() => {
-
+            $(".dayOfSchedule").each(function(){
+                switch(parseInt($(this).text())){
+                    case 1: $(this).text("월"); break;
+                    case 2: $(this).text("화"); break;
+                    case 3: $(this).text("수"); break;
+                    case 4: $(this).text("목"); break;
+                    case 5: $(this).text("금"); break;
+                    case 6: $(this).text("토"); break;
+                    case 7: $(this).text("일"); 
+                }
+            });
+            $('.matchedTeacherGender').convertGender();
+            $('.univStatus').convertUniv();
             $(".gender").setRadioOrigin("genderParent");
             $(".teacherGender").setRadioOrigin("teacherGenderParent");
             $(".carProvided").setRadioOrigin("carProvidedParent");
@@ -493,6 +508,7 @@
                     dataType: 'json',
                     data:  JSON.stringify({
                     assignment: {
+                        studentName: $('#name').val(),
                         callingDay: $("#callingDay").val() || new Date(),
                         visitingDay: $("#visitingDay").val() || new Date(),
                         teacherAge: $('#teacherAge').val(),
@@ -533,7 +549,7 @@
                         fatherPhone: $('#fatherPhone').val(),
                         motherPhone: $('#motherPhone').val()
                     },
-                    matched: matchCanceled,
+                    matchCanceled: matchCanceled,
                     teacherId: teacherId
                 }), 
                 success: function(data){

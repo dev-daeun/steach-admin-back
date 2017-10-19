@@ -8,7 +8,6 @@ const Coolsms = require('coolsms-rest-sdk');
 const cryto = require('crypto');
 
 const Encryption = require('../libs/encryption');
-const setComma = require('../libs/commaConverter').setComma;
 const adminName = require('../config.json').adminName;
 const coolsmsConfig = require('../config.json').coolsms;
 const pushMessage = require('../utils/push').pushMessage;
@@ -24,38 +23,30 @@ const coolsmsClient = new Coolsms({
 router.get('/joined', function(req, res, next){
     TeacherService.getJoined()
     .then(results => {
-        for(let teacher of results){
+
+        let teacherArray = new Array();
+        results.forEach(teacher => {
+            /*계좌번호 복호화*/
             if (teacher.dataValues.accountNumber) 
                 teacher.dataValues.accountNumber = Encryption.decrypt(teacher.dataValues.accountNumber);    
-            teacher.totalProfit = 0;
+            
+            
+            let assignArray = new Array();
+            teacher.dataValues.totalProfit = 0;
+
             if(teacher.Assignments.length>0){
                 teacher.Assignments.forEach(assign => {
                     if(assign.dataValues.payDay)
                         assign.dataValues.payDay = moment(assign.dataValues.payDay).format("MM-DD"); //수업료 지급 날짜
                     else assign.dataValues.payDay = '00-00';
-                    teacher.totalProfit += assign.dataValues.fee; //영업이익
+                    teacher.dataValues.totalProfit += assign.dataValues.fee; //영업이익
+                    assignArray.push(assign.dataValues);
                 });
-                teacher.totalProfit = setComma(teacher.totalProfit);
             }
-
-            switch(teacher.dataValues.gender){
-                case 0: teacher.dataValues.gender = '남'; break;
-                case 1: teacher.dataValues.gender = '여';
-            }
-            switch(teacher.dataValues.univStatus){
-                case 1: teacher.dataValues.univStatus = '재학'; break;
-                case 2: teacher.dataValues.univStatus = '휴학'; break;
-                case 3: teacher.dataValues.univStatus = '수료'; break;
-                case 4: teacher.dataValues.univStatus = '졸업'; break;
-            }
-            switch(teacher.dataValues.employed){
-                case 1: teacher.dataValues.employed = '재직'; break;
-                case 2: teacher.dataValues.employed = '만강'; break;
-                case 3: teacher.dataValues.employed = '대기'; break;
-            }
-
-        }
-        ejs.renderFile('view/admin/teacherList.ejs', {teacher: results}, (err, view) => {
+            teacher.dataValues.assignments = assignArray;
+            teacherArray.push(teacher.dataValues);
+        });
+        ejs.renderFile('view/admin/teacherList.ejs', {teacher: teacherArray}, (err, view) => {
             if(err) throw err;
             else res.status(200).send(view);
         });
@@ -71,19 +62,11 @@ router.get('/joined', function(req, res, next){
 router.get('/waiting', function(req, res, next){
     TeacherService.getUnjoined()
     .then(results => {
+        let teacherArray = new Array();
         results.forEach(teacher => {
-            switch(teacher.dataValues.gender){
-                case 0: teacher.dataValues.gender = '남'; break;
-                case 1: teacher.dataValues.gender = '여';
-            }
-            switch(teacher.dataValues.univStatus){
-                case 1: teacher.dataValues.univStatus = '재학'; break;
-                case 2: teacher.dataValues.univStatus = '휴학'; break;
-                case 3: teacher.dataValues.univStatus = '수료'; break;
-                case 4: teacher.dataValues.univStatus = '졸업'; break;
-            }
+            teacherArray.push(teacher.dataValues);
         });
-        ejs.renderFile('view/admin/waitTeacherList.ejs', {teacher: results}, (err, view) => {
+        ejs.renderFile('view/admin/waitTeacherList.ejs', {teacher: teacherArray}, (err, view) => {
             if(err) throw err;
             else res.status(200).send(view);
         });
@@ -110,14 +93,14 @@ router.post('/waiting', function(req, res, next){
                     console.log(text);
                     console.log(teacher.dataValues.phone);
                     pushMessage('가입요청 승인여부', text, teacher.dataValues.fcmToken, "assigned");
-                    coolsmsClient.sms.send({
-                        to: teacher.dataValues.phone,
-                        type: "SMS",
-                        from: coolsmsConfig.from,
-                        text: text
-                    }, (err, result) => {
-                        if(err) throw err;
-                    });  
+                    // coolsmsClient.sms.send({
+                    //     to: teacher.dataValues.phone,
+                    //     type: "SMS",
+                    //     from: coolsmsConfig.from,
+                    //     text: text
+                    // }, (err, result) => {
+                    //     if(err) throw err;
+                    // });  
                 });
             }else{
                 TeacherService.deleteById(teacherId)
@@ -126,14 +109,14 @@ router.post('/waiting', function(req, res, next){
                     console.log(text);
                     console.log(teacher.dataValues.phone);
                     pushMessage('가입요청 승인여부', text, teacher.dataValues.fcmToken, "assigned"); 
-                    coolsmsClient.sms.send({
-                        to: teacher.dataValues.phone,
-                        type: "SMS",
-                        from: coolsmsConfig.from,
-                        text: text
-                    }, (err, result) => {
-                        if(err) throw err;
-                    }); 
+                    // coolsmsClient.sms.send({
+                    //     to: teacher.dataValues.phone,
+                    //     type: "SMS",
+                    //     from: coolsmsConfig.from,
+                    //     text: text
+                    // }, (err, result) => {
+                    //     if(err) throw err;
+                    // }); 
                 });
             }
             res.status(200).send(true); 
