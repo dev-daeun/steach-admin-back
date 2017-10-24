@@ -5,19 +5,22 @@ const router  = express.Router();
 const ejs = require('ejs');
 const moment = require('moment');
 const Coolsms = require('coolsms-rest-sdk');
-const cryto = require('crypto');
 
+const passport = require('../libs/passport');
 const Encryption = require('../libs/encryption');
 const adminName = require('../config.json').adminName;
 const coolsmsConfig = require('../config.json').coolsms;
 const pushMessage = require('../utils/push').pushMessage;
 const CustomError = require('../libs/customError');
-const cryptoConfig = require('../config.json').cryptoConfig;
+
 const coolsmsClient = new Coolsms({
     key: coolsmsConfig.key,
     secret: coolsmsConfig.secret
 });
 
+
+
+router.use(require('./isAuthenticated'));
 
 /* 가입승인된 선생님들 목록 조회 */
 router.get('/joined', function(req, res, next){

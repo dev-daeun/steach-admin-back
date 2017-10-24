@@ -10,7 +10,7 @@ const ejsLint = require('ejs-lint');
 const passport = require('./libs/passport');
 const redisCfg = require('./config.json').redis;
 const redisStore = require('connect-redis')(session);
-const redis = require('redis')
+const redis = require('redis');
 const client = redis.createClient({
   password: redisCfg.password
 });
@@ -40,7 +40,7 @@ app.use(session({
   saveUninitialized: false,
   resave: false,
   cookie: {
-    key: ['user'],
+    key: ['token'],
     maxAge: 24000 * 60 * 60
   }
 }));
@@ -52,12 +52,17 @@ app.get('/favicon.ico', function(req, res) {
   res.sendStatus(204);
 });
 
-app.use('/sign', require('./controllers/signController'));
+app.get('/signin', function(req, res, next){
+  if(req.user) return res.status(204).send('이미 로그인 중입니다.');
+  next();
+});
+
+app.use('/', require('./controllers/signController'));
 app.use('/teacher', require('./controllers/teacherController'));
 app.use('/student', require('./controllers/studentController'));
 app.use('/assignment', require('./controllers/assignController'));
 app.use('/dashboard', require('./controllers/dashController'));
-app.use('/', require('./controllers/indexController'));
+
 
 
 app.use(function(err, req, res, next) {

@@ -14,7 +14,9 @@ const adminName = require('../config.json').admin_name;
 
 
 
-router.get('/', function(req, res, next){
+router.use(require('./isAuthenticated'));
+
+router.get('/',  function(req, res, next){
     let callArray = [],
         assignStatusArray = [],
         subjectArray = ['국어', '수학', '영어', '사회', '과학', '기타과목'];

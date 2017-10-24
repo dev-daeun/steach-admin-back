@@ -16,6 +16,9 @@ const coolsmsClient = new Coolsms({
 });
 
 
+
+router.use(require('./isAuthenticated'));
+
 /* 특정 학생정보 및 붙은 선생님 조회 DONE*/
 router.get('/:id', function(req, res, next){
     AssignService.getOneById(req.params.id)//학생 조회

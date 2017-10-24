@@ -98,10 +98,9 @@
             }
     
             $.ajax({ 
-                url: '/sign/in', 
+                url: '/signin', 
                 processData: false,
                 type: 'POST',
-                cache: false, 
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
                 data: JSON.stringify({ user: user, password: password }), 
@@ -110,7 +109,7 @@
                 },
                 error: function(xhr, status, error){
                     window.alert(xhr.responseText);
-                    window.location.href = '/sign/in';
+                    window.location.href = '/signin';
                 }
             });
         });

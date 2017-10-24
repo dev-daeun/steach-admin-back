@@ -7,6 +7,11 @@ const moment = require('moment');
 
 const CustomError = require('../libs/customError');
 
+
+
+
+router.use(require('./isAuthenticated'));
+
 /* 학생수정 전 이전정보 조회 */
 router.get('/:studentId/:assignId', function(req, res, next){
     StudentService.getOneById(req.params.studentId, req.params.assignId)
@@ -105,10 +110,6 @@ router.put('/:studentId/:assignId', function(req, res, next){
         studentId = req.params.studentId,
         assignId = req.params.assignId,
         teacherId = req.body.teacherId;
-        console.log(studentId);
-        console.log(assignId);
-        console.log(teacherId);
-        console.log(matchCanceled);
     if(!student.name || !student.schoolName) {
         next(new CustomError(400, '학생 이름 및 학교명을 입력하세요.'));
         return;

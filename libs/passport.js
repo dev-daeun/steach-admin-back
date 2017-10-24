@@ -1,21 +1,20 @@
 
 const Supervisor = require('../services/supervisorService');
 const Encryption = require('./encryption');
+const Jwt = require('../utils/jwt');
 
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
-passport.serializeUser((user, done) => {
-    done(null, user);
+passport.serializeUser((userId, done) => {
+    done(null, userId);
 });
 
-passport.deserializeUser((user, done) => {
-    Supervisor.findById(user.id)
-    .then((result) => { 
-        if(result) done(null, user);
-        else done(null, false) 
-    }).catch(err => {
-        done(err);
+passport.deserializeUser((userId, done) => {
+    Supervisor.findById(userId)
+    .then(user => {
+        if(!user) return done();
+        return done(null, userId);
     });
 });
 
@@ -31,12 +30,15 @@ passport.use(new LocalStrategy({ // local 전략을 세움
             return Encryption.compare(password, result.password)
             .then(correct => {
                 if(!correct) return done(null, false, '잘못된 패스워드입니다.' ); 
-                return done(null, {user: result.id});
+                return done(null, result.id);
+            })
+            .catch(compareError => {
+                return done(compareError);
             });
       }).catch(findError => {
           return done(findError);
       });
-
-  }));
-
+    })
+  );
+  
 module.exports = passport;
