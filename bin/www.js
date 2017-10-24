@@ -5,9 +5,11 @@
  */
 
 const app = require('../app');
-const debug = require('debug')('company-api:server');
+const debug = require('debug')('admin-web:server');
 const http = require('http');
 const models = require("../models");
+
+
 
 /**
  * Get port from environment and store in Express.
@@ -16,9 +18,6 @@ const models = require("../models");
 const port = normalizePort(process.env.PORT || '3006');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
 
 const server = http.createServer(app);
 

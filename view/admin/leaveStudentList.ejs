@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Bootstrap Admin Theme</title>
+    <% include ./title.ejs%>
 
     <!-- Bootstrap Core CSS -->
     <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -42,61 +42,7 @@
 
     <div id="wrapper">
 
-      <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-            <a class="navbar-brand" href="/">스티치 기업용 관리자 페이지</a>
-          </div>
-          <!-- /.navbar-header -->
-
-          <div class="navbar-default sidebar" role="navigation">
-            <div class="sidebar-nav navbar-collapse">
-              <ul class="nav" id="side-menu">
-                <li>
-                  <a href="/dashboard">대쉬보드</a>
-                </li>
-                <li>
-                  <a href="#">학생 관리<span class="fa arrow"></span></a>
-                  <ul class="nav nav-second-level">
-                    <li>
-                      <a href="/student/joined">학생 목록</a>
-                    </li>
-                    <li>
-                      <a href="/student/registration">신규 학생 등록</a>
-                    </li>
-                    <li>
-                      <a href="/student/retired">퇴원 학생 관리</a>
-                    </li>
-                  </ul>
-                  <!-- /.nav-second-level -->
-                </li>
-                <li>
-                  <a href="/assignment">매칭 관리</a>
-                </li>
-                <li>
-                  <a href="#">선생님 관리<span class="fa arrow"></span></a>
-                  <ul class="nav nav-second-level">
-                    <li>
-                      <a href="/teacher/joined">선생님 목록</a>
-                    </li>
-                    <li>
-                      <a href="/teacher/waiting">승인대기중 선생님</a>
-                    </li>
-                  </ul>
-                  <!-- /.nav-second-level -->
-                </li>
-              </ul>
-            </div>
-            <!-- /.sidebar-collapse -->
-          </div>
-          <!-- /.navbar-static-side -->
-        </nav>
+      <% include ./navigation.ejs %>
 
         <div id="page-wrapper">
             <div class="row">
@@ -139,31 +85,30 @@
                                 </thead>
                                 <tbody>
                                   <% for(let i = 0; i<student.length; i++){%>
+                                    <% for(let j = 0; j<student[i].assignment.length; j++){ %>
                                       <tr>
-                                          <td><%=i+1%></td>
-                                          <% if(student.attendance===1) { %>
-                                            <td>첫 수업 후 퇴원</td>
-                                          <% } else { %>
-                                            <td>퇴원</td>
-                                          <% } %>
-                                          <td><%=student[i].subject%></td>
+                                          <td><%=total%></td>
+                                          <td class="retireStatus"><%=student[i].assignment[j].attendance%></td>
+                                          <td><%=student[i].assignment[j].subject%></td>
                                           <td><%=student[i].grade%></td>
-                                          <td><%=student[i].address%></td>
-                                          <td><%=student[i].student_name%></td>
-                                          <td><%=student[i].teacher_name%></td>
-                                          <td><%=student[i].class_form%></td>
-                                          <td><%=student[i].fee%></td>
-                                          <td><%=student[i].deposit_day%></td>
-                                          <td><%=student[i].school_name%></td>
-                                          <td><%=student[i].called_consultant%></td>
-                                          <td><%=student[i].visited_consultant%></td>
-                                          <td><%=student[i].deposit_fee%></td>
-                                          <td><%=student[i].calling_day%></td>
-                                          <td><%=student[i].visiting_day%></td>
-                                          <td><%=student[i].first_date%></td>
-                                          <td><%=student[i].fail_reason%></td>
-                                          <td class="center"><button onclick="location.href='/student/'+<%=student[i].student_id%>+'/'+<%=student[i].expect_id%>">수정</button></td>
+                                          <td><%=student[i].address1%></td>
+                                          <td><%=student[i].name%></td>
+                                          <td><%=student[i].assignment[j].teacherName%></td>
+                                          <td><%=student[i].assignment[j].classForm%></td>
+                                          <td class="fee"><%=student[i].assignment[j].fee%></td>
+                                          <td><%=student[i].assignment[j].depositDay%></td>
+                                          <td><%=student[i].schoolName%></td>
+                                          <td><%=student[i].assignment[j].calledConsultant%></td>
+                                          <td><%=student[i].assignment[j].visitedConsultant%></td>
+                                          <td class="depositFee"><%=student[i].assignment[j].depositFee%></td>
+                                          <td><%=student[i].assignment[j].callingDay%></td>
+                                          <td><%=student[i].assignment[j].visitingDay%></td>
+                                          <td><%=student[i].assignment[j].firstDate%></td>
+                                          <td><%=student[i].assignment[j].failReason%></td>
+                                          <td class="center"><button onclick="location.href='/student/'+<%=student[i].id%>+'/'+<%=student[i].assignment[j].id%>">수정</button></td>
                                       </tr>
+                                      <% total -= 1%>
+                                    <% } %>
                                   <% } %>
                                 </tbody>    
                             </table>
@@ -183,7 +128,7 @@
 
     <!-- jQuery -->
     <script src="../vendor/jquery/jquery.min.js"></script>
-
+    <script src="../vendor/jquery/custom.js"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
 
@@ -200,16 +145,24 @@
 
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
     <script>
-
-    $(document).ready(function() {
-    $('#dataTables-example').children('thead').children('tr').children('th').css('white-space', 'nowrap')
-    $('#dataTables-example').children('thead').children('tr').children('th').css('text-align', 'center')
-    $('#dataTables-example').children('tbody').children('tr').children('td').css('white-space', 'nowrap')
-    $('#dataTables-example').children('tbody').children('tr').children('td').css('text-align', 'center')
-        $('#dataTables-example').DataTable({
-            responsive: true
+        $('.retireStatus').each(function(){
+            switch(parseInt($(this).text())){
+                case 0: $(this).text('첫 수업후 퇴원'); break;
+                case 1: $(this).text('퇴원');
+            }
         });
-    });
+
+        $('.fee').setComma();
+        $('.depositFee').setComma();
+        $(() => {
+        $('#dataTables-example').children('thead').children('tr').children('th').css('white-space', 'nowrap')
+        $('#dataTables-example').children('thead').children('tr').children('th').css('text-align', 'center')
+        $('#dataTables-example').children('tbody').children('tr').children('td').css('white-space', 'nowrap')
+        $('#dataTables-example').children('tbody').children('tr').children('td').css('text-align', 'center')
+            $('#dataTables-example').DataTable({
+                responsive: true
+            });
+        });
     </script>
 
 </body>

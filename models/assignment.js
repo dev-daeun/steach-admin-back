@@ -10,6 +10,26 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    studentName: {
+      field: "student_name",
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    teacherId: {
+      field: "teacher_id",
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    teacherName: {
+      field: "teacher_name",
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    attendance: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false
+    },
     subject: {
       type: DataTypes.STRING,
       allowNull: false
@@ -164,6 +184,11 @@ module.exports = function(sequelize, DataTypes) {
       field: "prev_cons",
       type: DataTypes.STRING,
       allowNull: true
+    },
+    updatedAt: {
+      field: "updated_at",
+      type: DataTypes.DATE,
+      allowNull: true
     }
   }, {
     underscored: true,
@@ -182,6 +207,13 @@ module.exports = function(sequelize, DataTypes) {
     Assignment.belongsTo(models.Student, {
       as:'student',
       foreignKey: "student_id",
+      targetKey: "id",
+      onDelete: "cascade",
+      onUpdate: "cascade"
+    });
+    Assignment.belongsTo(models.Teacher, {
+      as:'teacher',
+      foreignKey: "teacher_id",
       targetKey: "id",
       onDelete: "cascade",
       onUpdate: "cascade"

@@ -1,4 +1,3 @@
-const StudentService = require('../service/student');
 const StudentModel = require('../models').Student;
 const Teacher = require('../models').Teacher;
 const Course = require('../models').Course;
@@ -12,12 +11,12 @@ const moment = require('moment');
 const studentCounter = require('../libs/studentCounter');
 const CustomError = require('../libs/customError');
 const adminName = require('../config.json').admin_name;
-const info = require('../libs/info');
-const setComma = require('../libs/commaConverter').setComma;
 
 
 
-router.get('/', function(req, res, next){
+router.use(require('./isAuthenticated'));
+
+router.get('/',  function(req, res, next){
     let callArray = [],
         assignStatusArray = [],
         subjectArray = ['국어', '수학', '영어', '사회', '과학', '기타과목'];
@@ -73,9 +72,9 @@ router.get('/', function(req, res, next){
               },
               assign: assignObj,
               profit: {
-                  expected: expectedProfit[0] ? setComma(expectedProfit[0] - expectedProfit[1]) : 0,
-                  paid: paidProfit[0] ? setComma(paidProfit[0] - paidProfit[1]) : 0,
-                  total: setComma((expectedProfit[0] - expectedProfit[1]) + (paidProfit[0] - paidProfit[1]))
+                  expected: expectedProfit[0] ? expectedProfit[0] - expectedProfit[1] : 0,
+                  paid: paidProfit[0] ? paidProfit[0] - paidProfit[1] : 0,
+                  total: (expectedProfit[0] - expectedProfit[1]) + (paidProfit[0] - paidProfit[1])
               }
             }, (err, view) => {
               if(err) throw err;

@@ -25,11 +25,24 @@ module.exports = function(sequelize, DataTypes) {
     year: {
       type: DataTypes.DATEONLY,
       allowNull: false
+    },
+    deletedAt: {
+      field: "deleted_at",
+      type: DataTypes.DATE,
+      allowNull: true
     }
   }, {
     underscored: true,
     paranoid: true,
     tableName: "grade"
   });
+  Grade.associate = (models) => {
+    Grade.belongsTo(models.Course, {
+      foreignKey: "course_id",
+      targetKey: "id",
+      onDelete: "cascade",
+      onUpdate: "cascade"
+    });
+  };
   return Grade;
 };

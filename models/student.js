@@ -1,3 +1,4 @@
+const sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   let Student = sequelize.define("Student", {
     id: {
@@ -32,6 +33,10 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     address2: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    address3: {
       type: DataTypes.STRING,
       allowNull: true
     },

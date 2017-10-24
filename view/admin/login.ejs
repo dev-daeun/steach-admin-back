@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!-- This file has been downloaded from Bootsnipp.com. Enjoy! -->
+    <% include ./title.ejs%>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/vendor/bootstrap/css/login.min.css" rel = "stylesheet">
+
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <h3>스티치 관리자 페이지</h3>       
+                    <div class="panel panel-login">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <a href="#" class="active" id="login-form-link">로그인</a>
+                                </div>
+                                <!-- <div class="col-xs-6">
+                                    <a href="#" id="register-form-link">회원가입</a>
+                                </div> -->
+                            </div>
+                            <hr>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div id="login-form" style="display: block;">
+                                        <div class="form-group">
+                                            <input type="text" name="user" id="user" tabindex="1" class="form-control" placeholder="아이디" value="">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" name="password" id="password" tabindex="2" class="form-control" placeholder="패스워드">
+                                        </div>
+                                        <!-- <div class="form-group text-center">
+                                            <input type="checkbox" tabindex="3" class="" name="remember" id="remember">
+                                            <label for="remember"> 아이디, 패스워드 저장</label> 
+                                        </div> -->
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-sm-6 col-sm-offset-3">
+                                                    <input type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="로그인">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="text-center">
+                                                        <a href="#" tabindex="5" class="forgot-password">비밀번호를 잊으셨나요?</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <form id="register-form" role="form" style="display: none;">
+                                        <div class="form-group">
+                                            <input type="text" name="user" id="user" tabindex="1" class="form-control" placeholder="아이디" value="">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="패스워드">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" name="confirm-password" id="confirm-password" tabindex="2" class="form-control" placeholder="패스워드 재입력">
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-sm-6 col-sm-offset-3">
+                                                    <input type="button" name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="회원가입 완료">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+  <script type="text/javascript" src="/js/login.js"></script>
+  <script>
+      /*로그인*/
+      $(() => {
+        $('#login-submit').click(() => {
+            let user = $('#login-form').find('#user').val();
+            let password = $('#login-form').find('#password').val();
+        
+            if(user==''||password=='') {
+                window.alert("아이디 및 비밀번호를 입력하세요.");
+                return;
+            }
+    
+            $.ajax({ 
+                url: '/signin', 
+                processData: false,
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                data: JSON.stringify({ user: user, password: password }), 
+                success: function(data){
+                    window.location.href = '/dashboard';
+                },
+                error: function(xhr, status, error){
+                    window.alert(xhr.responseText);
+                    window.location.href = '/signin';
+                }
+            });
+        });
+      });
+  </script>
+</body>
+</html>

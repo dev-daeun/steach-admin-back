@@ -26,16 +26,22 @@ module.exports = function(sequelize, DataTypes) {
     },
     color: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     courseCount: {
       field: "course_count",
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     nextDate: {
+      field: "next_date",
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: true
+    },
+    deletedAt: {
+      field: "deleted_at",
+      type: DataTypes.DATE,
+      allowNull: true
     }
   }, {
     underscored: true,

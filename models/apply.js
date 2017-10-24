@@ -24,6 +24,11 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       defaultValue: 1,
       allowNull: false
+    },
+    deletedAt: {
+      field: 'deleted_at',
+      type: DataTypes.DATE,
+      allowNull: true
     }
   }, {
     underscored: true,
@@ -41,6 +46,13 @@ module.exports = function(sequelize, DataTypes) {
     Apply.belongsTo(models.Student, {
       as:'student',
       foreignKey: "student_id",
+      targetKey: "id",
+      onDelete: "cascade",
+      onUpdate: "cascade"
+    });
+    Apply.belongsTo(models.Teacher, {
+      as:'teacher',
+      foreignKey: "teacher_id",
       targetKey: "id",
       onDelete: "cascade",
       onUpdate: "cascade"
