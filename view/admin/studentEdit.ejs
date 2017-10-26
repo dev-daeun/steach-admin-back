@@ -480,85 +480,85 @@
                 });
 
             
-            $('body').on('click', '#editButton', () => {
-            if(confirm('정말 수정하시겠습니까?')){
-                let PhoneRegExp = /^\d{2,4}-\d{3,4}-\d{4}$/;
-                let phones = document.querySelectorAll('.phone-number');
-                for(let i in phones){
-                    if(!phones[i].value) continue;
-                    else if (!PhoneRegExp.test(phones[i].value)){
-                        alert("잘못된 전화번호입니다. - 를 포함한 숫자만 입력하세요.");
-                        return;
+            $('#editButton').click(() => {
+                if(confirm('정말 수정하시겠습니까?')){
+                    let PhoneRegExp = /^\d{2,4}-\d{3,4}-\d{4}$/;
+                    let phones = document.querySelectorAll('.phone-number');
+                    for(let i in phones){
+                        if(!phones[i].value) continue;
+                        else if (!PhoneRegExp.test(phones[i].value)){
+                            alert("잘못된 전화번호입니다. - 를 포함한 숫자만 입력하세요.");
+                            return;
+                        }
                     }
-                }
-                if(knownPath=='기타') knownPath = $('#knownPathEtc').val();
-                if(subject=='기타') subject = $('#subjectEtc').val();
-                if(prevProgram=='기타') prevProgram = $('#prevProgramEtc').val();
+                    if(knownPath=='기타') knownPath = $('#knownPathEtc').val();
+                    if(subject=='기타') subject = $('#subjectEtc').val();
+                    if(prevProgram=='기타') prevProgram = $('#prevProgramEtc').val();
 
-                let studentId = $('#studentId').attr('value');
-                let assignId = $('#assignId').attr('value');
-                let teacherId = $('#teacherId').attr('value');
+                    let studentId = $('#studentId').attr('value');
+                    let assignId = $('#assignId').attr('value');
+                    let teacherId = $('#teacherId').attr('value');
 
-                $.ajax({ 
-                    url: '/student/'+studentId+'/'+assignId,
-                    processData: false,
-                    type: 'PUT',
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    data:  JSON.stringify({
-                    assignment: {
-                        studentName: $('#name').val(),
-                        callingDay: $("#callingDay").val() || new Date(),
-                        visitingDay: $("#visitingDay").val() || new Date(),
-                        teacherAge: $('#teacherAge').val(),
-                        teacherGender: $('input[class=teacherGender]:checked').val(),
-                        recommended: $('#recommended').val(),
-                        regularDate: $('#regularDate').val(),
-                        firstDate: $('#firstDate').val() || new Date(),
-                        teacherFee: $('#teacherFee').val(),
-                        fee: $('#fee').val(),
-                        book: $('#book').val(),
-                        consultStatus: $('#consultStatus').val(),
-                        failReason: $('#failReason').val(),
-                        calledConsultant: $('#calledConsultant').val(),
-                        visitedConsultant: $('#visitedConsultant').val(),
-                        knownPath: knownPath,
-                        subject: subject,
-                        classForm: $('#classForm').val(),
-                        carProvided: $('input[class=carProvided]:checked').val(),
-                        studentMemo: $('#studentMemo').val(),
-                        prevProgram: prevProgram,
-                        prevStartTerm: $('#prevStartTerm').val() || new Date(),
-                        prevEndTerm: $('#prevEndTerm').val() || new Date(),
-                        prevUsedBook: $('#prevUsedBook').val(),
-                        prevScore: $('#prevScore').val(),
-                        prevPros: $('#prevPros').val(),
-                        prevCons: $('#prevCons').val()     
+                    $.ajax({ 
+                        url: '/student/'+studentId+'/'+assignId,
+                        processData: false,
+                        type: 'PUT',
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        data:  JSON.stringify({
+                        assignment: {
+                            studentName: $('#name').val(),
+                            callingDay: $("#callingDay").val() || new Date(),
+                            visitingDay: $("#visitingDay").val() || new Date(),
+                            teacherAge: $('#teacherAge').val(),
+                            teacherGender: $('input[class=teacherGender]:checked').val(),
+                            recommended: $('#recommended').val(),
+                            regularDate: $('#regularDate').val(),
+                            firstDate: $('#firstDate').val() || new Date(),
+                            teacherFee: $('#teacherFee').val(),
+                            fee: $('#fee').val(),
+                            book: $('#book').val(),
+                            consultStatus: $('#consultStatus').val(),
+                            failReason: $('#failReason').val(),
+                            calledConsultant: $('#calledConsultant').val(),
+                            visitedConsultant: $('#visitedConsultant').val(),
+                            knownPath: knownPath,
+                            subject: subject,
+                            classForm: $('#classForm').val(),
+                            carProvided: $('input[class=carProvided]:checked').val(),
+                            studentMemo: $('#studentMemo').val(),
+                            prevProgram: prevProgram,
+                            prevStartTerm: $('#prevStartTerm').val() || new Date(),
+                            prevEndTerm: $('#prevEndTerm').val() || new Date(),
+                            prevUsedBook: $('#prevUsedBook').val(),
+                            prevScore: $('#prevScore').val(),
+                            prevPros: $('#prevPros').val(),
+                            prevCons: $('#prevCons').val()     
+                        },
+                        student: {
+                            schoolName: $('#schoolName').val(),
+                            name: $('#name').val(),
+                            gender: $("input[class=gender]:checked").val(),
+                            address1: $('#address1').val(),
+                            address2: $('#address2').val(),
+                            address3: $('#address3').val(),
+                            school: $('#school').val(),
+                            grade: $('#grade').val(),
+                            phone: $('#phone').val(),
+                            fatherPhone: $('#fatherPhone').val(),
+                            motherPhone: $('#motherPhone').val()
+                        },
+                        matchCanceled: matchCanceled,
+                        teacherId: teacherId
+                    }), 
+                    success: function(data){
+                        alert("수정완료 되었습니다.");
+                        location.href = '/student/joined';
                     },
-                    student: {
-                        schoolName: $('#schoolName').val(),
-                        name: $('#name').val(),
-                        gender: $("input[class=gender]:checked").val(),
-                        address1: $('#address1').val(),
-                        address2: $('#address2').val(),
-                        address3: $('#address3').val(),
-                        school: $('#school').val(),
-                        grade: $('#grade').val(),
-                        phone: $('#phone').val(),
-                        fatherPhone: $('#fatherPhone').val(),
-                        motherPhone: $('#motherPhone').val()
-                    },
-                    matchCanceled: matchCanceled,
-                    teacherId: teacherId
-                }), 
-                success: function(data){
-                    alert("수정완료 되었습니다.");
-                    location.href = '/student/joined';
-                },
-                error: function(xhr, status, error){
-                    alert(xhr.responseText);
-                }
-              });
+                    error: function(xhr, status, error){
+                        alert(xhr.responseText);
+                    }
+                });
             }
         });
     });

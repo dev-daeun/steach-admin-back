@@ -88,16 +88,17 @@
   <script>
       /*로그인*/
       $(() => {
-        $('#login-submit').click(() => {
-            let user = $('#login-form').find('#user').val();
-            let password = $('#login-form').find('#password').val();
+        $('.form-control').keypress(() => {
+            let keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){
+                let user = $('#login-form').find('#user').val();
+                let password = $('#login-form').find('#password').val();
         
-            if(user==''||password=='') {
-                window.alert("아이디 및 비밀번호를 입력하세요.");
-                return;
-            }
-    
-            $.ajax({ 
+                if(user==''||password=='') {
+                    window.alert("아이디 및 비밀번호를 입력하세요.");
+                    return;
+                }
+                $.ajax({ 
                 url: '/signin', 
                 processData: false,
                 type: 'POST',
@@ -112,6 +113,7 @@
                     window.location.href = '/signin';
                 }
             });
+            }
         });
       });
   </script>
