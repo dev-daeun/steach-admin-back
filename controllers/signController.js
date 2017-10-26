@@ -18,7 +18,7 @@ router.post('/signin', function(req, res, next){
             if(err) return next(new CustomError(500, err.message || err));
             Jwt.sign(String(user))
             .then(newToken => {
-                res.status(200).cookie('token', newToken).send(true);
+                res.status(200).cookie('SteachToken', newToken).send(true);
             })
             .catch(signError => {
                 return next(new CustomError(500, err.message || err));
@@ -42,14 +42,26 @@ router.get('/signin', function(req, res, next){
     });
 });
 
-
-router.use(require('./isAuthenticated'));
-
 router.get('/', function(req, res, next){
    res.redirect('/dashboard'); 
 });
 
 
+router.use(require('./isAuthenticated'));
+
+
+/* 로그아웃 */
+router.get('/signout', function(req, res, next){
+    req.session.destroy(err => {
+        if(err) next(new CustomError(500, err.message || err));
+        req.user = null;
+        res.clearCookie('SteachToken')
+           .clearCookie('connect.sid')
+           .status(200)
+           .redirect('/signin');
+    });
+   
+});
 
 
 module.exports = router;
