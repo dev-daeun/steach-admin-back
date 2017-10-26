@@ -12,14 +12,19 @@
     "cookie-parser": "^1.4.3",
     "coolsms-rest-sdk": "^1.0.7",
     "ejs": "^2.5.7",
+    "ejs-lint": "^0.3.0",
     "express": "~4.14.0",
     "express-session": "^1.15.6",
     "fcm-push": "^1.1.2",
     "moment": "^2.18.1",
     "morgan": "^1.8.2",
     "mysql": "^2.14.0",
+    "mysql2": "^1.4.2",
     "passport": "^0.4.0",
     "passport-jwt": "^3.0.0",
-    "redis": "^2.6.3"
+    "passport-local": "^1.0.0",
+    "raven": "^2.2.1",
+    "redis": "^2.6.3",
+    "sequelize": "^4.18.0"
   }
 }

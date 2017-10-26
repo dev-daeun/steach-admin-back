@@ -6,6 +6,9 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const app = express();
 const ejsLint = require('ejs-lint');
+const Raven  = require('raven');
+Raven.config(require('./config.json').sentry.DSN).install();
+
 
 const passport = require('./libs/passport');
 const redisCfg = require('./config.json').redis;
@@ -18,6 +21,10 @@ const client = redis.createClient({
 app.set('view engine', 'ejs');
 app.set(ejsLint('view engine'));
 app.set('views', __dirname + '/views');
+
+// The request handler must be the first middleware on the app
+app.use(Raven.requestHandler());
+
 
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use('/teacher', express.static(path.join(__dirname, 'public')));
@@ -48,6 +55,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
+
 app.get('/favicon.ico', function(req, res) {
   res.sendStatus(204);
 });
@@ -57,6 +65,7 @@ app.get('/signin', function(req, res, next){
   next();
 });
 
+
 app.use('/', require('./controllers/signController'));
 app.use('/teacher', require('./controllers/teacherController'));
 app.use('/student', require('./controllers/studentController'));
@@ -64,10 +73,12 @@ app.use('/assignment', require('./controllers/assignController'));
 app.use('/dashboard', require('./controllers/dashController'));
 
 
-
+// The error handler must be before any other error middleware
+app.use(Raven.errorHandler());
 app.use(function(err, req, res, next) {
   console.log(err);
   res.status(err.status || 500).send(err.message);
+  res.end(res.sentry + '\n');
 });
 
 module.exports = app;
