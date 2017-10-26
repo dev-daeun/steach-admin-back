@@ -61,7 +61,8 @@ app.get('/favicon.ico', function(req, res) {
 });
 
 app.get('/signin', function(req, res, next){
-  if(req.user) return res.status(204).send('이미 로그인 중입니다.');
+  if(req.session && req.session.passport && req.session.passport.user) 
+    return res.status(204).send('이미 로그인 중입니다.');
   next();
 });
 
