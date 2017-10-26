@@ -31,6 +31,8 @@ router.post('/signin', function(req, res, next){
 
 /*로그인 화면 */
 router.get('/signin', function(req, res, next){
+    if(req.session && req.session.passport && req.session.passport.user) 
+            return res.status(204).send('이미 로그인 중입니다.');
     return new Promise((resolve, reject) => {
         ejs.renderFile('view/admin/login.ejs', function(err, view){
             if(err) throw err;
@@ -42,12 +44,12 @@ router.get('/signin', function(req, res, next){
     });
 });
 
+
+router.use(require('./isAuthenticated'));
+
 router.get('/', function(req, res, next){
    res.redirect('/dashboard'); 
 });
-
-
-router.use(require('./isAuthenticated'));
 
 
 /* 로그아웃 */
