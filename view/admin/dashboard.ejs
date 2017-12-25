@@ -35,7 +35,8 @@
 
     <div id="wrapper">
         
-        <% include ./navigation.ejs %>
+        <div id="navigation"></div>
+
         
         <div id="page-wrapper">
             <div class="row">
@@ -301,6 +302,7 @@
     <script src="../vendor/jquery/custom.js"></script>
     <script>
         $(() => {
+            $("#navigation").loadNavigation();
             $('.profit').setComma();
         })
     </script>

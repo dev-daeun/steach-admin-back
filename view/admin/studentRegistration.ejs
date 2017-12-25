@@ -36,7 +36,7 @@
 
     <div id="wrapper">
 
-        <% include ./navigation.ejs %>
+        <div id="navigation"></div>
 
         <div id="page-wrapper">
             <div class="row">
@@ -525,6 +525,7 @@
         });
     });  
     $(()=> {
+        $("#navigation").loadNavigation();
         //html함수 적용하여 htmltest태그내의 html 변경
         $("#scheduleAddBtn").click(function() {
           var len = $("#regularDate").children().length;

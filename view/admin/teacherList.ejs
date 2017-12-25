@@ -35,7 +35,7 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-  <link href="../vendor/jquery/jquery.js" rel="stylesheet" type="text/javascript">
+ 
   <style>
   th, td{
     white-space: nowrap;
@@ -49,7 +49,7 @@
 
   <div id="wrapper">
 
-    <% include ./navigation.ejs %>
+   <div id="navigation"></div>
     
     <div id="page-wrapper">
       <div class="row">
@@ -123,52 +123,50 @@
   <!-- jQuery -->
   <script src="../vendor/jquery/jquery.min.js"></script>
   <script src="../vendor/jquery/custom.js"></script>
+
+  <!-- Page-Level Demo Scripts - Tables - Use for reference -->
+  <script>  
+      $(() => {
+        $("#navigation").loadNavigation();
+        $('.gender').convertGender();
+        $('.univStatus').convertUniv();
+        $('.employed').convertEmployed();
+        $('.totalProfit').setComma();
+
+        $('#dataTables-example').DataTable({
+          responsive: true,
+          sDom : '<"top"l<"#filterDiv">f>rt<"bottom"ip>'
+        });
+        $('#filterDiv').append("<select id='filterTest' class='form-control input-sm'></select>");
+        $('#filterTest').append("<option value=''>전체보기</option>");
+        $('#filterTest').append("<option value='재직'>재직</option>");
+        $('#filterTest').append("<option value='만강'>만강</option>");
+        $('#filterTest').append("<option value='대기'>대기</option>");
+        $('#filterTest').on('change', function () {
+          var table = $('#dataTables-example').DataTable();
+          table.columns(1).search(this.value).draw();
+          table.responsive.recalc();
+        });
+        $('.top').addClass('col-lg-12');
+        $('#dataTables-example_length').addClass('col-lg-2');
+        $('#dataTables-example_filter').addClass('col-lg-6');
+        $('#filterDiv').addClass('col-lg-4');
+      });
+  </script>
   <!-- Bootstrap Core JavaScript -->
   <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
-
+  
   <!-- Metis Menu Plugin JavaScript -->
   <script src="../vendor/metisMenu/metisMenu.min.js"></script>
-
+  
   <!-- DataTables JavaScript -->
   <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
   <script src="../vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
   <script src="../vendor/datatables-responsive/dataTables.responsive.js"></script>
-
+  
   <!-- Custom Theme JavaScript -->
   <script src="../dist/js/sb-admin-2.js"></script>
-
-  <!-- Page-Level Demo Scripts - Tables - Use for reference -->
-  <script>  
   
-  $(() => {
-    $('.gender').convertGender();
-    $('.univStatus').convertUniv();
-    $('.employed').convertEmployed();
-    $('.totalProfit').setComma();
-
-    $('#dataTables-example').DataTable({
-      responsive: true,
-      sDom : '<"top"l<"#filterDiv">f>rt<"bottom"ip>'
-    });
-    $('#filterDiv').append("<select id='filterTest' class='form-control input-sm'></select>");
-    $('#filterTest').append("<option value=''>전체보기</option>");
-    $('#filterTest').append("<option value='재직'>재직</option>");
-    $('#filterTest').append("<option value='만강'>만강</option>");
-    $('#filterTest').append("<option value='대기'>대기</option>");
-    $('#filterTest').on('change', function () {
-      var table = $('#dataTables-example').DataTable();
-      table.columns(1).search(this.value).draw();
-      table.responsive.recalc();
-    });
-    $('.top').addClass('col-lg-12');
-    $('#dataTables-example_length').addClass('col-lg-2');
-    $('#dataTables-example_filter').addClass('col-lg-6');
-    $('#filterDiv').addClass('col-lg-4');
-  });
-
-    
-  </script>
-
 </body>
 
 </html>
