@@ -20,11 +20,8 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <a href="#" class="active" id="login-form-link">로그인</a>
+                                    <a class="active" id="login-form-link">로그인</a>
                                 </div>
-                                <!-- <div class="col-xs-6">
-                                    <a href="#" id="register-form-link">회원가입</a>
-                                </div> -->
                             </div>
                             <hr>
                         </div>
@@ -38,10 +35,6 @@
                                         <div class="form-group">
                                             <input type="text" name="password" id="password" tabindex="2" class="form-control" placeholder="패스워드">
                                         </div>
-                                        <!-- <div class="form-group text-center">
-                                            <input type="checkbox" tabindex="3" class="" name="remember" id="remember">
-                                            <label for="remember"> 아이디, 패스워드 저장</label> 
-                                        </div> -->
                                         <div class="form-group">
                                             <div class="row">
                                                 <div class="col-sm-6 col-sm-offset-3">
@@ -51,33 +44,9 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="text-center">
-                                                        <a href="#" tabindex="5" class="forgot-password">비밀번호를 잊으셨나요?</a>
-                                                    </div>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <form id="register-form" role="form" style="display: none;">
-                                        <div class="form-group">
-                                            <input type="text" name="user" id="user" tabindex="1" class="form-control" placeholder="아이디" value="">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="패스워드">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" name="confirm-password" id="confirm-password" tabindex="2" class="form-control" placeholder="패스워드 재입력">
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <div class="col-sm-6 col-sm-offset-3">
-                                                    <input type="button" name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="회원가입 완료">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -88,34 +57,41 @@
   <script>
       /*로그인*/
       $(() => {
-        $('.form-control').keypress(() => {
-            let keycode = (event.keyCode ? event.keyCode : event.which);
+        $("#login-submit").on("click", () => {
+            signin();
+        });
+        $('.form-control').on("keypress", () => {
+            let keycode = (event.keyCode ? event.keyCode : event.button);
             if(keycode == '13'){
-                let user = $('#login-form').find('#user').val();
-                let password = $('#login-form').find('#password').val();
-        
-                if(user==''||password=='') {
-                    window.alert("아이디 및 비밀번호를 입력하세요.");
-                    return;
-                }
-                $.ajax({ 
-                url: '/signin', 
-                processData: false,
-                type: 'POST',
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                data: JSON.stringify({ user: user, password: password }), 
-                success: function(data){
-                    window.location.href = '/dashboard';
-                },
-                error: function(xhr, status, error){
-                    window.alert(xhr.responseText);
-                    window.location.href = '/signin';
-                }
-            });
+                signin();
             }
         });
       });
+
+    function signin(){
+        let user = $('#login-form').find('#user').val();
+        let password = $('#login-form').find('#password').val();
+        
+        if(user==''||password=='') {
+            alert("아이디 및 비밀번호를 입력하세요.");
+            return;
+        }
+        $.ajax({ 
+            url: '/signin', 
+            processData: false,
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            data: JSON.stringify({ user: user, password: password }), 
+            success: function(data){
+                location.href = '/dashboard';
+            },
+            error: function(xhr, status, error){
+                alert(xhr.responseText);
+                location.href = '/signin';
+            }
+        });
+    }
   </script>
 </body>
-</html>
+</html> 
