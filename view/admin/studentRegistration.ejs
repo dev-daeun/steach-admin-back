@@ -230,7 +230,6 @@
                                             <label>희망하는 선생님 성향</label>
                                             <input id="recommended" name="recommended" class="form-control">
                                         </div>
-                                        <div class="clearfix visible-lg"></div>
                                         <div name="regularDate" id="regularDate" class="schedules">
                                           <div id="schedule0" class="form-group col-lg-12">
                                             <div class="form-group col-lg-6">
@@ -371,7 +370,7 @@
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label id="prevProgramLabel" style="visibility:hidden">기타 프로그램명</label>
-                                            <input type="text" class="form-control" name="preProgramEtc" id="preProgramEtc" style="visibility:hidden;"/>
+                                            <input type="text" class="form-control" name="prevProgramEtc" id="prevProgramEtc" style="visibility:hidden;"/>
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>기간</label>
@@ -422,31 +421,36 @@
     <script src="../vendor/jquery/custom.js"></script>
     <script>
         $(() => {
+            $("#navigation").loadNavigation();
             let knownPath =  $("#knownPath").find(":selected").prevObject[0].value, 
                 subject = $("#subject").find(":selected").prevObject[0].value, 
                 prevProgram = $("#prevProgram").find(":selected").prevObject[0].value;
             
-                $("#knownPath").change((ent) => {
-                    knownPath = $(ent.target).openTextBox($('#knownPathEtc'), $("#knownPathLabel"));
-                });
-                $("#subject").change((ent) => {
-                    subject = $(ent.target).openTextBox($('#subjectEtc'), $("#subjectLabel"));
+            $("#knownPath").change((ent) => {
+                knownPath = $(ent.target).openTextBox($('#knownPathEtc'), $("#knownPathLabel"));
+            });
+            $("#subject").change((ent) => {
+                subject = $(ent.target).openTextBox($('#subjectEtc'), $("#subjectLabel"));
+            });
+            $("#prevProgram").change((ent) => {
+                prevProgram = $(ent.target).openTextBox($('#prevProgramEtc'), $("#prevProgramLabel"));
+            });
 
-                });
-                $("#prevProgram").change((ent) => {
-                    prevProgram = $(ent.target).openTextBox($('#prevProgramEtc'), $("#prevProgramLabel"));
-                });
-            $('#registerButton').click(() => {
+            $('#registerButton').click((ent) => {
             if(confirm('정말 등록하시겠습니까?')){
+                if($('#name').val()=='' || $('#schoolName').val()=='') {
+                    alert('학생 이름 및 학교명을 입력하세요.');
+                    return ent.preventDefault;
+                }
                 let PhoneRegExp = /^\d{2,4}-\d{3,4}-\d{4}$/;
                 let phones = document.querySelectorAll('.phone-number');
                 for(let i in phones){
                     if(!phones[i].value) continue;
                     else if (!PhoneRegExp.test(phones[i].value)){
                         alert("잘못된 전화번호입니다. - 를 포함한 숫자만 입력하세요.");
+                        return ent.preventDefault;
                     }
                 }
-
                 if(knownPath=='기타') knownPath = $('#knownPathEtc').val();
                 if(subject=='기타') subject = $('#subjectEtc').val();
                 if(prevProgram=='기타') prevProgram = $('#prevProgramEtc').val();
@@ -460,7 +464,7 @@
                                  + $("#schedule"+i).find("#endMeridiem").val() + ' '
                                  + $("#schedule"+i).find("#endHour").val() + ':'
                                  + $("#schedule"+i).find("#endMinute").val()
-                                 +' ';
+                                 +' / ';
                 }
                
                 $.ajax({ 
@@ -523,104 +527,103 @@
               });
             }
         });
-    });  
-    $(()=> {
-        $("#navigation").loadNavigation();
-        //html함수 적용하여 htmltest태그내의 html 변경
-        $("#scheduleAddBtn").click(function() {
-          var len = $("#regularDate").children().length;
-          var tag = `<div id="schedule`+len+`" class="form-group col-lg-12">
-                        <div class="form-group col-lg-6">
-                            <label>희망 요일</label>
-                            <div class="form-group" id="dayofweek">
-                            <label class="radio-inline">
-                                <input type="radio"  name="day"`+len+` value="일" checked>일
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio"  name="day"`+len+` value="월">월
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio"  name="day"`+len+` value="화">화
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio"  name="day"`+len+` value="수">수
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio"  name="day"`+len+` value="목">목
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio"  name="day"`+len+` value="금">금
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio"  name="day"`+len+` value="토">토
-                            </label>
+
+        
+            //html함수 적용하여 htmltest태그내의 html 변경
+            $("#scheduleAddBtn").click(function() {
+                var len = $("#regularDate").children().length;
+                var tag = `<div id="schedule`+len+`" class="form-group col-lg-12">
+                            <div class="form-group col-lg-6">
+                                <label>희망 요일</label>
+                                <div class="form-group" id="dayofweek">
+                                <label class="radio-inline">
+                                    <input type="radio"  name="day`+len+`" value="일" checked>일
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio"  name="day`+len+`" value="월">월
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio"  name="day`+len+`" value="화">화
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio"  name="day`+len+`" value="수">수
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio"  name="day`+len+`" value="목">목
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio"  name="day`+len+`" value="금">금
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio"  name="day`+len+`" value="토">토
+                                </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group col-lg-6">
-                            <label>희망 시간</label>
-                            <div class="form-inline">
-                                <select id="startMeridiem" name="startMeridiem" class="form-control">
-                                    <option value="오전" selected>오전</option>
-                                    <option value="오후">오후</option>
-                                </select>
-                                <select id="startHour" name="startHour" class="form-control">
-                                    <option value="01" selected>01</option>
-                                    <option value="02">02</option>
-                                    <option value="03">03</option>
-                                    <option value="04">04</option>
-                                    <option value="05">05</option>
-                                    <option value="06">06</option>
-                                    <option value="07">07</option>
-                                    <option value="08">08</option>
-                                    <option value="09">09</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                </select>
-                                <label>시</label>
-                                <select id="startMinute" name="startMinute" class="form-control">
-                                    <option value="00" selected>00</option>
-                                    <option value="10">10</option>
-                                    <option value="20">20</option>
-                                    <option value="30">30</option>
-                                    <option value="40">40</option>
-                                    <option value="50">50</option>
-                                </select>
-                                <label>분</label>
-                                <label>~</label>
-                                <select id="endMeridiem" name="endMeridiem" class="form-control">
-                                    <option value="오전" selected>오전</option>
-                                    <option value="오후">오후</option>
-                                </select>
-                                <select id="endHour" name="endHour" class="form-control">
-                                    <option value="01" selected>01</option>
-                                    <option value="02">02</option>
-                                    <option value="03">03</option>
-                                    <option value="04">04</option>
-                                    <option value="05">05</option>
-                                    <option value="06">06</option>
-                                    <option value="07">07</option>
-                                    <option value="08">08</option>
-                                    <option value="09">09</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                </select>
-                                <label>시</label>
-                                <select id="endMinute" name="endMinute" class="form-control">
-                                    <option value="00" selected>00</option>
-                                    <option value="10">10</option>
-                                    <option value="20">20</option>
-                                    <option value="30">30</option>
-                                    <option value="40">40</option>
-                                    <option value="50">50</option>
-                                </select>
-                                <label>분</label>
-                            </div>
-                        </div>`;
-          $("#regularDate").append(tag);
+                            <div class="form-group col-lg-6">
+                                <label>희망 시간</label>
+                                <div class="form-inline">
+                                    <select id="startMeridiem" name="startMeridiem" class="form-control">
+                                        <option value="오전" selected>오전</option>
+                                        <option value="오후">오후</option>
+                                    </select>
+                                    <select id="startHour" name="startHour" class="form-control">
+                                        <option value="01" selected>01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                    <label>시</label>
+                                    <select id="startMinute" name="startMinute" class="form-control">
+                                        <option value="00" selected>00</option>
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                        <option value="30">30</option>
+                                        <option value="40">40</option>
+                                        <option value="50">50</option>
+                                    </select>
+                                    <label>분</label>
+                                    <label>~</label>
+                                    <select id="endMeridiem" name="endMeridiem" class="form-control">
+                                        <option value="오전" selected>오전</option>
+                                        <option value="오후">오후</option>
+                                    </select>
+                                    <select id="endHour" name="endHour" class="form-control">
+                                        <option value="01" selected>01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                    <label>시</label>
+                                    <select id="endMinute" name="endMinute" class="form-control">
+                                        <option value="00" selected>00</option>
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                        <option value="30">30</option>
+                                        <option value="40">40</option>
+                                        <option value="50">50</option>
+                                    </select>
+                                    <label>분</label>
+                                </div>
+                            </div>`;
+                $("#regularDate").append(tag);
+            });
         });
-      })
     </script>
     <!-- Bootstrap Core JavaScript -->
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>

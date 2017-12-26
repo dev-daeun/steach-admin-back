@@ -161,7 +161,7 @@ class StudentService{
                 as: 'assignment',
                 required: true,
                 where: { 
-                    assignStatus: {
+                    consultStatus: {
                         $not: 0
                     },
                     student_id: Model.Student.id,
@@ -185,19 +185,16 @@ class StudentService{
                 as: 'assignment',
                 required: true,
                 where: {
-                    assignStatus: 0,
+                    consultStatus: 0,
                     student_id: Model.Student.id,
                     student_id: {
                         $not: null
                     }
                 },
                 order: [
-                    ['assignment', 'id', 'desc']
+                    ['assignment', 'updatedAt', 'desc']
                 ]
-            }],
-            order: [
-                ['id', 'desc']
-            ]
+            }]
         });
      
     }
