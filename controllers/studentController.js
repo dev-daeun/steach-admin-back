@@ -110,10 +110,7 @@ router.put('/:studentId/:assignId', function(req, res, next){
         studentId = req.params.studentId,
         assignId = req.params.assignId,
         teacherId = req.body.teacherId;
-    if(!student.name || !student.schoolName) {
-        next(new CustomError(400, '학생 이름 및 학교명을 입력하세요.'));
-        return;
-    }
+
     StudentService.edit(assignment, student, matchCanceled, studentId, assignId, teacherId)
     .then(() => {
         res.status(200).send(true);

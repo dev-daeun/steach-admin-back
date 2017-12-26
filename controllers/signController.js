@@ -31,15 +31,23 @@ router.post('/signin', function(req, res, next){
 
 /*로그인 화면 */
 router.get('/signin', function(req, res, next){
-    if(req.session && req.session.passport && req.session.passport.user) 
-            return res.status(204).send('이미 로그인 중입니다.');
+    if((req.session && req.session.passport && req.session.passport.user) && req.cookies.SteachToken) {
+        return res.status(405).send(`
+        <script type="text/javascript">
+            alert("이미 로그인 중입니다.");
+        </script>`);
+    }
     return new Promise((resolve, reject) => {
-        ejs.renderFile('view/admin/login.ejs', function(err, view){
+        req.session.destroy(err => {
             if(err) throw err;
-            else res.status(200).send(view);
+            else {
+                ejs.renderFile('view/admin/login.ejs', function(err, view){
+                    if(err) throw err;
+                    else res.status(200).send(view);
+                });
+            }
         });
-    })
-    .catch(err => {
+    }).catch(err => {
         next(new CustomError(500, err.message || err));
     });
 });
