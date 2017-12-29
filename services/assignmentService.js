@@ -1,5 +1,6 @@
 const Model = require('../models');
 const sequelize = require('sequelize'); 
+const Op = sequelize.Op;
 const moment = require('moment');
 
 class AssignService{
@@ -34,6 +35,9 @@ class AssignService{
                     assignment_id: Model.Assignment.id,
                     assignment_id: {
                         $not: null
+                    },
+                    deletedAt: {
+                        [Op.eq]: null
                     }
                 }
             }],
