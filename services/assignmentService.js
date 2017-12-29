@@ -31,14 +31,15 @@ class AssignService{
                 as: 'applys',
                 required: false,
                 where: {
+                    deletedAt: {
+                        [Op.eq]: null
+                    },
                     status: 1,
                     assignment_id: Model.Assignment.id,
                     assignment_id: {
                         $not: null
-                    },
-                    deletedAt: {
-                        [Op.eq]: null
                     }
+
                 }
             }],
             where: {

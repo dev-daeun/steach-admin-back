@@ -23,7 +23,7 @@ router.use(require('./isAuthenticated'));
 router.get('/:id', function(req, res, next){
     AssignService.getOneById(req.params.id)//학생 조회
     .then(results => {
-        if(results.length==0) return next(new CustomError(404, 'student not found'));
+        if(results.length==0) return next(new CustomError(404, '학생정보를 찾을 수 없습니다.'));
         
         let teachers = new Array();
 
@@ -49,21 +49,21 @@ router.get('/:id', function(req, res, next){
         };
         if(results.length>0) {
             results.forEach(element => {
-                teachers.push({
-                    teacherId: element.teacherId,
-                    applyId: element.applyId,
-                    gender: element.teacherGender,
-                    name: element.teacherName,
-                    age: element.age,
-                    univ: element.university,
-                    grade: element.teacherGrade,
-                    univStatus: element.univStatus,
-                    phone: element.phone,
-                    available: element.available
-                });    
+                if(element.teacherId !== null) 
+                    teachers.push({
+                        teacherId: element.teacherId,
+                        applyId: element.applyId,
+                        gender: element.teacherGender,
+                        name: element.teacherName,
+                        age: element.age,
+                        univ: element.university,
+                        grade: element.teacherGrade,
+                        univStatus: element.univStatus,
+                        phone: element.phone,
+                        available: element.available
+                    });    
             });
         }
-        
         ejs.renderFile('view/admin/matching.ejs', {
             assignId: results[0].assignmentId,
             student: student,
