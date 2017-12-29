@@ -15,19 +15,23 @@ router.use(require('./isAuthenticated'));
 /* 학생수정 전 이전정보 조회 */
 router.get('/:studentId/:assignId', function(req, res, next){
     StudentService.getOneById(req.params.studentId, req.params.assignId)
-    .then(([student, teacher, course]) => {
+    .then(([student, teacher, course, grades]) => {
         if(!student) return next(new CustomError(404, '학생정보를 찾을 수 없습니다.'));
 
-        let turn = course.length > 0 ? {
-            nextCount: course[0].dataValues.turns[0].dataValues.nextCount,
-            totalCount: course[0].dataValues.turns[0].dataValues.totalCount,
-            nextDate: course[0].dataValues.nextDate
-        } : {
+        let turn;
+        if(course.length && course[0].dataValues.turns.length){
+            turn = {
+                nextCount: course[0].dataValues.turns[0].dataValues.nextCount,
+                totalCount: course[0].dataValues.turns[0].dataValues.totalCount,
+                nextDate: course[0].dataValues.nextDate
+            };
+        }
+        else turn = {
             nextCount: 0,
             totalCount: 0,
             nextDate: "0000-00-00"
-        } ;
-        let grade = course.length > 0 ? course[0].dataValues.grades : [] ;
+        };
+        
         let schedule = course.length > 0 ? course[0].dataValues.schedules : [] ;
         let assignment = student.dataValues.assignment[0].dataValues;
         let teacherInfo;
@@ -38,26 +42,27 @@ router.get('/:studentId/:assignId', function(req, res, next){
         assignment.firstDate = moment(assignment.firstDate).format("YYYY-MM-DD");
         assignment.prevStartTerm = moment(assignment.prevStartTerm).format("YYYY-MM-DD");
         assignment.prevEndTerm = moment(assignment.prevEndTerm).format("YYYY-MM-DD");
-        if(grade.length>0){
-            grade.forEach(e => {
-                let newYear = moment(e.year).format("YYYY");
-                e.stringYear = newYear;
+
+
+        let gradeArray = new Array();
+        let obj;
+        if(grades.length>0){
+            grades.forEach( g => {
+                obj = {};
+                obj.examYear = moment(g.dataValues.year).format("YYYY");
+                obj.score = g.dataValues.score;
+                obj.subject = g.dataValues.subject;
+                obj.rating = g.dataValues.rating;
+                gradeArray.push(obj);
             });
         }
-        console.log({
-            student: student,
-            assign: assignment,
-            teacher: teacher ? teacher.dataValues : {},
-            schedule: schedule,
-            grade : grade,
-            turn: turn 
-        });
+
         ejs.renderFile('view/admin/studentEdit.ejs', {
             student: student,
             assign: assignment,
             teacher: teacherInfo,
             turn: turn,
-            grade: grade,
+            grade: gradeArray,
             schedule: schedule
         }, (err, view) => {
             if(err) throw err;
@@ -111,8 +116,13 @@ router.put('/:studentId/:assignId', function(req, res, next){
         assignId = req.params.assignId,
         teacherId = req.body.teacherId;
 
+    if(student.name=="null" || student.schoolName=="null") {
+        next(new CustomError(400, '학생 이름 및 학교명을 입력하세요.'));
+        return;
+    }
     StudentService.edit(assignment, student, matchCanceled, studentId, assignId, teacherId)
-    .then(() => {
+    .then((course) => {
+        console.log("course: ",course)
         res.status(200).send(true);
     })
     .catch((err) => {
@@ -169,7 +179,7 @@ router.get('/registration', function(req, res, next){
 router.post('/registration', function(req, res, next){
     let assignment = req.body.assignment;
     let student = req.body.student;
-    if(!student.name || !student.schoolName) {
+    if(student.name=="null" || student.schoolName=="null") {
         next(new CustomError(400, '학생 이름 및 학교명을 입력하세요.'));
         return;
     }

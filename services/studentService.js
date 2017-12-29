@@ -1,6 +1,6 @@
 const Model = require('../models');
 const sequelize = require('../models/index').sequelize;
-
+const Op = sequelize.Op;
 
 const moment = require('moment');
 
@@ -55,11 +55,15 @@ class StudentService{
                     }
                 }],
             }),
-            Model.Course.findAll({ //학생과 선생이 진행중인 수업
+            Model.Course.findAll({ 
+                /* 학생과 선생이 진행중인 수업
+                    현재 진행중인 수업의 총 회차 = turn.totalCount 
+                    현재 진행중인 수업의 앞으로 다가올 회차 = turn.nextCount
+                    현재 진행중인 수업의 앞으로 다가올 회차의 수업날짜 = course.nextDate */
                 include: [{
                     model: Model.Turn,
                     as: 'turns',
-                    required: true,
+                    required: false,
                     where: {
                         courseCount: Model.Course.courseCount,
                         courseCount: {
@@ -73,18 +77,7 @@ class StudentService{
                         
                     },
                 },{
-                    model: Model.Grade, //학생이 수강하는 수업 성적?
-                    as: 'grades',
-                    required: false,
-                    where: {
-                        courseId: Model.Course.id,
-                        courseId: {
-                            $not: null
-                        },
-                        deletedAt: null
-                    }
-                },{
-                    model: Model.Schedule, //스케줄
+                    model: Model.Schedule, //스케줄 (수업시간 = schedule.day, startTime, endTime)
                     as: 'schedules',
                     required: false,
                     where: {
@@ -100,9 +93,19 @@ class StudentService{
                     studentId: studentId,
                     deletedAt: null
                 }
+            }),
+            Model.Grade.findAll({
+                where: {
+                    studentId: {
+                        [Op.eq]: studentId
+                    },
+                    assignmentId: {
+                        [Op.eq]: assignId
+                    }
+                }
             })
         ], ([student, teacher, course]) => {
-                return Promise.resolve([student, teacher, course]);
+                return Promise.resolve([student, teacher, course, grade]);
         });
     }
     
@@ -124,7 +127,7 @@ class StudentService{
                         }, {
                             transaction: t
                     }).then(() => {
-                        if(matchCanceled) 
+                        if(matchCanceled) { //선생님 배정취소 있으면
                             return Model.Apply.destroy({
                                 where: {
                                     studentId: studentId,
@@ -132,12 +135,14 @@ class StudentService{
                                     teacherId: teacherId,
                                     status: 2
                                 }
-                            }, {
+                            },
+                            {
                                 transaction: t
-                            }).then(()=> {
+                            }).then(()=> { //assignment에 선생님 정보 null로 변경
                                 return Model.Assignment.update({
                                     teacherName: null,
-                                    teacherId: null
+                                    teacherId: null,
+                                    assignStatus: 2
                                 },{
                                     where: {
                                         id: assignId
@@ -145,7 +150,67 @@ class StudentService{
                                 },{
                                     transaction: t
                                 });
+                            }).then(()=>{ // 진행중이던 수업 course 조회
+                                return Model.Course.findOne({
+                                    attribute: ['id'],
+                                    where: {
+                                        studentId: {
+                                            [Op.eq]: studentId
+                                        },
+                                        teacherId: {
+                                            [Op.eq]: teacherId
+                                        },
+                                        assignmentId: {
+                                            [Op.eq]: assignId
+                                        }
+                                    }
+                                });
+                            },{
+                                transaction: t
+                            }).then((course)=> { //수업 정보도 모두 삭제
+                                let courseId = course.dataValues.id;
+                                Promise.all([
+                                    Model.Course.destroy({
+                                        where: {
+                                            id: {
+                                                [Op.eq]: courseId
+                                            }
+                                        }  
+                                    },{
+                                        transaction: t
+                                    }),
+                                    Model.Turn.destroy({
+                                        where: {
+                                            courseId: {
+                                                [Op.eq]: courseId
+                                            }
+                                        }
+                                    },{
+                                        transaction: t
+                                    }),
+                                    Model.Lesson.destroy({
+                                        where: {
+                                            courseId: {
+                                                [Op.eq]: courseId
+                                            }
+                                        }
+                                    },{
+                                        transaction: t
+                                    }),
+                                    Model.Schedule.destroy({
+                                        where: {
+                                            courseId: {
+                                                [Op.eq]: courseId
+                                            }
+                                        }
+                                    },{
+                                        transaction: t
+                                    })
+                                ]).then(()=>{
+                                    Promise.resolve();
+                                });
                             });
+                        }
                         else return Promise.resolve();
                     });
                 });
@@ -170,10 +235,12 @@ class StudentService{
                     }
                 },
                 order: [
-                    ['assignment', 'updated_at', 'desc']  
+                    ['assignment', 'updatedAt', 'desc']
                 ]
             }],
-           
+           order: [
+               [ 'id' ]
+           ]
         });
     }
 

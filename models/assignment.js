@@ -204,6 +204,13 @@ module.exports = function(sequelize, DataTypes) {
       onDelete: "cascade",
       onUpdate: "cascade"
     });
+    Assignment.hasMany(models.Grade, {
+      as:'grades',
+      foreignKey: "assignment_id",
+      targetKey: "id",
+      onDelete: "cascade",
+      onUpdate: "cascade"
+    });
     Assignment.belongsTo(models.Student, {
       as:'student',
       foreignKey: "student_id",

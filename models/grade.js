@@ -10,6 +10,16 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    studentId: {
+      field: "student_id",
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    assignmentId:{
+      field: "assignment_id",
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     score: {
       type: DataTypes.INTEGER,
       allowNull: false
@@ -39,6 +49,18 @@ module.exports = function(sequelize, DataTypes) {
   Grade.associate = (models) => {
     Grade.belongsTo(models.Course, {
       foreignKey: "course_id",
+      targetKey: "id",
+      onDelete: "cascade",
+      onUpdate: "cascade"
+    });
+    Grade.belongsTo(models.Student, {
+      foreignKey: "student_id",
+      targetKey: "id",
+      onDelete: "cascade",
+      onUpdate: "cascade"
+    });
+    Grade.belongsTo(models.Assignment, {
+      foreignKey: "assignment_id",
       targetKey: "id",
       onDelete: "cascade",
       onUpdate: "cascade"

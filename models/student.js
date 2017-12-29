@@ -82,6 +82,13 @@ module.exports = function(sequelize, DataTypes) {
       onDelete: "cascade",
       onUpdate: "cascade"
     });
+    Student.hasMany(models.Grade, {
+      as:'grades',
+      foreignKey: "student_id",
+      targetKey: "id",
+      onDelete: "cascade",
+      onUpdate: "cascade"
+    });
   };
   return Student;
 };
