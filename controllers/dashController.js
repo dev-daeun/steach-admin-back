@@ -32,7 +32,9 @@ router.get('/',  function(req, res, next){
     
 
 
-    Promise.all(callArray.concat(assignStatusArray).concat([Dashboard.getExpectedProfit(), Dashboard.getPaidProfit()]))
+    Promise
+    .all(callArray.concat(assignStatusArray)
+    .concat([Dashboard.getExpectedProfit(), Dashboard.getPaidProfit()]))
     .then(([dailyRetired, 
             monthlyRetired,
             dailyCancel, 

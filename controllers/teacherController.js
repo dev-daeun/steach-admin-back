@@ -96,14 +96,14 @@ router.post('/waiting', function(req, res, next){
                     console.log(text);
                     console.log(teacher.dataValues.phone);
                     pushMessage('가입요청 승인여부', text, teacher.dataValues.fcmToken, "assigned");
-                    // coolsmsClient.sms.send({
-                    //     to: teacher.dataValues.phone,
-                    //     type: "SMS",
-                    //     from: coolsmsConfig.from,
-                    //     text: text
-                    // }, (err, result) => {
-                    //     if(err) throw err;
-                    // });  
+                    coolsmsClient.sms.send({
+                        to: teacher.dataValues.phone,
+                        type: "SMS",
+                        from: coolsmsConfig.from,
+                        text: text
+                    }, (err, result) => {
+                        if(err) throw err;
+                    });  
                 });
             }else{
                 TeacherService.deleteById(teacherId)
@@ -112,14 +112,14 @@ router.post('/waiting', function(req, res, next){
                     console.log(text);
                     console.log(teacher.dataValues.phone);
                     pushMessage('가입요청 승인여부', text, teacher.dataValues.fcmToken, "assigned"); 
-                    // coolsmsClient.sms.send({
-                    //     to: teacher.dataValues.phone,
-                    //     type: "SMS",
-                    //     from: coolsmsConfig.from,
-                    //     text: text
-                    // }, (err, result) => {
-                    //     if(err) throw err;
-                    // }); 
+                    coolsmsClient.sms.send({
+                        to: teacher.dataValues.phone,
+                        type: "SMS",
+                        from: coolsmsConfig.from,
+                        text: text
+                    }, (err, result) => {
+                        if(err) throw err;
+                    }); 
                 });
             }
             res.status(200).send(true); 

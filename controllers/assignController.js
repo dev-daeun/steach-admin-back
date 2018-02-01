@@ -113,15 +113,15 @@ router.post('/', function(req, res, next){
     AssignService.match(req.body.applyId, req.body.assignId, req.body.teacherName, req.body.teacherId)
     .then(([student, teacher]) => {
         let text = student.name + '학생의 '+ student.subject +'수업에 최종배정 되었습니다.';
-        // console.log(text);
-        // coolsmsClient.sms.send({
-        //     to: teacher.phone,
-        //     type: "SMS",
-        //     from: coolsmsConfig.from,
-        //     text: text
-        // }, function(err){
-        //         if(err) throw err;
-        // });                
+        console.log(text);
+        coolsmsClient.sms.send({
+            to: teacher.phone,
+            type: "SMS",
+            from: coolsmsConfig.from,
+            text: text
+        }, function(err){
+                if(err) throw err;
+        });                
         pushMessage('매칭요청 승인여부', text, teacher.fcmToken, "match");
         res.status(200).send(true); 
     })
