@@ -1,29 +1,20 @@
 # README #
 
-학원용 관리자 웹 서버 저장소
+* '과외스티치' 학원관리자 웹 서비스 프로젝트
 
-### What is this repository for? ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+## How do I get set up? ###
 
-### How do I get set up? ###
+### Front-end
+* HTML5
+* javascript ES6
+* jQuery
+* jQuery-ajax
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+### Back-end
+* Node.js 6.10.x
+* MYSQL 5.7.x
 
-### Contribution guidelines ###
+### Design Pattern
+* Model View Controller Service pattern
 
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
